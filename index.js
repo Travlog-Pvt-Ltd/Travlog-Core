@@ -3,11 +3,10 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-
-import auth from "./middlewares/auth.js";
-import { login, register } from "./controllers/auth/index.js";
-import { createBlog, getAllBlogs, getBlogDetail, getUserBlogs } from "./controllers/blog/index.js";
-import { getUserDetails } from "./controllers/user/index.js";
+import userRouter from "./routers/user/index.js";
+import authRouter from "./routers/auth/index.js";
+import blogRouter from "./routers/blog/index.js";
+import draftRouter from "./routers/draft/index.js";
 
 dotenv.config();
 const app = express();
@@ -24,14 +23,11 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
     });
 
 
-app.post("/register", register);
-app.post("/login", login);
-app.post("/blog", auth, createBlog);
-app.get("/blog/all", getAllBlogs);
-app.get("/blog", auth, getUserBlogs);
-app.get("/blog/:blogId", getBlogDetail);
-app.get("/user", auth, getUserDetails);
+app.use("/user", userRouter)
+app.use("/auth", authRouter)
+app.use("/blog", blogRouter)
+app.use("/draft", draftRouter)
 
 app.listen(8080, () => {
-    console.log("Sever listening on port 8080!");
+    console.log("Server listening on port 8080!");
 })

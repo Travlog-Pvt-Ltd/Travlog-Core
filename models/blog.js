@@ -49,6 +49,10 @@ const blogSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
+    thumbnail : {
+        type: String,
+        default: null
+    },
     hasInfo: {
         type: Boolean,
         default: false
