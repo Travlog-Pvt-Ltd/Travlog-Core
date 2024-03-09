@@ -73,6 +73,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  profileLogo: {
+    type: String,
+    default: null
+  },
   bookmarks: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "BlogInstance"

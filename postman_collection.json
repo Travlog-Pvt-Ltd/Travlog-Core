@@ -34,7 +34,7 @@
 						}
 					]
 				},
-				"url": "http://localhost:8080/register"
+				"url": "http://localhost:8080/auth/register"
 			},
 			"response": []
 		},
@@ -138,7 +138,7 @@
 				"auth": {
 					"type": "bearer",
 					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM3OWFhODgyZDM2MmY0NjMwM2RiMiIsImlhdCI6MTcwOTQwNjYzNCwiZXhwIjoxNzA5NDkzMDM0fQ.SWjbmR4hXktzxnzKSk50BKiUfK0sSNuwVxiVOLe2bLo"
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
 					}
 				},
 				"method": "GET",
@@ -152,7 +152,22 @@
 			"request": {
 				"method": "POST",
 				"header": [],
-				"url": "http://localhost:8080/login"
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "aryan6400cool@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Aryan@6400",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/auth/login"
 			},
 			"response": []
 		},
@@ -161,7 +176,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:8080/blog/65e37d13882d362f46303db8"
+				"url": "http://localhost:8080/blog/65e368a528a3d9c51a81fc4f"
 			},
 			"response": []
 		},
@@ -171,12 +186,46 @@
 				"auth": {
 					"type": "bearer",
 					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM3OWFhODgyZDM2MmY0NjMwM2RiMiIsImlhdCI6MTcwOTQwNjYzNCwiZXhwIjoxNzA5NDkzMDM0fQ.SWjbmR4hXktzxnzKSk50BKiUfK0sSNuwVxiVOLe2bLo"
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
 					}
 				},
 				"method": "GET",
 				"header": [],
 				"url": "http://localhost:8080/user"
+			},
+			"response": []
+		},
+		{
+			"name": "Get drafts (require bearer token)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/draft"
+			},
+			"response": []
+		},
+		{
+			"name": "Create new draft (requires bearer token)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": "http://localhost:8080/draft"
 			},
 			"response": []
 		}
