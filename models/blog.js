@@ -37,6 +37,10 @@ const blogSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"
     }],
+    shares: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "UserInstance"
+    }],
     bookmarks: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"

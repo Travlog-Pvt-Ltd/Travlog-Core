@@ -1,10 +1,10 @@
-import Blog from "../../models/blog.js";
-import User from "../../models/user.js";
+import Blog from "../../models/blog.js"
+import User from "../../models/user.js"
 
 async function getAllBlogs(req,res){
     try {
-        const blogs = await Blog.find();
-        res.status(200).json(blogs);
+        const blogs = await Blog.find().populate("author")
+        res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({message: err.message})
     }
@@ -12,8 +12,8 @@ async function getAllBlogs(req,res){
 
 async function getUserBlogs(req,res){
     try {
-        const blogs = await Blog.find({author: req.userId});
-        res.status(200).json(blogs);
+        const blogs = await Blog.find({author: req.userId})
+        res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({message: err.message})
     }
@@ -21,8 +21,8 @@ async function getUserBlogs(req,res){
 
 async function getBlogDetail(req,res){
     try {
-        const blog = await Blog.findById(req.params.blogId).populate("author", "comments");
-        res.status(200).json(blog);
+        const blog = await Blog.findById(req.params.blogId).populate("author", "comments")
+        res.status(200).json(blog)
     } catch (err) {
         res.status(500).json({message: err.message})
     }
@@ -43,9 +43,9 @@ async function createBlog(req,res){
             tags,
             attachments
         })
-        const savedBlog = await newBlog.save();
+        const savedBlog = await newBlog.save()
         const user = await User.findByIdAndUpdate(req.userId,{$push: {blogs: savedBlog}}, {new:true}).populate("blogs")
-        res.status(201).json(user.blogs);
+        res.status(201).json(user.blogs)
     } catch (err) {
         res.status(401).json({message: err.message})
     }
