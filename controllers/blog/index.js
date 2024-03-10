@@ -1,4 +1,4 @@
-import Activity from "../../models/activity.js";
+import Activity from "../../models/userActivity.js";
 import Blog from "../../models/blog.js"
 import BlogInstance from "../../models/blogInstance.js";
 import LCEvent from "../../models/likeCommentEvent.js";

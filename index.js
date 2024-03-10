@@ -7,6 +7,9 @@ import userRouter from "./routers/user/index.js";
 import authRouter from "./routers/auth/index.js";
 import blogRouter from "./routers/blog/index.js";
 import draftRouter from "./routers/draft/index.js";
+import { createCities } from "./controllers/cities/index.js";
+import auth from "./middlewares/auth.js";
+import { createActivities } from "./controllers/activities/index.js";
 
 dotenv.config();
 const app = express();
@@ -22,6 +25,10 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
         console.error('Error connecting to MongoDB:', error);
     });
 
+
+
+app.get("/cities/generateCities", auth, createCities)
+app.get("/activities/generateActivities", auth, createActivities)
 
 app.use("/user", userRouter)
 app.use("/auth", authRouter)
