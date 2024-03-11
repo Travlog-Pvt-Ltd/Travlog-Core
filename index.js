@@ -7,9 +7,7 @@ import userRouter from "./routers/user/index.js";
 import authRouter from "./routers/auth/index.js";
 import blogRouter from "./routers/blog/index.js";
 import draftRouter from "./routers/draft/index.js";
-import { createCities } from "./controllers/cities/index.js";
-import auth from "./middlewares/auth.js";
-import { createActivities } from "./controllers/activities/index.js";
+import tagRouter from "./routers/tags/index.js";
 
 dotenv.config();
 const app = express();
@@ -27,13 +25,11 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
 
 
 
-app.get("/cities/generateCities", auth, createCities)
-app.get("/activities/generateActivities", auth, createActivities)
-
 app.use("/user", userRouter)
 app.use("/auth", authRouter)
 app.use("/blog", blogRouter)
 app.use("/draft", draftRouter)
+app.use("/tags", tagRouter)
 
 app.listen(8080, () => {
     console.log("Server listening on port 8080!");

@@ -228,6 +228,68 @@
 				"url": "http://localhost:8080/draft"
 			},
 			"response": []
+		},
+		{
+			"name": "Generate Cities",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDA5Mzc0MiwiZXhwIjoxNzEwMTgwMTQyfQ.zTCWxG4BmdldVbzpaWauYaG7kJhUFQGzuufyw8yrKnI"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/cities/generateCities"
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Activities",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDA5Mzc0MiwiZXhwIjoxNzEwMTgwMTQyfQ.zTCWxG4BmdldVbzpaWauYaG7kJhUFQGzuufyw8yrKnI"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/activities/generateActivities"
+			},
+			"response": []
+		},
+		{
+			"name": "Search Tags",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDA5Mzc0MiwiZXhwIjoxNzEwMTgwMTQyfQ.zTCWxG4BmdldVbzpaWauYaG7kJhUFQGzuufyw8yrKnI"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/tags/search?search=hiki",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"tags",
+						"search"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "hiki"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
