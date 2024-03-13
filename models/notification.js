@@ -13,7 +13,7 @@ const notificationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Blog"
     },
-    type: String,
+    notification_type: String,
     commentId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment"
