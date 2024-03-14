@@ -9,6 +9,7 @@ import blogRouter from "./routers/blog/index.js";
 import draftRouter from "./routers/draft/index.js";
 import tagRouter from "./routers/tags/index.js";
 import likeRouter from "./routers/like/index.js";
+import commentRouter from "./routers/comment/index.js";
 
 dotenv.config();
 const app = express();
@@ -32,6 +33,7 @@ app.use("/blog", blogRouter)
 app.use("/draft", draftRouter)
 app.use("/tags", tagRouter)
 app.use("/like", likeRouter)
+app.use("/comment", commentRouter)
 
 app.listen(8080, () => {
     console.log("Server listening on port 8080!");
