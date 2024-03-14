@@ -1,10 +1,10 @@
 import express from "express"
 import auth from "../../middlewares/auth.js"
-import { likeBlog } from "../../controllers/like/index.js"
+import { dislikeBlog, likeBlog } from "../../controllers/like/index.js"
 
 const likeRouter = express.Router()
 
-likeRouter.post("/blog/like", auth, likeBlog)
-
+likeRouter.patch("/blog/like", auth, likeBlog)
+likeRouter.patch("/blog/dislike", auth, dislikeBlog)
 
 export default likeRouter
