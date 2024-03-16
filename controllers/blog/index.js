@@ -28,8 +28,7 @@ async function getUserBlogs(req,res){
 
 async function getBlogDetail(req,res){
     try {
-        const blog = await Blog.findById(req.params.blogId).populate("author", "_id name profileLogo followers")
-        // removed .populate("comments") since the schema is not registered in database yet.
+        const blog = await Blog.findById(req.params.blogId).populate("author", "_id name profileLogo followers").populate("comments")
         res.status(200).json(blog)
     } catch (err) {
         res.status(500).json({message: err.message})

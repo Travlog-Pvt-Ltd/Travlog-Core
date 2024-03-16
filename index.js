@@ -10,6 +10,7 @@ import draftRouter from "./routers/draft/index.js";
 import tagRouter from "./routers/tags/index.js";
 import likeRouter from "./routers/like/index.js";
 import commentRouter from "./routers/comment/index.js";
+import creatorRouter from "./routers/creator/index.js";
 
 dotenv.config();
 const app = express();
@@ -28,6 +29,7 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
 
 
 app.use("/user", userRouter)
+app.use("/creator", creatorRouter)
 app.use("/auth", authRouter)
 app.use("/blog", blogRouter)
 app.use("/draft", draftRouter)
