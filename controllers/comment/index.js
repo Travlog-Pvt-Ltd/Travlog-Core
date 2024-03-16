@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Blog from "../../models/blog.js";
 import LCEvent from "../../models/likeCommentEvent.js";
 import UserActivity from "../../models/userActivity.js";
@@ -9,8 +8,12 @@ const commentOnBlog = async (req, res) => {
     const blog = req.body.blogId
     const content = req.body.content
     try {
-        const newComment = await Comment.create({ userId: req.userId, content: content, isReply:false, blog: blog })
-        const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { comments: newComment._id } }, { new: true }).populate("comments")
+        const newComment = await Comment.create({ userId: req.userId, content: content, isReply: false, blog: blog })
+        const foundBlog = await Blog.findById(blog)
+        foundBlog.commentCount=foundBlog.commentCount+1
+        foundBlog.comments.push(newComment._id)
+        const newBlog = await foundBlog.save()
+        newBlog.populate("comments")
         const commentEvent = await LCEvent.create({
             blogId: blog,
             isComment: true,
@@ -26,7 +29,7 @@ const commentOnBlog = async (req, res) => {
         else {
             await UserActivity.create({ userId: req.userId, commentEvent: [commentEvent._id] })
         }
-        res.status(201).json(newBlog.comments)
+        res.status(201).json({ comments: newBlog.comments, commentCount: newBlog.commentCount })
     } catch (err) {
         res.status(401).json({ message: err.message })
     }
