@@ -19,22 +19,22 @@
 					"urlencoded": [
 						{
 							"key": "email",
-							"value": "singharyan7481@gmail.com",
+							"value": "rkkashyap390@gmail.com",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "Aryan@6400",
+							"value": "rkkashyap390",
 							"type": "text"
 						},
 						{
 							"key": "name",
-							"value": "Endeavour",
+							"value": "Rishikant Kashyap",
 							"type": "text"
 						}
 					]
 				},
-				"url": "https://travlog.onrender.com/auth/register"
+				"url": "http://localhost:8080/auth/register"
 			},
 			"response": []
 		},
@@ -391,6 +391,99 @@
 				"method": "GET",
 				"header": [],
 				"url": "http://localhost:8080/creator/more/65e3650dcf30254b69a5025b"
+			},
+			"response": []
+		},
+		{
+			"name": "Follow creator",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "creatorId",
+							"value": "65e379aa882d362f46303db2",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/creator/follow"
+			},
+			"response": []
+		},
+		{
+			"name": "Unfollow creator",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "creatorId",
+							"value": "65e379aa882d362f46303db2",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/creator/unfollow"
+			},
+			"response": []
+		},
+		{
+			"name": "Send OTP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "rkkashyap390@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/auth/send-otp"
+			},
+			"response": []
+		},
+		{
+			"name": "Verify OTP",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "email",
+							"value": "rkkashyap390@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "otp",
+							"value": "522972",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/auth/verify-otp"
 			},
 			"response": []
 		}
