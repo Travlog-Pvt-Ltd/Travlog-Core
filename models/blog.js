@@ -25,22 +25,42 @@ const blogSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"
     }],
+    likeCount: {
+        type: Number,
+        default: 0
+    },
     dislikes: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"
     }],
+    dislikeCount: {
+        type: Number,
+        default: 0
+    },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment"
     }],
+    commentCount: {
+        type: Number,
+        default: 0
+    },
     views: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"
     }],
+    viewCount: {
+        type: Number,
+        default: 0
+    },
     shares: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"
     }],
+    shareCount: {
+        type: Number,
+        default: 0
+    },
     bookmarks: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"
@@ -56,10 +76,6 @@ const blogSchema = new mongoose.Schema({
     hasInfo: {
         type: Boolean,
         default: false
-    },
-    commentCount: {
-        type: Number,
-        default: 0
     },
     isPrivate: {
         type: Boolean,
