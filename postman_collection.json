@@ -19,17 +19,17 @@
 					"urlencoded": [
 						{
 							"key": "email",
-							"value": "rkkashyap390@gmail.com",
+							"value": "singh.bhanu568@gmail.com",
 							"type": "text"
 						},
 						{
 							"key": "password",
-							"value": "rkkashyap390",
+							"value": "Bhanu@1234",
 							"type": "text"
 						},
 						{
 							"key": "name",
-							"value": "Rishikant Kashyap",
+							"value": "Bhanu Pratap Singh",
 							"type": "text"
 						}
 					]
@@ -44,7 +44,7 @@
 				"auth": {
 					"type": "bearer",
 					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmYxNzJlZTgwMjVjOTFlMDNmOTU1YiIsImlhdCI6MTcxMTIxNjQzMCwiZXhwIjoxNzExMzAyODMwfQ.53d43o0j14oWPe0OIxO7QHTtrjYefIcRYXHtNW9wccg"
 					}
 				},
 				"method": "POST",
@@ -193,7 +193,7 @@
 				"auth": {
 					"type": "bearer",
 					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmYxNzJlZTgwMjVjOTFlMDNmOTU1YiIsImlhdCI6MTcxMTIxNjQzMCwiZXhwIjoxNzExMzAyODMwfQ.53d43o0j14oWPe0OIxO7QHTtrjYefIcRYXHtNW9wccg"
 					}
 				},
 				"method": "GET",
@@ -454,7 +454,7 @@
 					"urlencoded": [
 						{
 							"key": "email",
-							"value": "rkkashyap390@gmail.com",
+							"value": "singh.bhanu568@gmail.com",
 							"type": "text"
 						}
 					]
@@ -473,17 +473,26 @@
 					"urlencoded": [
 						{
 							"key": "email",
-							"value": "rkkashyap390@gmail.com",
+							"value": "singh.bhanu568@gmail.com",
 							"type": "text"
 						},
 						{
 							"key": "otp",
-							"value": "522972",
+							"value": "352460",
 							"type": "text"
 						}
 					]
 				},
 				"url": "http://localhost:8080/auth/verify-otp"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Creator Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/creator/creator-detail/65e3650dcf30254b69a5025b"
 			},
 			"response": []
 		}
