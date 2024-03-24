@@ -12,14 +12,14 @@ async function register(req, res){
         password,
     } = req.body;
     try{
+        const foundUser = await User.findOne({email:email});
+        if(foundUser) return res.status(400).json({message: "User already exist!"})
         const foundOTP = await OTPModel.findOne({email})
         if(!foundOTP) return res.status(400).json({message: "Email not verified!"})
         else if(!foundOTP.validated) {
             await OTPModel.findByIdAndDelete(foundOTP._id)
             return res.status(400).json({message: "Email not verified!"})
         }
-        const foundUser = await User.findOne({email:email});
-        if(foundUser) return res.status(400).json({message: "User already exist!"})
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
         const newUser = new User({
@@ -27,10 +27,10 @@ async function register(req, res){
             email,
             password: hashedPassword,
         })
-        const savedUser = await newUser.save();
+        const savedUser = await newUser.save().select('-password -followers -followings -visitors -blogs -bookmarks -drafts -itenaries -notifications')
         const token = jwt.sign({id: savedUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
         await OTPModel.findByIdAndDelete(foundOTP._id)
-        res.status(201).json({token: token, user: savedUser});
+        res.status(201).json({token: token, user: savedUser})
     } catch(err){
         res.status(500).json({message: err.message})
     }
@@ -104,15 +104,44 @@ const verifyOtp = async(req,res) => {
 async function login(req, res) {
     const { email, password } = req.body;
     try{
-        const foundUser = await User.findOne({email:email});
+        const foundUser = await User.findOne({email:email}).select('-followers -followings -visitors -blogs -bookmarks -drafts -itenaries -notifications');
         if(!foundUser) return res.status(404).json({message: "User doesn't exist!"});
         const passwordMatched = await bcrypt.compare(password, foundUser.password);
         if(!passwordMatched) return res.status(400).json({message: "Invalid Password!"});
         const token = jwt.sign({id: foundUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"});
+        delete foundUser.password
         res.status(200).json({token: token, user: foundUser});
     } catch(err){
         res.status(500).json({message: err.message})
     }
 }
 
-export { register, login, sendOtp, verifyOtp }
+async function loginWithGoogle(req,res){
+    const {email, name, oAuthtoken, profileImage} = req.body
+    try {
+        const foundUser = await User.findOne({email:email})
+        if(foundUser){
+            const token = jwt.sign({id: foundUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
+            res.status(201).json({token:token, user:foundUser})
+        }
+        else{
+            const password = Math.random().toString(36).slice(-12)
+            const salt = await bcrypt.genSalt();
+            const hashedPassword = await bcrypt.hash(password, salt)
+            const newUser = new User({
+                name,
+                email,
+                password: hashedPassword,
+                profileImage,
+                profileLogo:profileImage
+            })
+            const savedUser = await newUser.save().select('-password -followers -followings -visitors -blogs -bookmarks -drafts -itenaries -notifications');
+            const token = jwt.sign({id: savedUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
+            res.status(201).json({token: token, user: savedUser});
+        }
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
+}
+
+export { register, login, sendOtp, verifyOtp, loginWithGoogle }
