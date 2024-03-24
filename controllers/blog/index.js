@@ -8,7 +8,7 @@ async function getAllBlogs(req,res){
     const limit = req.query.limit || 20;
     const skip = req.query.skip || 0;
     try {
-        const blogs = await Blog.find().limit(limit).skip(skip).populate("author", "_id name profileLogo")
+        const blogs = await Blog.find().limit(limit).skip(skip).select("title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo")
         res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({message: err.message})
@@ -19,7 +19,7 @@ async function getUserBlogs(req,res){
     const limit = req.query.limit || 20
     const skip = req.query.skip || 0
     try {
-        const blogs = await Blog.find({author: req.userId}).limit(limit).skip(skip).populate("author", "_id name profileLogo")
+        const blogs = await Blog.find({author: req.userId}).limit(limit).skip(skip).select("title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo")
         res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({message: err.message})
@@ -28,7 +28,7 @@ async function getUserBlogs(req,res){
 
 async function getBlogDetail(req,res){
     try {
-        const blog = await Blog.findById(req.params.blogId).populate("author", "_id name profileLogo followers").populate("comments")
+        const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo followers")
         res.status(200).json(blog)
     } catch (err) {
         res.status(500).json({message: err.message})
@@ -41,6 +41,7 @@ async function createBlog(req,res){
         content,
         tags,
         attachments,
+        thumbnail
     } = req.body;
     try {
         const newBlog = new Blog({
@@ -48,7 +49,8 @@ async function createBlog(req,res){
             title,
             content,
             tags,
-            attachments
+            attachments,
+            thumbnail
         })
         const savedBlog = await newBlog.save()
         const user = await User.findByIdAndUpdate(req.userId,{$push: {blogs: savedBlog}}, {new:true}).populate("blogs")
