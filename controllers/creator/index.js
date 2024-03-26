@@ -4,6 +4,7 @@ import Follower from "../../models/follower.js"
 import User from "../../models/user.js"
 import UserActivity from "../../models/userActivity.js"
 import UserInstance from "../../models/userInstance.js"
+import OrganicUserInstance from "../../models/organicUserInstance.js"
 
 
 const moreFromAuthor = async (req, res) => {
@@ -22,13 +23,13 @@ const follow = async (req, res) => {
     try {
         // Adding creator in user's following list
         const following = await UserInstance.create({
-            userId:creator,
+            userId: creator,
         })
         const newUser = await User.findByIdAndUpdate(req.userId, { $push: { followings: following } }, { new: true })
 
         // Adding user in creator's followers list
         const follower = await Follower.create({
-            userId:req.userId,
+            userId: req.userId,
             notify: false
         })
         await User.findByIdAndUpdate(creator, { $push: { followers: follower } })
@@ -48,7 +49,7 @@ const follow = async (req, res) => {
             userId: creator
         })
         newEvents.push(instance)
-        await UserActivity.findByIdAndUpdate(activity._id, { $set: { followEvent : newEvents }})
+        await UserActivity.findByIdAndUpdate(activity._id, { $set: { followEvent: newEvents } })
         res.status(201).json(newUser)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -103,17 +104,73 @@ const unfollow = async (req, res) => {
             userId: creator
         })
         newEvents.push(instance)
-        await UserActivity.findByIdAndUpdate(activity._id, { $set: { unfollowEvent : newEvents }})
+        await UserActivity.findByIdAndUpdate(activity._id, { $set: { unfollowEvent: newEvents } })
         res.status(201).json(newUser)
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
 }
 
-const getCreatorDetails = async(req,res) => {
+const getCreatorDetails = async (req, res) => {
+    const id = req.query.id
     try {
-        const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
-        res.status(201).json(creator)
+        if (!id) return res.status(401).json({ message: "UserId required!" })
+        
+        const creator = await User.findById(req.params.creatorId).populate("visitors organicVisitors")
+        if (id.split("-")[0]!='Organic') {
+            const foundUser = await User.findById(id)
+            const userObject = new mongoose.Types.ObjectId(id)
+            let check = false
+            creator.visitors.map(item => {
+                if (item.userId.equals(userObject)) check = true
+            })
+            if (check) {
+                const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                res.status(201).json(creator)
+            }
+            else {
+                check = false
+                const toDelete = []
+                const newOrganicInstance = []
+                creator.organicVisitors.map(item => {
+                    if (item.userId == foundUser.deviceId) {
+                        check = true
+                        toDelete.push(item)
+                    }
+                    else{
+                        newOrganicInstance.push(item)
+                    }
+                })
+                if (check) {
+                    toDelete.forEach(async (el) => {
+                        await OrganicUserInstance.findByIdAndDelete(el._id)
+                    })
+                    const instance = await UserInstance.create({ userId: id })
+                    const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $set: {organicVisitors: newOrganicInstance}, $inc: { visitorCount: 1, organicVisitorCount: -1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                    res.status(201).json(creator)
+                }
+                else {
+                    const instance = await UserInstance.create({ userId: id })
+                    const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                    res.status(201).json(creator)
+                }
+            }
+        }
+        else {
+            let check = false
+            creator.organicVisitors.map(item => {
+                if (item.userId == id) check = true
+            })
+            if (check) {
+                const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                res.status(201).json(creator)
+            }
+            else {
+                const organicInstance = await OrganicUserInstance.create({ userId: id })
+                const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { organicVisitors: organicInstance }, $inc: { organicVisitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                res.status(201).json(creator)
+            }
+        }
     } catch (err) {
         res.status(500).json({ message: err.message })
     }

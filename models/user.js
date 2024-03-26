@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  deviceId: {
+    type: String,
+    default: null
+  },
   Mob: {
     type: String,
     default: null
@@ -70,6 +74,14 @@ const userSchema = new mongoose.Schema({
     ref: "UserInstance"
   }],
   visitorCount: {
+    type: Number,
+    default: 0
+  },
+  organicVisitors: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "OrganicUserInstance"
+  }],
+  organicVisitorCount: {
     type: Number,
     default: 0
   },

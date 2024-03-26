@@ -10,6 +10,7 @@ async function register(req, res){
         name,
         email,
         password,
+        deviceId,
     } = req.body;
     try{
         const foundUser = await User.findOne({email:email});
@@ -22,15 +23,16 @@ async function register(req, res){
         }
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(password, salt);
-        const newUser = new User({
+        const savedUser = await User.create({
             name,
             email,
             password: hashedPassword,
+            deviceId
         })
-        const savedUser = await newUser.save().select('-password -followers -followings -visitors -blogs -bookmarks -drafts -itenaries -notifications')
+        const user = await User.findById(savedUser._id).select('-password -deviceId -followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
         const token = jwt.sign({id: savedUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
         await OTPModel.findByIdAndDelete(foundOTP._id)
-        res.status(201).json({token: token, user: savedUser})
+        res.status(201).json({token: token, user: user})
     } catch(err){
         res.status(500).json({message: err.message})
     }
@@ -104,7 +106,7 @@ const verifyOtp = async(req,res) => {
 async function login(req, res) {
     const { email, password } = req.body;
     try{
-        const foundUser = await User.findOne({email:email}).select('-followers -followings -visitors -blogs -bookmarks -drafts -itenaries -notifications');
+        const foundUser = await User.findOne({email:email}).select('-followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications');
         if(!foundUser) return res.status(404).json({message: "User doesn't exist!"});
         const passwordMatched = await bcrypt.compare(password, foundUser.password);
         if(!passwordMatched) return res.status(400).json({message: "Invalid Password!"});
@@ -135,7 +137,7 @@ async function loginWithGoogle(req,res){
                 profileImage,
                 profileLogo:profileImage
             })
-            const savedUser = await newUser.save().select('-password -followers -followings -visitors -blogs -bookmarks -drafts -itenaries -notifications');
+            const savedUser = await newUser.save().select('-password -followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications');
             const token = jwt.sign({id: savedUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
             res.status(201).json({token: token, user: savedUser});
         }
