@@ -11,6 +11,7 @@ import tagRouter from "./routers/tags/index.js";
 import likeRouter from "./routers/like/index.js";
 import commentRouter from "./routers/comment/index.js";
 import creatorRouter from "./routers/creator/index.js";
+import bookmarkRouter from "./routers/bookmark/index.js";
 
 dotenv.config();
 const app = express();
@@ -36,6 +37,7 @@ app.use("/draft", draftRouter)
 app.use("/tags", tagRouter)
 app.use("/like", likeRouter)
 app.use("/comment", commentRouter)
+app.use("/bookmark", bookmarkRouter)
 
 app.listen(8080, () => {
     console.log("Server listening on port 8080!");

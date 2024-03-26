@@ -44,7 +44,7 @@
 				"auth": {
 					"type": "bearer",
 					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmYxNzJlZTgwMjVjOTFlMDNmOTU1YiIsImlhdCI6MTcxMTIxNjQzMCwiZXhwIjoxNzExMzAyODMwfQ.53d43o0j14oWPe0OIxO7QHTtrjYefIcRYXHtNW9wccg"
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTI1ODIwNCwiZXhwIjoxNzExMzQ0NjA0fQ.iT0-ze5ZNTjGMFC5DFmotiamXlIhkgcJ6DfcUiB8BYQ"
 					}
 				},
 				"method": "POST",
@@ -123,6 +123,11 @@
 							"value": "https://www.planetware.com/wpimages/2020/01/iceland-in-pictures-beautiful-places-to-photograph-blue-lagoon.jpg",
 							"type": "text",
 							"disabled": true
+						},
+						{
+							"key": "thumbnail",
+							"value": "",
+							"type": "text"
 						}
 					]
 				},
@@ -135,7 +140,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "https://travlog.onrender.com/blog/all"
+				"url": "http://localhost:8080/blog/all"
 			},
 			"response": []
 		},
@@ -143,13 +148,16 @@
 			"name": "Get user blogs (with bearer token)",
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
-					}
+					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTI1ODIwNCwiZXhwIjoxNzExMzQ0NjA0fQ.iT0-ze5ZNTjGMFC5DFmotiamXlIhkgcJ6DfcUiB8BYQ",
+						"type": "text"
+					}
+				],
 				"url": "http://localhost:8080/blog"
 			},
 			"response": []
@@ -180,9 +188,23 @@
 		},
 		{
 			"name": "Get single blog details",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
 				"url": "http://localhost:8080/blog/65e368a528a3d9c51a81fc4f"
 			},
 			"response": []
@@ -193,7 +215,7 @@
 				"auth": {
 					"type": "bearer",
 					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZmYxNzJlZTgwMjVjOTFlMDNmOTU1YiIsImlhdCI6MTcxMTIxNjQzMCwiZXhwIjoxNzExMzAyODMwfQ.53d43o0j14oWPe0OIxO7QHTtrjYefIcRYXHtNW9wccg"
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTIxNjgxMSwiZXhwIjoxNzExMzAzMjExfQ.viCKHKBgrcf1a_YjCCruwYjifBPefyjnK890u9RY0rM"
 					}
 				},
 				"method": "GET",
@@ -358,7 +380,7 @@
 						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
 					}
 				},
-				"method": "POST",
+				"method": "PATCH",
 				"header": [],
 				"body": {
 					"mode": "urlencoded",
@@ -493,6 +515,166 @@
 				"method": "GET",
 				"header": [],
 				"url": "http://localhost:8080/creator/creator-detail/65e3650dcf30254b69a5025b"
+			},
+			"response": []
+		},
+		{
+			"name": "Reply on comments",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "65e368a528a3d9c51a81fc4f",
+							"type": "text"
+						},
+						{
+							"key": "comment",
+							"value": "65f366a1e1c16f2766b7661f",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "Glad I could help. Btw where did you guys go? Would love to hear about you trip.",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/comment/comment/reply"
+			},
+			"response": []
+		},
+		{
+			"name": "Like comment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "65e368a528a3d9c51a81fc4f",
+							"type": "text"
+						},
+						{
+							"key": "comment",
+							"value": "65f366a1e1c16f2766b7661f",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/like/comment/like"
+			},
+			"response": []
+		},
+		{
+			"name": "Dislike comment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "65e368a528a3d9c51a81fc4f",
+							"type": "text"
+						},
+						{
+							"key": "comment",
+							"value": "65f366a1e1c16f2766b7661f",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/like/comment/dislike"
+			},
+			"response": []
+		},
+		{
+			"name": "Add bookmark",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "65f5cf8e2c84171c663e5432",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/bookmark"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all bookmarks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/bookmark"
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Bookmarks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "65f5cf8e2c84171c663e5432",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/bookmark"
 			},
 			"response": []
 		}
