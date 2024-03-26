@@ -612,6 +612,71 @@
 				"url": "http://localhost:8080/like/comment/dislike"
 			},
 			"response": []
+		},
+		{
+			"name": "Add bookmark",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "65f5cf8e2c84171c663e5432",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/bookmark"
+			},
+			"response": []
+		},
+		{
+			"name": "Get all bookmarks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/bookmark"
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Bookmarks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "blog",
+							"value": "65f5cf8e2c84171c663e5432",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/bookmark"
+			},
+			"response": []
 		}
 	]
 }
