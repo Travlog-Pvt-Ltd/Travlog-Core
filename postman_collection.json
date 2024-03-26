@@ -7,676 +7,721 @@
 	},
 	"item": [
 		{
-			"name": "Register",
-			"request": {
-				"auth": {
-					"type": "noauth"
+			"name": "blogs",
+			"item": [
+				{
+					"name": "Create blogs (requires bearer token)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTI1ODIwNCwiZXhwIjoxNzExMzQ0NjA0fQ.iT0-ze5ZNTjGMFC5DFmotiamXlIhkgcJ6DfcUiB8BYQ"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Exploring Pattaya Street's Nightlife: A Two-Night Adventure",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Welcome to Pattaya Street, a bustling hub of nightlife and entertainment located in the vibrant city of Pattaya, Thailand. Join me as we delve into the electrifying atmosphere, iconic clubs, and unforgettable experiences this famous street has to offer during a two-night escapade.\n\nNight 1: Dive into the Neon Glow\n\nAs the sun sets and the neon lights come alive, Pattaya Street transforms into a playground for night owls and party enthusiasts. Start your evening by exploring the diverse range of clubs and bars lining the street. From pulsating dance floors to laid-back lounges, there's something for every taste.\n\nKick off the night at Club Insomnia, a renowned hotspot known for its energetic beats and lively crowd. Dance the night away to the latest hits spun by top DJs, surrounded by a sea of enthusiastic revelers. For a more upscale experience, venture into Walking Street's upscale clubs like Mixx Discotheque or Lucifer. Sip on signature cocktails and soak in the glamorous ambiance as you mingle with fellow partygoers from around the world.\n\nNight 2: A Taste of Thai Nightlife\n\nOn your second night in Pattaya Street, delve deeper into the local nightlife scene and discover hidden gems along the bustling strip. Start your evening with a visit to The Pier Disco Club, where live bands and talented performers entertain guests with a mix of Thai and international music.\n\nFor a unique experience, head to Tony's Entertainment Complex, known for its cabaret shows featuring dazzling performers and extravagant costumes. Marvel at the talent on stage as singers, dancers, and drag queens put on a spectacle that's both entertaining and visually stunning.\n\nAs the night progresses, make your way to the iconic Walking Street, where the party never stops. Explore themed bars like Candy Shop Bar or Marine Disco for a taste of Pattaya's eclectic nightlife offerings. End your night on a high note by joining the vibrant street parties and soaking in the lively atmosphere until the early hours of the morning.\n\nConclusion: Memories of Pattaya Street\n\nAs your two-night adventure on Pattaya Street comes to an end, take with you memories of pulsating beats, colorful lights, and the vibrant energy that defines this iconic nightlife destination. Whether you're a dance enthusiast, music lover, or simply seeking a lively atmosphere, Pattaya Street's clubs and entertainment venues offer an unforgettable experience that's sure to leave you wanting more. Until next time, farewell to the electrifying streets of Pattaya.",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "Pattaya Street",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "Night Life",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "Thailand",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "Bangkok",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "Thai Food",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "Clubbing",
+									"type": "text"
+								},
+								{
+									"key": "tags",
+									"value": "Alcohol",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"value": "https://i0.wp.com/toasttothailand.com/wp-content/uploads/2019/03/pattaya-walking-street-1.jpg?fit=1024%2C632&ssl=1",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"value": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/61/42/21/caption.jpg?w=1200&h=-1&s=1",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"value": "https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg",
+									"type": "text"
+								},
+								{
+									"key": "attachments",
+									"value": "https://cdn.theatlantic.com/media/img/photo/2022/02/views-iceland-february/a01_RC2SNS9XBPBU-1/original.jpg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "attachments",
+									"value": "https://www.planetware.com/wpimages/2020/01/iceland-in-pictures-beautiful-places-to-photograph-blue-lagoon.jpg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "thumbnail",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://travlog.onrender.com/blog"
+					},
+					"response": []
 				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "email",
-							"value": "singh.bhanu568@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "Bhanu@1234",
-							"type": "text"
-						},
-						{
-							"key": "name",
-							"value": "Bhanu Pratap Singh",
-							"type": "text"
-						}
-					]
+				{
+					"name": "Get all blogs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/blog/all"
+					},
+					"response": []
 				},
-				"url": "http://localhost:8080/auth/register"
-			},
-			"response": []
-		},
-		{
-			"name": "Create blogs (requires bearer token)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTI1ODIwNCwiZXhwIjoxNzExMzQ0NjA0fQ.iT0-ze5ZNTjGMFC5DFmotiamXlIhkgcJ6DfcUiB8BYQ"
-					}
+				{
+					"name": "Get user blogs (with bearer token)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTI1ODIwNCwiZXhwIjoxNzExMzQ0NjA0fQ.iT0-ze5ZNTjGMFC5DFmotiamXlIhkgcJ6DfcUiB8BYQ",
+								"type": "text"
+							}
+						],
+						"url": "http://localhost:8080/blog"
+					},
+					"response": []
 				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "title",
-							"value": "Exploring Pattaya Street's Nightlife: A Two-Night Adventure",
-							"type": "text"
+				{
+					"name": "Get single blog details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blog",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
 						},
-						{
-							"key": "content",
-							"value": "Welcome to Pattaya Street, a bustling hub of nightlife and entertainment located in the vibrant city of Pattaya, Thailand. Join me as we delve into the electrifying atmosphere, iconic clubs, and unforgettable experiences this famous street has to offer during a two-night escapade.\n\nNight 1: Dive into the Neon Glow\n\nAs the sun sets and the neon lights come alive, Pattaya Street transforms into a playground for night owls and party enthusiasts. Start your evening by exploring the diverse range of clubs and bars lining the street. From pulsating dance floors to laid-back lounges, there's something for every taste.\n\nKick off the night at Club Insomnia, a renowned hotspot known for its energetic beats and lively crowd. Dance the night away to the latest hits spun by top DJs, surrounded by a sea of enthusiastic revelers. For a more upscale experience, venture into Walking Street's upscale clubs like Mixx Discotheque or Lucifer. Sip on signature cocktails and soak in the glamorous ambiance as you mingle with fellow partygoers from around the world.\n\nNight 2: A Taste of Thai Nightlife\n\nOn your second night in Pattaya Street, delve deeper into the local nightlife scene and discover hidden gems along the bustling strip. Start your evening with a visit to The Pier Disco Club, where live bands and talented performers entertain guests with a mix of Thai and international music.\n\nFor a unique experience, head to Tony's Entertainment Complex, known for its cabaret shows featuring dazzling performers and extravagant costumes. Marvel at the talent on stage as singers, dancers, and drag queens put on a spectacle that's both entertaining and visually stunning.\n\nAs the night progresses, make your way to the iconic Walking Street, where the party never stops. Explore themed bars like Candy Shop Bar or Marine Disco for a taste of Pattaya's eclectic nightlife offerings. End your night on a high note by joining the vibrant street parties and soaking in the lively atmosphere until the early hours of the morning.\n\nConclusion: Memories of Pattaya Street\n\nAs your two-night adventure on Pattaya Street comes to an end, take with you memories of pulsating beats, colorful lights, and the vibrant energy that defines this iconic nightlife destination. Whether you're a dance enthusiast, music lover, or simply seeking a lively atmosphere, Pattaya Street's clubs and entertainment venues offer an unforgettable experience that's sure to leave you wanting more. Until next time, farewell to the electrifying streets of Pattaya.",
-							"type": "text"
-						},
-						{
-							"key": "tags",
-							"value": "Pattaya Street",
-							"type": "text"
-						},
-						{
-							"key": "tags",
-							"value": "Night Life",
-							"type": "text"
-						},
-						{
-							"key": "tags",
-							"value": "Thailand",
-							"type": "text"
-						},
-						{
-							"key": "tags",
-							"value": "Bangkok",
-							"type": "text"
-						},
-						{
-							"key": "tags",
-							"value": "Thai Food",
-							"type": "text"
-						},
-						{
-							"key": "tags",
-							"value": "Clubbing",
-							"type": "text"
-						},
-						{
-							"key": "tags",
-							"value": "Alcohol",
-							"type": "text"
-						},
-						{
-							"key": "attachments",
-							"value": "https://i0.wp.com/toasttothailand.com/wp-content/uploads/2019/03/pattaya-walking-street-1.jpg?fit=1024%2C632&ssl=1",
-							"type": "text"
-						},
-						{
-							"key": "attachments",
-							"value": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/61/42/21/caption.jpg?w=1200&h=-1&s=1",
-							"type": "text"
-						},
-						{
-							"key": "attachments",
-							"value": "https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg",
-							"type": "text"
-						},
-						{
-							"key": "attachments",
-							"value": "https://cdn.theatlantic.com/media/img/photo/2022/02/views-iceland-february/a01_RC2SNS9XBPBU-1/original.jpg",
-							"type": "text",
-							"disabled": true
-						},
-						{
-							"key": "attachments",
-							"value": "https://www.planetware.com/wpimages/2020/01/iceland-in-pictures-beautiful-places-to-photograph-blue-lagoon.jpg",
-							"type": "text",
-							"disabled": true
-						},
-						{
-							"key": "thumbnail",
-							"value": "",
-							"type": "text"
-						}
-					]
-				},
-				"url": "https://travlog.onrender.com/blog"
-			},
-			"response": []
-		},
-		{
-			"name": "Get all blogs",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/blog/all"
-			},
-			"response": []
-		},
-		{
-			"name": "Get user blogs (with bearer token)",
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTI1ODIwNCwiZXhwIjoxNzExMzQ0NjA0fQ.iT0-ze5ZNTjGMFC5DFmotiamXlIhkgcJ6DfcUiB8BYQ",
-						"type": "text"
-					}
-				],
-				"url": "http://localhost:8080/blog"
-			},
-			"response": []
-		},
-		{
-			"name": "Login",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "email",
-							"value": "aryan6400cool@gmail.com",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "Aryan@6400",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/auth/login"
-			},
-			"response": []
-		},
-		{
-			"name": "Get single blog details",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blog",
-							"value": "",
-							"type": "text",
-							"disabled": true
-						}
-					]
-				},
-				"url": "http://localhost:8080/blog/65e368a528a3d9c51a81fc4f"
-			},
-			"response": []
-		},
-		{
-			"name": "Get user details using bearer token",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTIxNjgxMSwiZXhwIjoxNzExMzAzMjExfQ.viCKHKBgrcf1a_YjCCruwYjifBPefyjnK890u9RY0rM"
-					}
-				},
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/user"
-			},
-			"response": []
-		},
-		{
-			"name": "Get drafts (require bearer token)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
-					}
-				},
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/draft"
-			},
-			"response": []
-		},
-		{
-			"name": "Create new draft (requires bearer token)",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
-					}
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": []
-				},
-				"url": "http://localhost:8080/draft"
-			},
-			"response": []
-		},
-		{
-			"name": "Generate Cities",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDMzMDA5NSwiZXhwIjoxNzEwNDE2NDk1fQ.2DxPEy1BJXyMqbzkfZKRCteX_LXJsPmI6ZKION3fI_0"
-					}
-				},
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/tags/cities/generateCities"
-			},
-			"response": []
-		},
-		{
-			"name": "Generate Activities",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDMzMDA5NSwiZXhwIjoxNzEwNDE2NDk1fQ.2DxPEy1BJXyMqbzkfZKRCteX_LXJsPmI6ZKION3fI_0"
-					}
-				},
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/tags/activities/generateActivities"
-			},
-			"response": []
-		},
-		{
-			"name": "Search Tags",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
-					}
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "https://travlog.onrender.com/tags/search?search=hiki",
-					"protocol": "https",
-					"host": [
-						"travlog",
-						"onrender",
-						"com"
-					],
-					"path": [
-						"tags",
-						"search"
-					],
-					"query": [
-						{
-							"key": "search",
-							"value": "hiki"
-						}
-					]
+						"url": "http://localhost:8080/blog/65e368a528a3d9c51a81fc4f"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Like Blog",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blogId",
-							"value": "65e36a1f28a3d9c51a81fc53",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/like/blog/like"
-			},
-			"response": []
-		},
-		{
-			"name": "Dislike Blog",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blogId",
-							"value": "65f5d17c2c84171c663e5449",
-							"type": "text"
-						}
-					]
-				},
-				"url": "https://travlog.onrender.com/like/blog/dislike"
-			},
-			"response": []
-		},
-		{
-			"name": "Comment on Blog",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blogId",
-							"value": "65e368a528a3d9c51a81fc4f",
-							"type": "text"
+			"name": "auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
 						},
-						{
-							"key": "content",
-							"value": "Me and my friends planned a trip to sikkim but two of them didn't go. One had some legit reasons but one was dumb. Still curse him!!",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/comment/blog/comment"
-			},
-			"response": []
-		},
-		{
-			"name": "More from author",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
-					}
-				},
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/creator/more/65e3650dcf30254b69a5025b"
-			},
-			"response": []
-		},
-		{
-			"name": "Follow creator",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "creatorId",
-							"value": "65e379aa882d362f46303db2",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/creator/follow"
-			},
-			"response": []
-		},
-		{
-			"name": "Unfollow creator",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "creatorId",
-							"value": "65e379aa882d362f46303db2",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/creator/unfollow"
-			},
-			"response": []
-		},
-		{
-			"name": "Send OTP",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "email",
-							"value": "singh.bhanu568@gmail.com",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/auth/send-otp"
-			},
-			"response": []
-		},
-		{
-			"name": "Verify OTP",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "email",
-							"value": "singh.bhanu568@gmail.com",
-							"type": "text"
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "singh.bhanu568@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Bhanu@1234",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Bhanu Pratap Singh",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "otp",
-							"value": "352460",
-							"type": "text"
-						}
-					]
+						"url": "http://localhost:8080/auth/register"
+					},
+					"response": []
 				},
-				"url": "http://localhost:8080/auth/verify-otp"
-			},
-			"response": []
-		},
-		{
-			"name": "Get Creator Details",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/creator/creator-detail/65e3650dcf30254b69a5025b"
-			},
-			"response": []
-		},
-		{
-			"name": "Reply on comments",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blog",
-							"value": "65e368a528a3d9c51a81fc4f",
-							"type": "text"
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "aryan6400cool@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Aryan@6400",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "comment",
-							"value": "65f366a1e1c16f2766b7661f",
-							"type": "text"
+						"url": "http://localhost:8080/auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Send OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "singh.bhanu568@gmail.com",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "content",
-							"value": "Glad I could help. Btw where did you guys go? Would love to hear about you trip.",
-							"type": "text"
-						}
-					]
+						"url": "http://localhost:8080/auth/send-otp"
+					},
+					"response": []
 				},
-				"url": "http://localhost:8080/comment/comment/reply"
-			},
-			"response": []
-		},
-		{
-			"name": "Like comment",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blog",
-							"value": "65e368a528a3d9c51a81fc4f",
-							"type": "text"
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "singh.bhanu568@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "otp",
+									"value": "352460",
+									"type": "text"
+								}
+							]
 						},
-						{
-							"key": "comment",
-							"value": "65f366a1e1c16f2766b7661f",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/like/comment/like"
-			},
-			"response": []
+						"url": "http://localhost:8080/auth/verify-otp"
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Dislike comment",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
-					}
-				},
-				"method": "PATCH",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blog",
-							"value": "65e368a528a3d9c51a81fc4f",
-							"type": "text"
+			"name": "user",
+			"item": [
+				{
+					"name": "Get user details using bearer token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTIxNjgxMSwiZXhwIjoxNzExMzAzMjExfQ.viCKHKBgrcf1a_YjCCruwYjifBPefyjnK890u9RY0rM"
+							}
 						},
-						{
-							"key": "comment",
-							"value": "65f366a1e1c16f2766b7661f",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/like/comment/dislike"
-			},
-			"response": []
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/user"
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Add bookmark",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
-					}
+			"name": "draft",
+			"item": [
+				{
+					"name": "Create new draft (requires bearer token)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": "http://localhost:8080/draft"
+					},
+					"response": []
 				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blog",
-							"value": "65f5cf8e2c84171c663e5432",
-							"type": "text"
-						}
-					]
-				},
-				"url": "http://localhost:8080/bookmark"
-			},
-			"response": []
+				{
+					"name": "Get drafts (require bearer token)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/draft"
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Get all bookmarks",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
-					}
+			"name": "bookmark",
+			"item": [
+				{
+					"name": "Add bookmark",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blog",
+									"value": "65f5cf8e2c84171c663e5432",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/bookmark"
+					},
+					"response": []
 				},
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8080/bookmark"
-			},
-			"response": []
+				{
+					"name": "Get all bookmarks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/bookmark"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Bookmarks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blog",
+									"value": "65f5cf8e2c84171c663e5432",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/bookmark"
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "Remove Bookmarks",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": {
-						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
-					}
+			"name": "comment",
+			"item": [
+				{
+					"name": "Comment on Blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blogId",
+									"value": "65e368a528a3d9c51a81fc4f",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Me and my friends planned a trip to sikkim but two of them didn't go. One had some legit reasons but one was dumb. Still curse him!!",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/comment/blog/comment"
+					},
+					"response": []
 				},
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "blog",
-							"value": "65f5cf8e2c84171c663e5432",
-							"type": "text"
+				{
+					"name": "Reply on comments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blog",
+									"value": "65e368a528a3d9c51a81fc4f",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "65f366a1e1c16f2766b7661f",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Glad I could help. Btw where did you guys go? Would love to hear about you trip.",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/comment/comment/reply"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "tags",
+			"item": [
+				{
+					"name": "Generate Cities",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDMzMDA5NSwiZXhwIjoxNzEwNDE2NDk1fQ.2DxPEy1BJXyMqbzkfZKRCteX_LXJsPmI6ZKION3fI_0"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/tags/cities/generateCities"
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Activities",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDMzMDA5NSwiZXhwIjoxNzEwNDE2NDk1fQ.2DxPEy1BJXyMqbzkfZKRCteX_LXJsPmI6ZKION3fI_0"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/tags/activities/generateActivities"
+					},
+					"response": []
+				},
+				{
+					"name": "Search Tags",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://travlog.onrender.com/tags/search?search=hiki",
+							"protocol": "https",
+							"host": [
+								"travlog",
+								"onrender",
+								"com"
+							],
+							"path": [
+								"tags",
+								"search"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "hiki"
+								}
+							]
 						}
-					]
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "creator",
+			"item": [
+				{
+					"name": "More from author",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/creator/more/65e3650dcf30254b69a5025b"
+					},
+					"response": []
 				},
-				"url": "http://localhost:8080/bookmark"
-			},
-			"response": []
+				{
+					"name": "Follow creator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "creatorId",
+									"value": "65e379aa882d362f46303db2",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/creator/follow"
+					},
+					"response": []
+				},
+				{
+					"name": "Unfollow creator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "creatorId",
+									"value": "65e379aa882d362f46303db2",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/creator/unfollow"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Creator Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/creator/creator-detail/65e3650dcf30254b69a5025b"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "like",
+			"item": [
+				{
+					"name": "Like Blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blogId",
+									"value": "65e36a1f28a3d9c51a81fc53",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/like/blog/like"
+					},
+					"response": []
+				},
+				{
+					"name": "Dislike Blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blogId",
+									"value": "65f5d17c2c84171c663e5449",
+									"type": "text"
+								}
+							]
+						},
+						"url": "https://travlog.onrender.com/like/blog/dislike"
+					},
+					"response": []
+				},
+				{
+					"name": "Like comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blog",
+									"value": "65e368a528a3d9c51a81fc4f",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "65f366a1e1c16f2766b7661f",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/like/comment/like"
+					},
+					"response": []
+				},
+				{
+					"name": "Dislike comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "blog",
+									"value": "65e368a528a3d9c51a81fc4f",
+									"type": "text"
+								},
+								{
+									"key": "comment",
+									"value": "65f366a1e1c16f2766b7661f",
+									"type": "text"
+								}
+							]
+						},
+						"url": "http://localhost:8080/like/comment/dislike"
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
