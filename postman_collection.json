@@ -475,6 +475,36 @@
 						"url": "http://localhost:8080/comment/comment/reply"
 					},
 					"response": []
+				},
+				{
+					"name": "Get comments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/comment/?id=65e368a528a3d9c51a81fc4f&type=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"comment",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "65e368a528a3d9c51a81fc4f"
+								},
+								{
+									"key": "type",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},

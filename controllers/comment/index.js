@@ -4,12 +4,42 @@ import UserActivity from "../../models/userActivity.js";
 import Comment from "../../models/comment.js";
 
 
+const getComments = async (req, res) => {
+    const {id, type} = req.query
+    try {
+        if(type==0){
+            const foundBlog = await Blog.findById(id).populate({
+                path: "comments",
+                select: "-likes -replies -dislikes",
+                populate:{
+                    path: "userId",
+                    select: "_id name profileLogo"
+                }
+            })
+            res.status(201).json(foundBlog.comments)
+        }
+        else{
+            const foundComment = await Comment.findById(id).populate({
+                path: "replies",
+                select: "-likes -replies -dislikes",
+                populate:{
+                    path: "userId",
+                    select: "_id name profileLogo"
+                }
+            })
+            res.status(201).json(foundComment.replies)
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+}
+
 const commentOnBlog = async (req, res) => {
     const blog = req.body.blogId
     const content = req.body.content
     try {
         const newComment = await Comment.create({ userId: req.userId, content: content, isReply: false, blog: blog })
-        const newBlog = await Blog.findByIdAndUpdate(blog, {$push: {comments: newComment._id}, $inc: { commentCount: 1 }}, {new:true})
+        const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { comments: newComment._id }, $inc: { commentCount: 1 } }, { new: true })
         newBlog.populate("comments")
         const commentEvent = await LCEvent.create({
             blogId: blog,
@@ -33,11 +63,11 @@ const commentOnBlog = async (req, res) => {
 }
 
 const replyOnComment = async (req, res) => {
-    const {blog, comment, content} = req.body
+    const { blog, comment, content } = req.body
     try {
         const newReply = await Comment.create({ userId: req.userId, content: content, isReply: true, blog: blog, parent: comment })
-        const newComment = await Comment.findByIdAndUpdate(comment, {$push: {replies: newReply._id}, $inc: { replyCount: 1 }})
-        await Blog.findByIdAndUpdate(blog, {$inc: { commentCount: 1 }})
+        const newComment = await Comment.findByIdAndUpdate(comment, { $push: { replies: newReply._id }, $inc: { replyCount: 1 } })
+        await Blog.findByIdAndUpdate(blog, { $inc: { commentCount: 1 } })
         const commentEvent = await LCEvent.create({
             blogId: blog,
             isComment: true,
@@ -59,4 +89,4 @@ const replyOnComment = async (req, res) => {
     }
 }
 
-export { commentOnBlog, replyOnComment }
+export { commentOnBlog, replyOnComment, getComments }
