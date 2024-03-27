@@ -55,7 +55,7 @@ const blogSchema = new mongoose.Schema({
     },
     organicViews: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "UserInstance"
+        ref: "OrganicUserInstance"
     }],
     organicViewCount: {
         type: Number,
