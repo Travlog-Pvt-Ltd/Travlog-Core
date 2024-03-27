@@ -4,6 +4,7 @@ import LCEvent from "../../models/likeCommentEvent.js";
 import UserActivity from "../../models/userActivity.js";
 import UserInstance from "../../models/userInstance.js";
 import Comment from "../../models/comment.js";
+import User from "../../models/user.js";
 
 
 const likeBlog = async (req, res) => {
@@ -17,6 +18,7 @@ const likeBlog = async (req, res) => {
             if (like.userId.equals(userObject)) check = true
         })
         if (check) {
+            await User.findByIdAndUpdate(req.userId, {$pull: {likes: blog}})
             const newLikes = []
             const toDelete = []
             found.likes.map(like => {
@@ -41,6 +43,7 @@ const likeBlog = async (req, res) => {
             res.status(201).json(newBlog)
         }
         else {
+            await User.findByIdAndUpdate(req.userId, {$push: {likes: blog}})
             const userInstance = await UserInstance.create({ userId: req.userId })
             const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { likes: userInstance._id }, $inc: { likeCount: 1 } }, { new: true })
             const likeEvent = await LCEvent.create({
@@ -76,6 +79,7 @@ const dislikeBlog = async (req, res) => {
             if (dislike.userId.equals(userObject)) check = true
         })
         if (check) {
+            await User.findByIdAndUpdate(req.userId, {$pull: {dislikes: blog}})
             const newDislikes = []
             const toDelete = []
             found.dislikes.map(dislike => {
@@ -100,6 +104,7 @@ const dislikeBlog = async (req, res) => {
             res.status(201).json(newBlog)
         }
         else {
+            await User.findByIdAndUpdate(req.userId, {$push: {dislikes: blog}})
             const userInstance = await UserInstance.create({ userId: req.userId })
             const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { dislikes: userInstance._id }, $inc: { dislikeCount: 1 } }, { new: true })
             const dislikeEvent = await LCEvent.create({

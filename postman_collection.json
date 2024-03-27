@@ -659,7 +659,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDM0ZDJjOGQ3ODI4OTY5N2ZmMTBlZiIsImlhdCI6MTcxMTUwMDY5NiwiZXhwIjoxNzExNTg3MDk2fQ.wJhIWYt1ox-RWGt0b-F2x_AJuk8JOQyqHlYVPjTkR-U"
 							}
 						},
 						"method": "PATCH",
@@ -669,7 +669,7 @@
 							"urlencoded": [
 								{
 									"key": "blogId",
-									"value": "65e36a1f28a3d9c51a81fc53",
+									"value": "65e37bcd882d362f46303db4",
 									"type": "text"
 								}
 							]
@@ -684,7 +684,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDM0ZDJjOGQ3ODI4OTY5N2ZmMTBlZiIsImlhdCI6MTcxMTUwMDY5NiwiZXhwIjoxNzExNTg3MDk2fQ.wJhIWYt1ox-RWGt0b-F2x_AJuk8JOQyqHlYVPjTkR-U"
 							}
 						},
 						"method": "PATCH",
@@ -694,12 +694,12 @@
 							"urlencoded": [
 								{
 									"key": "blogId",
-									"value": "65f5d17c2c84171c663e5449",
+									"value": "65e37bcd882d362f46303db4",
 									"type": "text"
 								}
 							]
 						},
-						"url": "https://travlog.onrender.com/like/blog/dislike"
+						"url": "http://localhost:8080/like/blog/dislike"
 					},
 					"response": []
 				},
