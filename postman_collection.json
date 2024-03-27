@@ -152,7 +152,24 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/blog/65e368a528a3d9c51a81fc4f"
+						"url": {
+							"raw": "http://localhost:8080/blog/65e36a1f28a3d9c51a81fc53?id=65e379aa882d362f46303db2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blog",
+								"65e36a1f28a3d9c51a81fc53"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "65e379aa882d362f46303db2"
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -174,17 +191,17 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "singh.bhanu568@gmail.com",
+									"value": "nidamjha@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "Bhanu@1234",
+									"value": "nidamjha@123",
 									"type": "text"
 								},
 								{
 									"key": "name",
-									"value": "Bhanu Pratap Singh",
+									"value": "Nidam Kumar Jha",
 									"type": "text"
 								}
 							]
@@ -203,12 +220,12 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "aryan6400cool@gmail.com",
+									"value": "jitendrasinghlap@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "Aryan@6400",
+									"value": "jitu@1234",
 									"type": "text"
 								}
 							]
@@ -227,7 +244,7 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "singh.bhanu568@gmail.com",
+									"value": "nidamjha@gmail.com",
 									"type": "text"
 								}
 							]
@@ -246,12 +263,12 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "singh.bhanu568@gmail.com",
+									"value": "nidamjha@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "otp",
-									"value": "352460",
+									"value": "109703",
 									"type": "text"
 								}
 							]
@@ -599,10 +616,35 @@
 				},
 				{
 					"name": "Get Creator Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/creator/creator-detail/65e3650dcf30254b69a5025b"
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "http://localhost:8080/creator/creator-detail/65e3650dcf30254b69a5025b?id=65fb34d0681ef8f2071e4fc0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"creator",
+								"creator-detail",
+								"65e3650dcf30254b69a5025b"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "65fb34d0681ef8f2071e4fc0"
+								}
+							]
+						}
 					},
 					"response": []
 				}
@@ -617,7 +659,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDM0ZDJjOGQ3ODI4OTY5N2ZmMTBlZiIsImlhdCI6MTcxMTUwMDY5NiwiZXhwIjoxNzExNTg3MDk2fQ.wJhIWYt1ox-RWGt0b-F2x_AJuk8JOQyqHlYVPjTkR-U"
 							}
 						},
 						"method": "PATCH",
@@ -627,7 +669,7 @@
 							"urlencoded": [
 								{
 									"key": "blogId",
-									"value": "65e36a1f28a3d9c51a81fc53",
+									"value": "65e37bcd882d362f46303db4",
 									"type": "text"
 								}
 							]
@@ -642,7 +684,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDM0ZDJjOGQ3ODI4OTY5N2ZmMTBlZiIsImlhdCI6MTcxMTUwMDY5NiwiZXhwIjoxNzExNTg3MDk2fQ.wJhIWYt1ox-RWGt0b-F2x_AJuk8JOQyqHlYVPjTkR-U"
 							}
 						},
 						"method": "PATCH",
@@ -652,12 +694,12 @@
 							"urlencoded": [
 								{
 									"key": "blogId",
-									"value": "65f5d17c2c84171c663e5449",
+									"value": "65e37bcd882d362f46303db4",
 									"type": "text"
 								}
 							]
 						},
-						"url": "https://travlog.onrender.com/like/blog/dislike"
+						"url": "http://localhost:8080/like/blog/dislike"
 					},
 					"response": []
 				},

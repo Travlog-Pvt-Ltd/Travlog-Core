@@ -53,6 +53,14 @@ const blogSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    organicViews: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "OrganicUserInstance"
+    }],
+    organicViewCount: {
+        type: Number,
+        default: 0
+    },
     shares: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserInstance"
