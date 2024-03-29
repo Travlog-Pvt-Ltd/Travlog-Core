@@ -7,18 +7,24 @@ async function createDraft(req,res){
         content,
         tags,
         attachments,
+        thumbnail
     } = req.body
     try {
-        const newDraft = new Draft({
-            author: req.userId,
-            title,
-            content,
-            tags,
-            attachments
-        })
-        const savedDraft = await newDraft.save()
-        await User.findByIdAndUpdate(req.userId, {$push:{drafts:savedDraft}})
-        res.status(201).json("Draft saved successfully!")
+        if(req.query.draftId){
+            await Draft.findByIdAndUpdate(req.query.draftId, req.body)
+        }
+        else{
+            const savedDraft = await Draft.create({
+                author: req.userId,
+                title,
+                content,
+                tags,
+                attachments,
+                thumbnail
+            })
+            await User.findByIdAndUpdate(req.userId, {$push:{drafts:savedDraft}})
+        }
+        res.status(201).json({message: "Draft saved successfully!"})
     } catch (err) {
         res.status(401).json({message: err.message})
     }
@@ -35,4 +41,14 @@ async function getDrafts(req,res){
     }
 }
 
-export {createDraft, getDrafts}
+async function getDraftDetail(req,res){
+    try {
+        const foundDraft = await Draft.findOne({_id: req.params.draftId, author: req.userId})
+        if(!foundDraft) return res.status(401).json({message: "User is not authorized to view this draft!"})
+        res.status(200).json(foundDraft)
+    } catch (err) {
+        res.status(401).json({message: err.message})
+    }
+}
+
+export {createDraft, getDrafts, getDraftDetail}

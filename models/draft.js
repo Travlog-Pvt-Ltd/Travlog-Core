@@ -22,7 +22,11 @@ const draftSchema = new mongoose.Schema({
     attachments: {
         type: [String],
         default: []
-    }
+    },
+    thumbnail : {
+        type: String,
+        default: null
+    },
 }, { timestamps: true }
 )
 
