@@ -6,6 +6,7 @@ import User from "../../models/user.js"
 import OrganicUserInstance from "../../models/organicUserInstance.js";
 import UserInstance from "../../models/userInstance.js";
 import mongoose from "mongoose";
+import Draft from "../../models/draft.js";
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
@@ -112,8 +113,14 @@ async function createBlog(req, res) {
             thumbnail
         })
         const savedBlog = await newBlog.save()
-        const user = await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog } }, { new: true }).populate("blogs")
-        res.status(201).json(user.blogs)
+        if(req.query.draftId){
+            await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog }, $pull:{drafts: req.query.draftId} })
+            await Draft.findByIdAndDelete(req.query.draftId)
+        }
+        else{
+            await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog } })
+        }
+        res.status(201).json({messsage: "Blog created successfully!"})
     } catch (err) {
         res.status(401).json({ message: err.message })
     }

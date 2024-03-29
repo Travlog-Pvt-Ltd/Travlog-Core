@@ -15,7 +15,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTI1ODIwNCwiZXhwIjoxNzExMzQ0NjA0fQ.iT0-ze5ZNTjGMFC5DFmotiamXlIhkgcJ6DfcUiB8BYQ"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
 							}
 						},
 						"method": "POST",
@@ -61,7 +61,8 @@
 								{
 									"key": "tags",
 									"value": "Clubbing",
-									"type": "text"
+									"type": "text",
+									"disabled": true
 								},
 								{
 									"key": "tags",
@@ -97,12 +98,28 @@
 								},
 								{
 									"key": "thumbnail",
-									"value": "",
+									"value": "https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg",
 									"type": "text"
 								}
 							]
 						},
-						"url": "https://travlog.onrender.com/blog"
+						"url": {
+							"raw": "http://localhost:8080/blog?draftId=6606e3963def67f55b307414",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"blog"
+							],
+							"query": [
+								{
+									"key": "draftId",
+									"value": "6606e3963def67f55b307414"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -308,7 +325,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
 							}
 						},
 						"method": "POST",
@@ -332,7 +349,22 @@
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/draft"
+						"url": "http://localhost:8080/draft/all"
+					},
+					"response": []
+				},
+				{
+					"name": "Get single draft detail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/draft/6606e6c57406b4da24959b01"
 					},
 					"response": []
 				}
@@ -547,7 +579,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
 							}
 						},
 						"method": "GET",
