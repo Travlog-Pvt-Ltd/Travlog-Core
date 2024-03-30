@@ -39,6 +39,6 @@ app.use("/like", likeRouter)
 app.use("/comment", commentRouter)
 app.use("/bookmark", bookmarkRouter)
 
-app.listen(8080, () => {
-    console.log("Server listening on port 8080!");
+app.listen(process.env.PORT, () => {
+    console.log(`Server listening on port ${process.env.PORT}!`);
 })
