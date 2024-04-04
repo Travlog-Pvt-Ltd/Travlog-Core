@@ -114,63 +114,83 @@ const unfollow = async (req, res) => {
 const getCreatorDetails = async (req, res) => {
     const id = req.query.id
     try {
-        if (!id) return res.status(401).json({ message: "UserId required!" })
-        
-        const creator = await User.findById(req.params.creatorId).populate("visitors organicVisitors")
-        if (id.split("-")[0]!='Organic') {
-            const foundUser = await User.findById(id)
+        if (!id) {
+            const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
+            res.status(201).json(creator)
+        }
+        else {
+            const creator = await User.findById(req.params.creatorId).populate("visitors")
             const userObject = new mongoose.Types.ObjectId(id)
             let check = false
             creator.visitors.map(item => {
                 if (item.userId.equals(userObject)) check = true
             })
             if (check) {
-                const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
                 res.status(201).json(creator)
             }
             else {
-                check = false
-                const toDelete = []
-                const newOrganicInstance = []
-                creator.organicVisitors.map(item => {
-                    if (item.userId == foundUser.deviceId) {
-                        check = true
-                        toDelete.push(item)
-                    }
-                    else{
-                        newOrganicInstance.push(item)
-                    }
-                })
-                if (check) {
-                    toDelete.forEach(async (el) => {
-                        await OrganicUserInstance.findByIdAndDelete(el._id)
-                    })
-                    const instance = await UserInstance.create({ userId: id })
-                    const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $set: {organicVisitors: newOrganicInstance}, $inc: { visitorCount: 1, organicVisitorCount: -1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
-                    res.status(201).json(creator)
-                }
-                else {
-                    const instance = await UserInstance.create({ userId: id })
-                    const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
-                    res.status(201).json(creator)
-                }
-            }
-        }
-        else {
-            let check = false
-            creator.organicVisitors.map(item => {
-                if (item.userId == id) check = true
-            })
-            if (check) {
-                const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
-                res.status(201).json(creator)
-            }
-            else {
-                const organicInstance = await OrganicUserInstance.create({ userId: id })
-                const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { organicVisitors: organicInstance }, $inc: { organicVisitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                const instance = await UserInstance.create({ userId: id })
+                const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
                 res.status(201).json(creator)
             }
         }
+        //     if (!id) return res.status(401).json({ message: "UserId required!" })
+        //     const creator = await User.findById(req.params.creatorId).populate("visitors organicVisitors")
+        //     if (id.split("-")[0]!='Organic') {
+        //         const foundUser = await User.findById(id)
+        //         const userObject = new mongoose.Types.ObjectId(id)
+        //         let check = false
+        //         creator.visitors.map(item => {
+        //             if (item.userId.equals(userObject)) check = true
+        //         })
+        //         if (check) {
+        //             const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //             res.status(201).json(creator)
+        //         }
+        //         else {
+        //             check = false
+        //             const toDelete = []
+        //             const newOrganicInstance = []
+        //             creator.organicVisitors.map(item => {
+        //                 if (item.userId == foundUser.deviceId) {
+        //                     check = true
+        //                     toDelete.push(item)
+        //                 }
+        //                 else{
+        //                     newOrganicInstance.push(item)
+        //                 }
+        //             })
+        //             if (check) {
+        //                 toDelete.forEach(async (el) => {
+        //                     await OrganicUserInstance.findByIdAndDelete(el._id)
+        //                 })
+        //                 const instance = await UserInstance.create({ userId: id })
+        //                 const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $set: {organicVisitors: newOrganicInstance}, $inc: { visitorCount: 1, organicVisitorCount: -1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //                 res.status(201).json(creator)
+        //             }
+        //             else {
+        //                 const instance = await UserInstance.create({ userId: id })
+        //                 const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //                 res.status(201).json(creator)
+        //             }
+        //         }
+        //     }
+        //     else {
+        //         let check = false
+        //         creator.organicVisitors.map(item => {
+        //             if (item.userId == id) check = true
+        //         })
+        //         if (check) {
+        //             const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //             res.status(201).json(creator)
+        //         }
+        //         else {
+        //             const organicInstance = await OrganicUserInstance.create({ userId: id })
+        //             const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { organicVisitors: organicInstance }, $inc: { organicVisitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //             res.status(201).json(creator)
+        //         }
+        //     }
     } catch (err) {
         res.status(500).json({ message: err.message })
     }

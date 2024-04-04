@@ -4,7 +4,7 @@ import { follow, getCreatorDetails, moreFromAuthor, unfollow } from "../../contr
 
 const creatorRouter = express.Router()
 
-creatorRouter.get("/more/:authorId", auth, moreFromAuthor)
+creatorRouter.get("/more/:authorId", moreFromAuthor)
 creatorRouter.patch("/follow", auth, follow)
 creatorRouter.patch("/unfollow", auth, unfollow)
 creatorRouter.get('/creator-detail/:creatorId', getCreatorDetails)
