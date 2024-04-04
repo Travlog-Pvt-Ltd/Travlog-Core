@@ -10,7 +10,7 @@ async function createDraft(req,res){
         thumbnail
     } = req.body
     try {
-        if(req.query.draftId){
+        if(req.query.draftId && req.query.draftId!="null"){
             await Draft.findByIdAndUpdate(req.query.draftId, req.body)
         }
         else{

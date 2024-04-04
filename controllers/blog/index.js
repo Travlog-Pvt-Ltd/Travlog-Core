@@ -7,6 +7,9 @@ import OrganicUserInstance from "../../models/organicUserInstance.js";
 import UserInstance from "../../models/userInstance.js";
 import mongoose from "mongoose";
 import Draft from "../../models/draft.js";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { getFirebaseStorage } from "../../config/Firebase.js";
+
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
@@ -100,20 +103,28 @@ async function createBlog(req, res) {
         title,
         content,
         tags,
-        attachments,
-        thumbnail
+        thumbnailUrl,
     } = req.body;
+    const thumbnailFile = req.file
     try {
+        let thumbnail
+        if(!thumbnailUrl){
+            const currentDate = new Date()
+            const storage = getFirebaseStorage(process.env.FIREBASE_STORAGE_BUCKET, process.env.FIREBASE_API_KEY, process.env.FIREBASE_AUTH_DOMAIN, process.env.FIREBASE_APP_ID)
+            const fileRef = ref(storage, `thumbnails/${thumbnailFile.originalname}---${currentDate}`)
+            const uploadTask = await uploadBytesResumable(fileRef, thumbnailFile.buffer)
+            thumbnail = await getDownloadURL(uploadTask.ref)
+        }
+        else thumbnail=thumbnailUrl
         const newBlog = new Blog({
             author: req.userId,
             title,
             content,
             tags,
-            attachments,
             thumbnail
         })
         const savedBlog = await newBlog.save()
-        if(req.query.draftId){
+        if(req.query.draftId && req.query.draftId!="null"){
             await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog }, $pull:{drafts: req.query.draftId} })
             await Draft.findByIdAndDelete(req.query.draftId)
         }
@@ -122,7 +133,7 @@ async function createBlog(req, res) {
         }
         res.status(201).json({messsage: "Blog created successfully!"})
     } catch (err) {
-        res.status(401).json({ message: err.message })
+        res.status(500).json({ message: err.message })
     }
 }
 
