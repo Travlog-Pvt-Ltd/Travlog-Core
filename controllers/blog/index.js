@@ -15,7 +15,7 @@ async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
     const skip = req.query.skip || 0;
     try {
-        const blogs = await Blog.find().limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo")
+        const blogs = await Blog.find().sort({ createdAt: -1 }).limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo")
         res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({ message: err.message })
