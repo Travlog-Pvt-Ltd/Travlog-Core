@@ -15,7 +15,7 @@ async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
     const skip = req.query.skip || 0;
     try {
-        const blogs = await Blog.find().sort({ createdAt: -1 }).limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo")
+        const blogs = await Blog.find().sort({ createdAt: -1 }).limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
         res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -36,63 +36,84 @@ async function getUserBlogs(req, res) {
 async function getBlogDetail(req, res) {
     const id = req.query.id
     try {
-        if (!id) return res.status(401).json({ message: "UserId required!" })
-
-        const blog = await Blog.findById(req.params.blogId).populate("views organicViews")
-        if (id.split("-")[0] != 'Organic') {
-            const foundUser = await User.findById(id)
+        if (!id) {
+            const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo followers")
+            res.status(200).json(blog)
+        }
+        else {
+            const blog = await Blog.findById(req.params.blogId).populate("views")
             const userObject = new mongoose.Types.ObjectId(id)
             let check = false
             blog.views.map(item => {
                 if (item.userId.equals(userObject)) check = true
             })
             if (check) {
-                const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
+                const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo followers")
                 res.status(200).json(blog)
             }
             else {
-                check = false
-                const toDelete = []
-                const newOrganicInstance = []
-                blog.organicViews.map(item => {
-                    if (item.userId == foundUser.deviceId) {
-                        check = true
-                        toDelete.push(item)
-                    }
-                    else {
-                        newOrganicInstance.push(item)
-                    }
-                })
-                if (check) {
-                    toDelete.forEach(async (el) => {
-                        await OrganicUserInstance.findByIdAndDelete(el._id)
-                    })
-                    const instance = await UserInstance.create({ userId: id })
-                    const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance }, $set: { organicViews: newOrganicInstance }, $inc: { viewCount: 1, organicViewCount: -1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
-                    res.status(201).json(blog)
-                }
-                else {
-                    const instance = await UserInstance.create({ userId: id })
-                    const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance._id }, $inc: { viewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
-                    res.status(201).json(blog)
-                }
-            }
-        }
-        else {
-            let check = false
-            blog.organicViews.map(item => {
-                if (item.userId == id) check = true
-            })
-            if (check) {
-                const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
-                res.status(200).json(blog)
-            }
-            else {
-                const organicInstance = await OrganicUserInstance.create({ userId: id })
-                const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { organicViews: organicInstance }, $inc: { organicViewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
+                const instance = await UserInstance.create({ userId: id })
+                const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance._id }, $inc: { viewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo followers")
                 res.status(201).json(blog)
             }
         }
+
+        // if (!id) return res.status(401).json({ message: "UserId required!" })
+        // const blog = await Blog.findById(req.params.blogId).populate("views organicViews")
+        // if (id.split("-")[0] != 'Organic') {
+        //     const foundUser = await User.findById(id)
+        //     const userObject = new mongoose.Types.ObjectId(id)
+        //     let check = false
+        //     blog.views.map(item => {
+        //         if (item.userId.equals(userObject)) check = true
+        //     })
+        //     if (check) {
+        //         const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
+        //         res.status(200).json(blog)
+        //     }
+        //     else {
+        //         check = false
+        //         const toDelete = []
+        //         const newOrganicInstance = []
+        //         blog.organicViews.map(item => {
+        //             if (item.userId == foundUser.deviceId) {
+        //                 check = true
+        //                 toDelete.push(item)
+        //             }
+        //             else {
+        //                 newOrganicInstance.push(item)
+        //             }
+        //         })
+        //         if (check) {
+        //             toDelete.forEach(async (el) => {
+        //                 await OrganicUserInstance.findByIdAndDelete(el._id)
+        //             })
+        //             const instance = await UserInstance.create({ userId: id })
+        //             const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance }, $set: { organicViews: newOrganicInstance }, $inc: { viewCount: 1, organicViewCount: -1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
+        //             res.status(201).json(blog)
+        //         }
+        //         else {
+        //             const instance = await UserInstance.create({ userId: id })
+        //             const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance._id }, $inc: { viewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
+        //             res.status(201).json(blog)
+        //         }
+        //     }
+        // }
+        // else {
+        //     let check = false
+        //     blog.organicViews.map(item => {
+        //         if (item.userId == id) check = true
+        //     })
+        //     if (check) {
+        //         const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
+        //         res.status(200).json(blog)
+        //     }
+        //     else {
+        //         const organicInstance = await OrganicUserInstance.create({ userId: id })
+        //         const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { organicViews: organicInstance }, $inc: { organicViewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -organicViews -comments -bookmarks").populate("author", "_id name profileLogo followers")
+        //         res.status(201).json(blog)
+        //     }
+        // }
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
@@ -108,14 +129,14 @@ async function createBlog(req, res) {
     const thumbnailFile = req.file
     try {
         let thumbnail
-        if(!thumbnailUrl){
+        if (!thumbnailUrl) {
             const currentDate = new Date()
             const storage = getFirebaseStorage(process.env.FIREBASE_STORAGE_BUCKET, process.env.FIREBASE_API_KEY, process.env.FIREBASE_AUTH_DOMAIN, process.env.FIREBASE_APP_ID)
             const fileRef = ref(storage, `thumbnails/${thumbnailFile.originalname}---${currentDate}`)
             const uploadTask = await uploadBytesResumable(fileRef, thumbnailFile.buffer)
             thumbnail = await getDownloadURL(uploadTask.ref)
         }
-        else thumbnail=thumbnailUrl
+        else thumbnail = thumbnailUrl
         const newBlog = new Blog({
             author: req.userId,
             title,
@@ -124,14 +145,14 @@ async function createBlog(req, res) {
             thumbnail
         })
         const savedBlog = await newBlog.save()
-        if(req.query.draftId && req.query.draftId!="null"){
-            await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog }, $pull:{drafts: req.query.draftId} })
+        if (req.query.draftId && req.query.draftId != "null") {
+            await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog }, $pull: { drafts: req.query.draftId } })
             await Draft.findByIdAndDelete(req.query.draftId)
         }
-        else{
+        else {
             await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog } })
         }
-        res.status(201).json({messsage: "Blog created successfully!"})
+        res.status(201).json({ messsage: "Blog created successfully!" })
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
