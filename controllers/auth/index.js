@@ -137,9 +137,10 @@ async function loginWithGoogle(req,res){
                 profileImage,
                 profileLogo:profileImage
             })
-            const savedUser = await newUser.save().select('-password -followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications');
-            const token = jwt.sign({id: savedUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
-            res.status(201).json({token: token, user: savedUser});
+            const savedUser = await newUser.save()
+            const user = await User.findById(savedUser._id).select('-password -followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications');
+            const token = jwt.sign({id: user._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
+            res.status(201).json({token: token, user: user});
         }
     } catch (err) {
         res.status(500).json({message: err.message})
