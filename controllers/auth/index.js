@@ -29,7 +29,7 @@ async function register(req, res){
             password: hashedPassword,
             deviceId
         })
-        const user = await User.findById(savedUser._id).select('-password -deviceId -followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
+        const user = await User.findById(savedUser._id).select('-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
         const token = jwt.sign({id: savedUser._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
         await OTPModel.findByIdAndDelete(foundOTP._id)
         res.status(201).json({token: token, user: user})
@@ -106,7 +106,7 @@ const verifyOtp = async(req,res) => {
 async function login(req, res) {
     const { email, password } = req.body;
     try{
-        const foundUser = await User.findOne({email:email}).select('-followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications');
+        const foundUser = await User.findOne({email:email}).select('-followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications');
         if(!foundUser) return res.status(404).json({message: "User doesn't exist!"});
         const passwordMatched = await bcrypt.compare(password, foundUser.password);
         if(!passwordMatched) return res.status(400).json({message: "Invalid Password!"});
@@ -138,7 +138,7 @@ async function loginWithGoogle(req,res){
                 profileLogo:profileImage
             })
             const savedUser = await newUser.save()
-            const user = await User.findById(savedUser._id).select('-password -followers -followings -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications');
+            const user = await User.findById(savedUser._id).select('-password -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
             const token = jwt.sign({id: user._id}, process.env.USER_SECRET, {expiresIn:"24hr"})
             res.status(201).json({token: token, user: user});
         }
