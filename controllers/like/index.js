@@ -12,13 +12,13 @@ const likeBlog = async (req, res) => {
     const userObject = new mongoose.Types.ObjectId(req.userId)
     const blogObject = new mongoose.Types.ObjectId(blog)
     try {
-        const found = await Blog.findById(blog).populate("likes")
+        const found = await Blog.findById(blog).populate("likes dislikes")
         let check = false
         found.likes.map(like => {
             if (like.userId.equals(userObject)) check = true
         })
         if (check) {
-            await User.findByIdAndUpdate(req.userId, {$pull: {likes: blog}})
+            const user = await User.findByIdAndUpdate(req.userId, { $pull: { likes: blog } }, {new:true}).select('-password -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
             const newLikes = []
             const toDelete = []
             found.likes.map(like => {
@@ -28,7 +28,7 @@ const likeBlog = async (req, res) => {
             toDelete.forEach(async (el) => {
                 await UserInstance.findByIdAndDelete(el._id)
             });
-            const newBlog = await Blog.findByIdAndUpdate(blog, { $set: { likes: newLikes, likeCount: newLikes.length } }, { new: true })
+            const newBlog = await Blog.findByIdAndUpdate(blog, { $set: { likes: newLikes, likeCount: newLikes.length } }, { new: true }).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
             const activity = await UserActivity.findOne({ userId: req.userId }).populate("likeEvent")
             const newEvents = []
             const toDeleteEvents = []
@@ -40,12 +40,40 @@ const likeBlog = async (req, res) => {
                 await LCEvent.findByIdAndDelete(el._id)
             })
             await UserActivity.findByIdAndUpdate(activity._id, { $set: { likeEvent: newEvents } })
-            res.status(201).json(newBlog)
+            res.status(201).json({ blog: newBlog, user: user })
         }
         else {
-            await User.findByIdAndUpdate(req.userId, {$push: {likes: blog}})
+            check = false
+            found.dislikes.map(dislike => {
+                if (dislike.userId.equals(userObject)) check = true
+            })
+            if (check) {
+                await User.findByIdAndUpdate(req.userId, { $pull: { dislikes: blog } })
+                const newDislikes = []
+                const toDelete = []
+                found.dislikes.map(dislike => {
+                    if (!dislike.userId.equals(userObject)) newDislikes.push(dislike)
+                    else toDelete.push(dislike)
+                })
+                toDelete.forEach(async (el) => {
+                    await UserInstance.findByIdAndDelete(el._id)
+                })
+                await Blog.findByIdAndUpdate(blog, { $set: { dislikes: newDislikes, dislikeCount: newDislikes.length } })
+                const activity = await UserActivity.findOne({ userId: req.userId }).populate("dislikeEvent")
+                const newEvents = []
+                const toDeleteEvents = []
+                activity.dislikeEvent.map(event => {
+                    if (!event.blogId.equals(blogObject) || event.isComment === true || event.onComment === true || event.isDislike === false) newEvents.push(event)
+                    else toDeleteEvents.push(event)
+                })
+                toDeleteEvents.forEach(async (el) => {
+                    await LCEvent.findByIdAndDelete(el._id)
+                })
+                await UserActivity.findByIdAndUpdate(activity._id, { $set: { dislikeEvent: newEvents } })
+            }
+            const user = await User.findByIdAndUpdate(req.userId, { $push: { likes: blog } }, {new:true}).select('-password -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
             const userInstance = await UserInstance.create({ userId: req.userId })
-            const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { likes: userInstance._id }, $inc: { likeCount: 1 } }, { new: true })
+            const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { likes: userInstance._id }, $inc: { likeCount: 1 } }, { new: true }).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
             const likeEvent = await LCEvent.create({
                 blogId: blog,
                 isComment: false,
@@ -61,7 +89,7 @@ const likeBlog = async (req, res) => {
             else {
                 await UserActivity.create({ userId: req.userId, likeEvent: [likeEvent._id] })
             }
-            res.status(201).json(newBlog)
+            res.status(201).json({ blog: newBlog, user: user })
         }
     } catch (err) {
         res.status(401).json({ message: err.message })
@@ -73,13 +101,13 @@ const dislikeBlog = async (req, res) => {
     const userObject = new mongoose.Types.ObjectId(req.userId)
     const blogObject = new mongoose.Types.ObjectId(blog)
     try {
-        const found = await Blog.findById(blog).populate("dislikes")
+        const found = await Blog.findById(blog).populate("likes dislikes")
         let check = false
         found.dislikes.map(dislike => {
             if (dislike.userId.equals(userObject)) check = true
         })
         if (check) {
-            await User.findByIdAndUpdate(req.userId, {$pull: {dislikes: blog}})
+            const user = await User.findByIdAndUpdate(req.userId, { $pull: { dislikes: blog } }, {new:true}).select('-password -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
             const newDislikes = []
             const toDelete = []
             found.dislikes.map(dislike => {
@@ -89,7 +117,7 @@ const dislikeBlog = async (req, res) => {
             toDelete.forEach(async (el) => {
                 await UserInstance.findByIdAndDelete(el._id)
             });
-            const newBlog = await Blog.findByIdAndUpdate(blog, { $set: { dislikes: newDislikes, dislikeCount: newDislikes.length } }, { new: true })
+            const newBlog = await Blog.findByIdAndUpdate(blog, { $set: { dislikes: newDislikes, dislikeCount: newDislikes.length } }, { new: true }).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
             const activity = await UserActivity.findOne({ userId: req.userId }).populate("dislikeEvent")
             const newEvents = []
             const toDeleteEvents = []
@@ -101,12 +129,40 @@ const dislikeBlog = async (req, res) => {
                 await LCEvent.findByIdAndDelete(el._id)
             })
             await UserActivity.findByIdAndUpdate(activity._id, { $set: { dislikeEvent: newEvents } })
-            res.status(201).json(newBlog)
+            res.status(201).json({ blog: newBlog, user: user })
         }
         else {
-            await User.findByIdAndUpdate(req.userId, {$push: {dislikes: blog}})
+            check = false
+            found.likes.map(like => {
+                if (like.userId.equals(userObject)) check = true
+            })
+            if (check) {
+                await User.findByIdAndUpdate(req.userId, { $pull: { likes: blog } })
+                const newLikes = []
+                const toDelete = []
+                found.likes.map(like => {
+                    if (!like.userId.equals(userObject)) newLikes.push(like)
+                    else toDelete.push(like)
+                })
+                toDelete.forEach(async (el) => {
+                    await UserInstance.findByIdAndDelete(el._id)
+                });
+                await Blog.findByIdAndUpdate(blog, { $set: { likes: newLikes, likeCount: newLikes.length } })
+                const activity = await UserActivity.findOne({ userId: req.userId }).populate("likeEvent")
+                const newEvents = []
+                const toDeleteEvents = []
+                activity.likeEvent.map(event => {
+                    if (!event.blogId.equals(blogObject) || event.isComment === true || event.onComment === true || event.isDislike === true) newEvents.push(event)
+                    else toDeleteEvents.push(event)
+                })
+                toDeleteEvents.forEach(async (el) => {
+                    await LCEvent.findByIdAndDelete(el._id)
+                })
+                await UserActivity.findByIdAndUpdate(activity._id, { $set: { likeEvent: newEvents } })
+            }
+            const user = await User.findByIdAndUpdate(req.userId, { $push: { dislikes: blog } }, {new:true}).select('-password -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications')
             const userInstance = await UserInstance.create({ userId: req.userId })
-            const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { dislikes: userInstance._id }, $inc: { dislikeCount: 1 } }, { new: true })
+            const newBlog = await Blog.findByIdAndUpdate(blog, { $push: { dislikes: userInstance._id }, $inc: { dislikeCount: 1 } }, { new: true }).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
             const dislikeEvent = await LCEvent.create({
                 blogId: blog,
                 isComment: false,
@@ -118,7 +174,7 @@ const dislikeBlog = async (req, res) => {
             const isUserActive = await UserActivity.findOne({ userId: req.userId })
             if (isUserActive) await UserActivity.findByIdAndUpdate(isUserActive._id, { $push: { dislikeEvent: dislikeEvent._id } })
             else await UserActivity.create({ userId: req.userId, dislikeEvent: [dislikeEvent._id] })
-            res.status(201).json(newBlog)
+            res.status(201).json({ blog: newBlog, user: user })
         }
     } catch (err) {
         res.status(401).json({ message: err.message })
@@ -185,7 +241,7 @@ const likeComment = async (req, res) => {
     }
 }
 
-const dislikeComment = async(req,res) => {
+const dislikeComment = async (req, res) => {
     const { comment, blog } = req.body;
     const userObject = new mongoose.Types.ObjectId(req.userId)
     const commentObject = new mongoose.Types.ObjectId(comment)
