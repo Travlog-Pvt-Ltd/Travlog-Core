@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  token: {
+    type: String,
+    default: null
+  },
   deviceId: {
     type: String,
     default: null

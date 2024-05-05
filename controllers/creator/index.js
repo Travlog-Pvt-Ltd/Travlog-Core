@@ -21,20 +21,15 @@ const follow = async (req, res) => {
     const creator = req.body.creatorId;
     const creatorObject = new mongoose.Types.ObjectId(creator)
     try {
-        // Adding creator in user's following list
         const following = await UserInstance.create({
             userId: creator,
         })
-        const newUser = await User.findByIdAndUpdate(req.userId, { $push: { followings: following } }, { new: true })
-
-        // Adding user in creator's followers list
+        const newUser = await User.findByIdAndUpdate(req.userId, { $push: { followings: following } }, { new: true }).select('-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId")
         const follower = await Follower.create({
             userId: req.userId,
             notify: false
         })
         await User.findByIdAndUpdate(creator, { $push: { followers: follower } })
-
-        // Updating user activity by removing all the previous follow events with the creator and adding a new follow event.
         const activity = await UserActivity.findOne({ userId: req.userId }).populate("followEvent")
         const newEvents = []
         const toDeleteEvents = []
@@ -61,7 +56,6 @@ const unfollow = async (req, res) => {
     const creatorObject = new mongoose.Types.ObjectId(creator)
     const userObject = new mongoose.Types.ObjectId(req.userId)
     try {
-        // Removing creator from user's followings list
         const found = await User.findById(req.userId).populate("followings")
         const newFollowing = []
         let toDelete = []
@@ -69,13 +63,10 @@ const unfollow = async (req, res) => {
             if (!following.userId.equals(creatorObject)) newFollowing.push(following)
             else toDelete.push(following)
         })
-        console.log(toDelete)
         toDelete.forEach(async (el) => {
             await UserInstance.findByIdAndDelete(el._id)
         })
-        const newUser = await User.findByIdAndUpdate(req.userId, { $set: { followings: newFollowing } }, { new: true })
-
-        // Removing user from creator's followers list
+        const newUser = await User.findByIdAndUpdate(req.userId, { $set: { followings: newFollowing, followingCount: newFollowing.length } }, { new: true }).select('-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId")
         const foundCreator = await User.findById(creator).populate("followers")
         const newFollowers = []
         toDelete = []
@@ -83,13 +74,10 @@ const unfollow = async (req, res) => {
             if (!follower.userId.equals(userObject)) newFollowers.push(follower)
             else toDelete.push(follower)
         })
-        console.log(toDelete)
         toDelete.forEach(async (el) => {
             await Follower.findByIdAndDelete(el._id)
         })
-        await User.findByIdAndUpdate(creator, { $set: { followers: newFollowers } }, { new: true })
-
-        // Updating user activity by removing all the previous unfollow events with the creator and adding a new unfollow event.
+        await User.findByIdAndUpdate(creator, { $set: { followers: newFollowers, followerCount: newFollowers.length } }, { new: true })
         const activity = await UserActivity.findOne({ userId: req.userId }).populate("unfollowEvent")
         const newEvents = []
         const toDeleteEvents = []
@@ -115,7 +103,7 @@ const getCreatorDetails = async (req, res) => {
     const id = req.query.id
     try {
         if (!id) {
-            const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
+            const creator = await User.findById(req.params.creatorId).select("-password -token -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
             res.status(201).json(creator)
         }
         else {
@@ -126,12 +114,12 @@ const getCreatorDetails = async (req, res) => {
                 if (item.userId.equals(userObject)) check = true
             })
             if (check) {
-                const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
+                const creator = await User.findById(req.params.creatorId).select("-password -token -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
                 res.status(201).json(creator)
             }
             else {
                 const instance = await UserInstance.create({ userId: id })
-                const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+                const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -token -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
                 res.status(201).json(creator)
             }
         }
@@ -145,7 +133,7 @@ const getCreatorDetails = async (req, res) => {
         //             if (item.userId.equals(userObject)) check = true
         //         })
         //         if (check) {
-        //             const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //             const creator = await User.findById(req.params.creatorId).select("-password -token -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
         //             res.status(201).json(creator)
         //         }
         //         else {
@@ -166,12 +154,12 @@ const getCreatorDetails = async (req, res) => {
         //                     await OrganicUserInstance.findByIdAndDelete(el._id)
         //                 })
         //                 const instance = await UserInstance.create({ userId: id })
-        //                 const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $set: {organicVisitors: newOrganicInstance}, $inc: { visitorCount: 1, organicVisitorCount: -1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //                 const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $set: {organicVisitors: newOrganicInstance}, $inc: { visitorCount: 1, organicVisitorCount: -1 } }, { new: true }).select("-password -token -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
         //                 res.status(201).json(creator)
         //             }
         //             else {
         //                 const instance = await UserInstance.create({ userId: id })
-        //                 const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //                 const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -token -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
         //                 res.status(201).json(creator)
         //             }
         //         }
@@ -182,12 +170,12 @@ const getCreatorDetails = async (req, res) => {
         //             if (item.userId == id) check = true
         //         })
         //         if (check) {
-        //             const creator = await User.findById(req.params.creatorId).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //             const creator = await User.findById(req.params.creatorId).select("-password -token -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
         //             res.status(201).json(creator)
         //         }
         //         else {
         //             const organicInstance = await OrganicUserInstance.create({ userId: id })
-        //             const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { organicVisitors: organicInstance }, $inc: { organicVisitorCount: 1 } }, { new: true }).select("-password -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
+        //             const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { organicVisitors: organicInstance }, $inc: { organicVisitorCount: 1 } }, { new: true }).select("-password -token -followings -visitors -organicVisitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
         //             res.status(201).json(creator)
         //         }
         //     }
