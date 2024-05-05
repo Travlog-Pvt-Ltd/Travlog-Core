@@ -26,7 +26,7 @@ async function getUserBlogs(req, res) {
     const limit = req.query.limit || 20
     const skip = req.query.skip || 0
     try {
-        const blogs = await Blog.find({ author: req.userId }).limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo")
+        const blogs = await Blog.find({ author: req.userId }).limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
         res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -37,7 +37,7 @@ async function getBlogDetail(req, res) {
     const id = req.query.id
     try {
         if (!id) {
-            const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo followers")
+            const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
             res.status(200).json(blog)
         }
         else {
@@ -48,12 +48,12 @@ async function getBlogDetail(req, res) {
                 if (item.userId.equals(userObject)) check = true
             })
             if (check) {
-                const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo followers")
+                const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
                 res.status(200).json(blog)
             }
             else {
                 const instance = await UserInstance.create({ userId: id })
-                const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance._id }, $inc: { viewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo followers")
+                const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance._id }, $inc: { viewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
                 res.status(201).json(blog)
             }
         }
