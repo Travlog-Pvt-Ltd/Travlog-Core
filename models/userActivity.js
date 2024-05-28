@@ -28,6 +28,11 @@ const activitySchema = new mongoose.Schema({
     commentEvent: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "LCEvent"
+    }],
+    searches: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tag",
+        set: (searches) => [...new Set(searches)],
     }]
 }, { timestamps: true }
 )

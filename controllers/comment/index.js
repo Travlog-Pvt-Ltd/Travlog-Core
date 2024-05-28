@@ -66,7 +66,7 @@ const replyOnComment = async (req, res) => {
     const { blog, comment, content } = req.body
     try {
         const newReply = await Comment.create({ userId: req.userId, content: content, isReply: true, blog: blog, parent: comment })
-        const newComment = await Comment.findByIdAndUpdate(comment, { $push: { replies: newReply._id }, $inc: { replyCount: 1 } })
+        const newComment = await Comment.findByIdAndUpdate(comment, { $push: { replies: newReply._id }, $inc: { replyCount: 1 } }, {new: true})
         await Blog.findByIdAndUpdate(blog, { $inc: { commentCount: 1 } })
         const commentEvent = await LCEvent.create({
             blogId: blog,
