@@ -5,6 +5,7 @@ import UserActivity from "../../models/userActivity.js";
 import UserInstance from "../../models/userInstance.js";
 import Comment from "../../models/comment.js";
 import User from "../../models/user.js";
+import redis, { updateUserInCache } from "../../config/redis.js";
 
 
 const likeBlog = async (req, res) => {
@@ -18,7 +19,7 @@ const likeBlog = async (req, res) => {
             if (like.userId.equals(userObject)) check = true
         })
         if (check) {
-            const user = await User.findByIdAndUpdate(req.userId, { $pull: { likes: blog } }, {new:true}).select('-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId")
+            const user = await User.findByIdAndUpdate(req.userId, { $pull: { likes: blog } }, {new:true}).select('-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId")
             const newLikes = []
             const toDelete = []
             found.likes.map(like => {
@@ -40,6 +41,8 @@ const likeBlog = async (req, res) => {
                 await LCEvent.findByIdAndDelete(el._id)
             })
             await UserActivity.findByIdAndUpdate(activity._id, { $set: { likeEvent: newEvents } })
+            await updateUserInCache(user)
+            await redis.setEx(`blog_data#user:${user._id}#blog:${newBlog._id}`, 3600, JSON.stringify(newBlog))
             res.status(201).json({ blog: newBlog, user: user })
         }
         else {
@@ -89,6 +92,8 @@ const likeBlog = async (req, res) => {
             else {
                 await UserActivity.create({ userId: req.userId, likeEvent: [likeEvent._id] })
             }
+            await updateUserInCache(user)
+            await redis.setEx(`blog_data#user:${user._id}#blog:${newBlog._id}`, 3600, JSON.stringify(newBlog))
             res.status(201).json({ blog: newBlog, user: user })
         }
     } catch (err) {
@@ -129,6 +134,8 @@ const dislikeBlog = async (req, res) => {
                 await LCEvent.findByIdAndDelete(el._id)
             })
             await UserActivity.findByIdAndUpdate(activity._id, { $set: { dislikeEvent: newEvents } })
+            await updateUserInCache(user)
+            await redis.setEx(`blog_data#user:${user._id}#blog:${newBlog._id}`, 3600, JSON.stringify(newBlog))
             res.status(201).json({ blog: newBlog, user: user })
         }
         else {
@@ -174,6 +181,8 @@ const dislikeBlog = async (req, res) => {
             const isUserActive = await UserActivity.findOne({ userId: req.userId })
             if (isUserActive) await UserActivity.findByIdAndUpdate(isUserActive._id, { $push: { dislikeEvent: dislikeEvent._id } })
             else await UserActivity.create({ userId: req.userId, dislikeEvent: [dislikeEvent._id] })
+            await updateUserInCache(user)
+            await redis.setEx(`blog_data#user:${user._id}#blog:${newBlog._id}`, 3600, JSON.stringify(newBlog))
             res.status(201).json({ blog: newBlog, user: user })
         }
     } catch (err) {

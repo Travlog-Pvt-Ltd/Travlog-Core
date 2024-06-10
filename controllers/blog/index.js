@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import Draft from "../../models/draft.js";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { getFirebaseStorage } from "../../config/Firebase.js";
+import redis, { updateUserInCache } from "../../config/redis.js";
 
 
 async function getAllBlogs(req, res) {
@@ -26,7 +27,12 @@ async function getUserBlogs(req, res) {
     const limit = req.query.limit || 20
     const skip = req.query.skip || 0
     try {
+        // const cachedBlogs = await redis.get(`user_blogs:${req.userId}`)
+        // if(cachedBlogs) {
+        //     return res.status(200).json(JSON.parse(cachedBlogs))
+        // }
         const blogs = await Blog.find({ author: req.userId }).limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
+        // redis.setEx(`user_blogs:${req.userId}`, 3600, JSON.stringify(blogs))
         res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -37,7 +43,10 @@ async function getBlogDetail(req, res) {
     const id = req.query.id
     try {
         if (!id) {
+            const cachedData = await redis.get(`blog_data#blog:${req.params.blogId}`)
+            if (cachedData) return res.status(200).json(JSON.parse(cachedData))
             const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
+            await redis.setEx(`blog_data#blog:${req.params.blogId}`, 3600, JSON.stringify(blog))
             res.status(200).json(blog)
         }
         else {
@@ -48,12 +57,16 @@ async function getBlogDetail(req, res) {
                 if (item.userId.equals(userObject)) check = true
             })
             if (check) {
+                const cachedData = await redis.get(`blog_data#user:${id}#blog:${req.params.blogId}`)
+                if (cachedData) return res.status(200).json(JSON.parse(cachedData))
                 const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
+                await redis.setEx(`blog_data#user:${id}#blog:${req.params.blogId}`, 3600, JSON.stringify(blog))
                 res.status(200).json(blog)
             }
             else {
                 const instance = await UserInstance.create({ userId: id })
                 const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance._id }, $inc: { viewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
+                await redis.setEx(`blog_data#user:${id}#blog:${req.params.blogId}`, 3600, JSON.stringify(blog))
                 res.status(201).json(blog)
             }
         }
@@ -145,13 +158,15 @@ async function createBlog(req, res) {
             thumbnail
         })
         const savedBlog = await newBlog.save()
+        let user
         if (req.query.draftId && req.query.draftId != "null") {
-            await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog }, $pull: { drafts: req.query.draftId } })
+            user = await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog }, $pull: { drafts: req.query.draftId } }, { new: true }).select('-deviceId -token -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId");
             await Draft.findByIdAndDelete(req.query.draftId)
         }
         else {
-            await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog } })
+            user = await User.findByIdAndUpdate(req.userId, { $push: { blogs: savedBlog } }, { new: true }).select('-deviceId -token -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId");
         }
+        await updateUserInCache(user)
         res.status(201).json({ messsage: "Blog created successfully!" })
     } catch (err) {
         res.status(500).json({ message: err.message })

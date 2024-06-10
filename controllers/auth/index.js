@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from "../../models/user.js";
 import nodemailer from 'nodemailer'
 import OTPModel from "../../models/otp.js";
+import redis, { updateUserInCache } from "../../config/redis.js";
 
 
 async function register(req, res) {
@@ -34,6 +35,7 @@ async function register(req, res) {
         const refreshToken = jwt.sign({ id: savedUser._id }, process.env.REFRESH_SECRET, { expiresIn: "3d" })
         await User.findByIdAndUpdate(savedUser._id, { $set: { token: refreshToken } })
         await OTPModel.findByIdAndDelete(foundOTP._id)
+        updateUserInCache(user)
         res.status(201).json({ token: accessToken, refreshToken: refreshToken, user: user })
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -116,6 +118,7 @@ async function login(req, res) {
         const refreshToken = jwt.sign({ id: foundUser._id }, process.env.REFRESH_SECRET, { expiresIn: "3d" })
         await User.findByIdAndUpdate(foundUser._id, { $set: { token: refreshToken } })
         delete foundUser.password
+        updateUserInCache(foundUser)
         res.status(200).json({ token: token, refreshToken: refreshToken, user: foundUser });
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -129,8 +132,9 @@ async function loginWithGoogle(req, res) {
         if (foundUser) {
             const accessToken = jwt.sign({ id: foundUser._id }, process.env.USER_SECRET, { expiresIn: "1hr" })
             const refreshToken = jwt.sign({ id: foundUser._id }, process.env.REFRESH_SECRET, { expiresIn: "3d" })
-            await User.findByIdAndUpdate(foundUser._id, { $set: { token: refreshToken } })
-            res.status(201).json({ token: accessToken, refreshToken: refreshToken, user: foundUser })
+            const user = await User.findByIdAndUpdate(foundUser._id, { $set: { token: refreshToken } }, {new: true}).select('-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId")
+            updateUserInCache(user)
+            res.status(201).json({ token: accessToken, refreshToken: refreshToken, user })
         }
         else {
             const password = Math.random().toString(36).slice(-12)
@@ -148,7 +152,8 @@ async function loginWithGoogle(req, res) {
             const accessToken = jwt.sign({ id: user._id }, process.env.USER_SECRET, { expiresIn: "1hr" })
             const refreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_SECRET, { expiresIn: "3d" })
             await User.findByIdAndUpdate(user._id, { $set: { token: refreshToken } })
-            res.status(201).json({ token: accessToken, refreshToken: refreshToken, user: user });
+            updateUserInCache(user)
+            res.status(201).json({ token: accessToken, refreshToken: refreshToken, user });
         }
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -167,12 +172,13 @@ const refresh = async (req, res) => {
                     else {
                         const id = decoded?.id
                         const user = await User.findById(id).select('-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId")
-                        if (user.token!=refreshToken) return res.status(401).json({ message: "Refresh token doesn't match!" })
+                        if (user.token != refreshToken) return res.status(401).json({ message: "Refresh token doesn't match!" })
                         const accessToken = jwt.sign({ id: user._id }, process.env.USER_SECRET, { expiresIn: '1hr' });
                         const newRefreshToken = jwt.sign({ id: user._id }, process.env.REFRESH_SECRET, { expiresIn: "3d" })
                         await User.findByIdAndUpdate(user._id, { $set: { token: newRefreshToken } })
                         delete user.token
-                        return res.status(201).json({ token: accessToken, refreshToken: newRefreshToken, user: user });
+                        updateUserInCache(user)
+                        return res.status(201).json({ token: accessToken, refreshToken: newRefreshToken, user });
                     }
                 })
         } else {
@@ -186,6 +192,7 @@ const refresh = async (req, res) => {
 const logout = async (req, res) => {
     try {
         await User.findByIdAndUpdate(req.body.userId, { $set: { token: null } })
+        redis.del(`user_details#user:${req.body.userId}`)
         res.status(201).json({ message: "Success" })
     } catch (err) {
         res.status(500).json({ message: err.message })
