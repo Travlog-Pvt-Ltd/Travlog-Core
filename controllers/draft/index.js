@@ -2,6 +2,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage"
 import { getFirebaseStorage } from "../../config/Firebase.js"
 import Draft from "../../models/draft.js"
 import User from "../../models/user.js"
+import redis, { updateUserInCache } from "../../config/redis.js"
 
 async function createDraft(req, res) {
     const {
@@ -23,7 +24,8 @@ async function createDraft(req, res) {
         }
         else thumbnail = thumbnailUrl
         if (req.query.draftId && req.query.draftId != "null") {
-            await Draft.findByIdAndUpdate(req.query.draftId, { title, content, tags, thumbnail })
+            const updatedDraft = await Draft.findByIdAndUpdate(req.query.draftId, { title, content, tags, thumbnail }, {new: true})
+            await redis.setEx(`draft_data#draft:${req.query.draftId}#author:${req.userId}`, 3600, JSON.stringify(updatedDraft))
         }
         else {
             const savedDraft = await Draft.create({
@@ -33,7 +35,9 @@ async function createDraft(req, res) {
                 tags,
                 thumbnail
             })
-            await User.findByIdAndUpdate(req.userId, { $push: { drafts: savedDraft } })
+            await redis.setEx(`draft_data#draft:${req.query.draftId}#author:${req.userId}`, 3600, JSON.stringify(savedDraft))
+            const user = await User.findByIdAndUpdate(req.userId, { $push: { drafts: savedDraft } }, {new: true}).select('-deviceId -token -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications').populate("followings", "_id userId")
+            await updateUserInCache(user)
         }
         res.status(201).json({ message: "Draft saved successfully!" })
     } catch (err) {
@@ -54,8 +58,11 @@ async function getDrafts(req, res) {
 
 async function getDraftDetail(req, res) {
     try {
+        const cachedDraft = await redis.get(`draft_data#draft:${req.params.draftId}#author:${req.userId}`)
+        if(cachedDraft) return res.status(200).json(JSON.parse(cachedDraft))
         const foundDraft = await Draft.findOne({ _id: req.params.draftId, author: req.userId })
         if (!foundDraft) return res.status(401).json({ message: "User is not authorized to view this draft!" })
+        await redis.setEx(`draft_data#draft:${req.params.draftId}#author:${req.userId}`, 3600, JSON.stringify(foundDraft))
         res.status(200).json(foundDraft)
     } catch (err) {
         res.status(401).json({ message: err.message })
