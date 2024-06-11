@@ -5,7 +5,6 @@ import User from "../../models/user.js"
 import UserActivity from "../../models/userActivity.js"
 import UserInstance from "../../models/userInstance.js"
 import OrganicUserInstance from "../../models/organicUserInstance.js"
-import redis, { updateUserInCache } from "../../config/redis.js"
 
 
 const moreFromAuthor = async (req, res) => {
@@ -46,7 +45,6 @@ const follow = async (req, res) => {
         })
         newEvents.push(instance)
         await UserActivity.findByIdAndUpdate(activity._id, { $set: { followEvent: newEvents } })
-        updateUserInCache(newUser)
         res.status(201).json(newUser)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -95,7 +93,6 @@ const unfollow = async (req, res) => {
         })
         newEvents.push(instance)
         await UserActivity.findByIdAndUpdate(activity._id, { $set: { unfollowEvent: newEvents } })
-        updateUserInCache(newUser)
         res.status(201).json(newUser)
     } catch (err) {
         res.status(500).json({ message: err.message })
@@ -106,10 +103,7 @@ const getCreatorDetails = async (req, res) => {
     const id = req.query.id
     try {
         if (!id) {
-            const cachedData = await redis.get(`creator_data#creator:${req.params.creatorId}`)
-            if (cachedData) return res.status(200).json(JSON.parse(cachedData))
             const creator = await User.findById(req.params.creatorId).select("-password -token -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
-            await redis.setEx(`creator_data#creator:${req.params.creatorId}`, 3600, JSON.stringify(creator))
             res.status(201).json(creator)
         }
         else {
@@ -120,16 +114,12 @@ const getCreatorDetails = async (req, res) => {
                 if (item.userId.equals(userObject)) check = true
             })
             if (check) {
-                const cachedData = await redis.get(`creator_data#user:${id}#creator:${req.params.creatorId}`)
-                if (cachedData) return res.status(200).json(JSON.parse(cachedData))
                 const creator = await User.findById(req.params.creatorId).select("-password -token -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags thumbnail commentCount likeCount shareCount viewCount")
-                await redis.setEx(`creator_data#user:${id}#creator:${req.params.creatorId}`, 3600, JSON.stringify(creator))
                 res.status(201).json(creator)
             }
             else {
                 const instance = await UserInstance.create({ userId: id })
                 const creator = await User.findByIdAndUpdate(req.params.creatorId, { $push: { visitors: instance }, $inc: { visitorCount: 1 } }, { new: true }).select("-password -token -followings -visitors -bookmarks -itenaries -drafts -notifications").populate("blogs", "_id title content tags system_tags thumbnail commentCount likeCount shareCount viewCount")
-                await redis.setEx(`creator_data#user:${id}#creator:${req.params.creatorId}`, 3600, JSON.stringify(creator))
                 res.status(201).json(creator)
             }
         }
