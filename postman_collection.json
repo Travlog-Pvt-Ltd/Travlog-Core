@@ -15,14 +15,14 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
+							"mode": "formdata",
+							"formdata": [
 								{
 									"key": "title",
 									"value": "Exploring Pattaya Street's Nightlife: A Two-Night Adventure",
@@ -30,7 +30,7 @@
 								},
 								{
 									"key": "content",
-									"value": "Welcome to Pattaya Street, a bustling hub of nightlife and entertainment located in the vibrant city of Pattaya, Thailand. Join me as we delve into the electrifying atmosphere, iconic clubs, and unforgettable experiences this famous street has to offer during a two-night escapade.\n\nNight 1: Dive into the Neon Glow\n\nAs the sun sets and the neon lights come alive, Pattaya Street transforms into a playground for night owls and party enthusiasts. Start your evening by exploring the diverse range of clubs and bars lining the street. From pulsating dance floors to laid-back lounges, there's something for every taste.\n\nKick off the night at Club Insomnia, a renowned hotspot known for its energetic beats and lively crowd. Dance the night away to the latest hits spun by top DJs, surrounded by a sea of enthusiastic revelers. For a more upscale experience, venture into Walking Street's upscale clubs like Mixx Discotheque or Lucifer. Sip on signature cocktails and soak in the glamorous ambiance as you mingle with fellow partygoers from around the world.\n\nNight 2: A Taste of Thai Nightlife\n\nOn your second night in Pattaya Street, delve deeper into the local nightlife scene and discover hidden gems along the bustling strip. Start your evening with a visit to The Pier Disco Club, where live bands and talented performers entertain guests with a mix of Thai and international music.\n\nFor a unique experience, head to Tony's Entertainment Complex, known for its cabaret shows featuring dazzling performers and extravagant costumes. Marvel at the talent on stage as singers, dancers, and drag queens put on a spectacle that's both entertaining and visually stunning.\n\nAs the night progresses, make your way to the iconic Walking Street, where the party never stops. Explore themed bars like Candy Shop Bar or Marine Disco for a taste of Pattaya's eclectic nightlife offerings. End your night on a high note by joining the vibrant street parties and soaking in the lively atmosphere until the early hours of the morning.\n\nConclusion: Memories of Pattaya Street\n\nAs your two-night adventure on Pattaya Street comes to an end, take with you memories of pulsating beats, colorful lights, and the vibrant energy that defines this iconic nightlife destination. Whether you're a dance enthusiast, music lover, or simply seeking a lively atmosphere, Pattaya Street's clubs and entertainment venues offer an unforgettable experience that's sure to leave you wanting more. Until next time, farewell to the electrifying streets of Pattaya.",
+									"value": "Welcome to Pattaya Street, a bustling hub of nightlife and entertainment located in the vibrant city of Pattaya, Thailand. Join me as we delve into the electrifying atmosphere, iconic clubs, and unforgettable experiences this famous street has to offer during a two-night escapade.\nNight 1: Dive into the Neon Glow\nAs the sun sets and the neon lights come alive, Pattaya Street transforms into a playground for night owls and party enthusiasts. Start your evening by exploring the diverse range of clubs and bars lining the street. From pulsating dance floors to laid-back lounges, there's something for every taste.\nKick off the night at Club Insomnia, a renowned hotspot known for its energetic beats and lively crowd. Dance the night away to the latest hits spun by top DJs, surrounded by a sea of enthusiastic revelers. For a more upscale experience, venture into Walking Street's upscale clubs like Mixx Discotheque or Lucifer. Sip on signature cocktails and soak in the glamorous ambiance as you mingle with fellow partygoers from around the world.\nNight 2: A Taste of Thai Nightlife\nOn your second night in Pattaya Street, delve deeper into the local nightlife scene and discover hidden gems along the bustling strip. Start your evening with a visit to The Pier Disco Club, where live bands and talented performers entertain guests with a mix of Thai and international music.\nFor a unique experience, head to Tony's Entertainment Complex, known for its cabaret shows featuring dazzling performers and extravagant costumes. Marvel at the talent on stage as singers, dancers, and drag queens put on a spectacle that's both entertaining and visually stunning.\nAs the night progresses, make your way to the iconic Walking Street, where the party never stops. Explore themed bars like Candy Shop Bar or Marine Disco for a taste of Pattaya's eclectic nightlife offerings. End your night on a high note by joining the vibrant street parties and soaking in the lively atmosphere until the early hours of the morning.\nConclusion: Memories of Pattaya Street\nAs your two-night adventure on Pattaya Street comes to an end, take with you memories of pulsating beats, colorful lights, and the vibrant energy that defines this iconic nightlife destination. Whether you're a dance enthusiast, music lover, or simply seeking a lively atmosphere, Pattaya Street's clubs and entertainment venues offer an unforgettable experience that's sure to leave you wanting more. Until next time, farewell to the electrifying streets of Pattaya.",
 									"type": "text"
 								},
 								{
@@ -40,83 +40,34 @@
 								},
 								{
 									"key": "tags",
-									"value": "Night Life",
-									"type": "text"
-								},
-								{
-									"key": "tags",
 									"value": "Thailand",
 									"type": "text"
 								},
 								{
-									"key": "tags",
-									"value": "Bangkok",
-									"type": "text"
-								},
-								{
-									"key": "tags",
-									"value": "Thai Food",
-									"type": "text"
-								},
-								{
-									"key": "tags",
-									"value": "Clubbing",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "tags",
-									"value": "Alcohol",
-									"type": "text"
-								},
-								{
-									"key": "attachments",
-									"value": "https://i0.wp.com/toasttothailand.com/wp-content/uploads/2019/03/pattaya-walking-street-1.jpg?fit=1024%2C632&ssl=1",
-									"type": "text"
-								},
-								{
-									"key": "attachments",
-									"value": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/61/42/21/caption.jpg?w=1200&h=-1&s=1",
-									"type": "text"
-								},
-								{
-									"key": "attachments",
+									"key": "thumbnailUrl",
 									"value": "https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg",
-									"type": "text"
-								},
-								{
-									"key": "attachments",
-									"value": "https://cdn.theatlantic.com/media/img/photo/2022/02/views-iceland-february/a01_RC2SNS9XBPBU-1/original.jpg",
 									"type": "text",
 									"disabled": true
 								},
 								{
-									"key": "attachments",
-									"value": "https://www.planetware.com/wpimages/2020/01/iceland-in-pictures-beautiful-places-to-photograph-blue-lagoon.jpg",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "thumbnail",
-									"value": "https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg",
-									"type": "text"
+									"key": "thumbnailFile",
+									"type": "file",
+									"src": "/C:/Users/Lenovo/Downloads/pres2.jpeg"
 								}
 							]
 						},
 						"url": {
-							"raw": "http://localhost:8080/blog?draftId=6606e3963def67f55b307414",
-							"protocol": "http",
+							"raw": "{{dev_url}}/blog?draftId=null",
 							"host": [
-								"localhost"
+								"{{dev_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"blog"
 							],
 							"query": [
 								{
 									"key": "draftId",
-									"value": "6606e3963def67f55b307414"
+									"value": "null"
 								}
 							]
 						}
@@ -126,9 +77,15 @@
 				{
 					"name": "Get all blogs",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/blog/all"
+						"url": "{{dev_url}}/blog/all"
 					},
 					"response": []
 				},
@@ -136,7 +93,10 @@
 					"name": "Get user blogs (with bearer token)",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
 						},
 						"method": "GET",
 						"header": [
@@ -146,7 +106,7 @@
 								"type": "text"
 							}
 						],
-						"url": "http://localhost:8080/blog"
+						"url": "{{dev_url}}/blog"
 					},
 					"response": []
 				},
@@ -156,29 +116,26 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
 							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "blog",
-									"value": "",
-									"type": "text",
-									"disabled": true
-								}
-							]
+							"urlencoded": []
 						},
 						"url": {
-							"raw": "http://localhost:8080/blog/65e36a1f28a3d9c51a81fc53?id=65e379aa882d362f46303db2",
-							"protocol": "http",
+							"raw": "{{dev_url}}/blog/65e368a528a3d9c51a81fc4f?id=65e379aa882d362f46303db2",
 							"host": [
-								"localhost"
+								"{{dev_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"blog",
-								"65e36a1f28a3d9c51a81fc53"
+								"65e368a528a3d9c51a81fc4f"
 							],
 							"query": [
 								{
@@ -223,7 +180,66 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/auth/register"
+						"url": "{{dev_url}}/auth/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{dev_url}}/auth/refresh"
+					},
+					"response": []
+				},
+				{
+					"name": "Google Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "nidamjha@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "profileImage",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Nidam Kumar Jha",
+									"type": "text"
+								},
+								{
+									"key": "oAuthtoken",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{dev_url}}/auth/login/google-login"
 					},
 					"response": []
 				},
@@ -237,17 +253,17 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "jitendrasinghlap@gmail.com",
+									"value": "aryan6400cool@gmail.com",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "jitu@1234",
+									"value": "Aryan@6400",
 									"type": "text"
 								}
 							]
 						},
-						"url": "http://localhost:8080/auth/login"
+						"url": "{{dev_url}}/auth/login"
 					},
 					"response": []
 				},
@@ -290,7 +306,26 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/auth/verify-otp"
+						"url": "{{dev_url}}/auth/verify-otp"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "userId",
+									"value": "65e3650dcf30254b69a5025b",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{dev_url}}/auth/logout"
 					},
 					"response": []
 				}
@@ -305,12 +340,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTIxNjgxMSwiZXhwIjoxNzExMzAzMjExfQ.viCKHKBgrcf1a_YjCCruwYjifBPefyjnK890u9RY0rM"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/user"
+						"url": "{{dev_url}}/user"
 					},
 					"response": []
 				}
@@ -325,16 +360,46 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "urlencoded",
-							"urlencoded": []
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Exploring Pattaya Street's Nightlife: A Two-Night fabulous Adventure",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Welcome to Pattaya Street, a bustling hub of nightlife and entertainment located in the vibrant city of Pattaya, Thailand. Join me as we delve into the electrifying atmosphere, iconic clubs, and unforgettable experiences this famous street has to offer during a two-night escapade.\n\nNight 1: Dive into the Neon Glow\n\nAs the sun sets and the neon lights come alive, Pattaya Street transforms into a playground for night owls and party enthusiasts. Start your evening by exploring the diverse range of clubs and bars lining the street. From pulsating dance floors to laid-back lounges, there's something for every taste.\n\nKick off the night at Club Insomnia, a renowned hotspot known for its energetic beats and lively crowd. Dance the night away to the latest hits spun by top DJs, surrounded by a sea of enthusiastic revelers. For a more upscale experience, venture into Walking Street's upscale clubs like Mixx Discotheque or Lucifer. Sip on signature cocktails and soak in the glamorous ambiance as you mingle with fellow partygoers from around the world.\n\nNight 2: A Taste of Thai Nightlife\n\nOn your second night in Pattaya Street, delve deeper into the local nightlife scene and discover hidden gems along the bustling strip. Start your evening with a visit to The Pier Disco Club, where live bands and talented performers entertain guests with a mix of Thai and international music.\n\nFor a unique experience, head to Tony's Entertainment Complex, known for its cabaret shows featuring dazzling performers and extravagant costumes. Marvel at the talent on stage as singers, dancers, and drag queens put on a spectacle that's both entertaining and visually stunning.\n\nAs the night progresses, make your way to the iconic Walking Street, where the party never stops. Explore themed bars like Candy Shop Bar or Marine Disco for a taste of Pattaya's eclectic nightlife offerings. End your night on a high note by joining the vibrant street parties and soaking in the lively atmosphere until the early hours of the morning.\n\nConclusion: Memories of Pattaya Street\n\nAs your two-night adventure on Pattaya Street comes to an end, take with you memories of pulsating beats, colorful lights, and the vibrant energy that defines this iconic nightlife destination. Whether you're a dance enthusiast, music lover, or simply seeking a lively atmosphere, Pattaya Street's clubs and entertainment venues offer an unforgettable experience that's sure to leave you wanting more. Until next time, farewell to the electrifying streets of Pattaya.",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"value": "https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg",
+									"type": "text"
+								}
+							]
 						},
-						"url": "http://localhost:8080/draft"
+						"url": {
+							"raw": "{{dev_url}}/draft?draftId=6606e6c57406b4da24959b01",
+							"host": [
+								"{{dev_url}}"
+							],
+							"path": [
+								"draft"
+							],
+							"query": [
+								{
+									"key": "draftId",
+									"value": "6606e6c57406b4da24959b01"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -344,12 +409,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcwOTgxNjY0MiwiZXhwIjoxNzA5OTAzMDQyfQ.kLybUMuHXZfeiBL12bNiJWy3ldwH6QO_7NKgOCZPAs8"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/draft/all"
+						"url": "{{dev_url}}/draft/all"
 					},
 					"response": []
 				},
@@ -359,12 +424,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/draft/6606e6c57406b4da24959b01"
+						"url": "{{dev_url}}/draft/6606e6c57406b4da24959b01"
 					},
 					"response": []
 				}
@@ -379,7 +444,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "POST",
@@ -394,7 +459,7 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/bookmark"
+						"url": "{{dev_url}}/bookmark"
 					},
 					"response": []
 				},
@@ -404,12 +469,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/bookmark"
+						"url": "{{dev_url}}/bookmark"
 					},
 					"response": []
 				},
@@ -419,7 +484,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "DELETE",
@@ -434,7 +499,7 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/bookmark"
+						"url": "{{dev_url}}/bookmark"
 					},
 					"response": []
 				}
@@ -449,7 +514,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -458,18 +523,18 @@
 							"mode": "urlencoded",
 							"urlencoded": [
 								{
-									"key": "blogId",
+									"key": "blog",
 									"value": "65e368a528a3d9c51a81fc4f",
 									"type": "text"
 								},
 								{
 									"key": "content",
-									"value": "Me and my friends planned a trip to sikkim but two of them didn't go. One had some legit reasons but one was dumb. Still curse him!!",
+									"value": "Testing comments",
 									"type": "text"
 								}
 							]
 						},
-						"url": "http://localhost:8080/comment/blog/comment"
+						"url": "{{dev_url}}/comment/blog/comment"
 					},
 					"response": []
 				},
@@ -479,7 +544,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -494,32 +559,36 @@
 								},
 								{
 									"key": "comment",
-									"value": "65f366a1e1c16f2766b7661f",
+									"value": "66532b7426353dd2ed4ae783",
 									"type": "text"
 								},
 								{
 									"key": "content",
-									"value": "Glad I could help. Btw where did you guys go? Would love to hear about you trip.",
+									"value": "Nested nested reply 74",
 									"type": "text"
 								}
 							]
 						},
-						"url": "http://localhost:8080/comment/comment/reply"
+						"url": "{{dev_url}}/comment/comment/reply"
 					},
 					"response": []
 				},
 				{
 					"name": "Get comments",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/comment/?id=65e368a528a3d9c51a81fc4f&type=0",
-							"protocol": "http",
+							"raw": "{{dev_url}}/comment/?id=66532ab1df1c7e645fb85e9e&type=1",
 							"host": [
-								"localhost"
+								"{{dev_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"comment",
 								""
@@ -527,11 +596,11 @@
 							"query": [
 								{
 									"key": "id",
-									"value": "65e368a528a3d9c51a81fc4f"
+									"value": "66532ab1df1c7e645fb85e9e"
 								},
 								{
 									"key": "type",
-									"value": "0"
+									"value": "1"
 								}
 							]
 						}
@@ -549,12 +618,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDMzMDA5NSwiZXhwIjoxNzEwNDE2NDk1fQ.2DxPEy1BJXyMqbzkfZKRCteX_LXJsPmI6ZKION3fI_0"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/tags/cities/generateCities"
+						"url": "{{dev_url}}/tags/cities/generateCities"
 					},
 					"response": []
 				},
@@ -564,12 +633,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDMzMDA5NSwiZXhwIjoxNzEwNDE2NDk1fQ.2DxPEy1BJXyMqbzkfZKRCteX_LXJsPmI6ZKION3fI_0"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/tags/activities/generateActivities"
+						"url": "{{dev_url}}/tags/activities/generateActivities"
 					},
 					"response": []
 				},
@@ -579,18 +648,15 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTY0MzQ0NCwiZXhwIjoxNzExNzI5ODQ0fQ.pYpx4I2A7hSJHFQF6aLXm686AXpncgjSUsCX8omm0IA"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "https://travlog.onrender.com/tags/search?search=hiki",
-							"protocol": "https",
+							"raw": "{{dev_url}}/tags/search?search=hiki",
 							"host": [
-								"travlog",
-								"onrender",
-								"com"
+								"{{dev_url}}"
 							],
 							"path": [
 								"tags",
@@ -617,12 +683,12 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxMDYwODgzMywiZXhwIjoxNzEwNjk1MjMzfQ.RXqKXeuWWSEBcqrw3bywvN8gotG1o8nMMiYKbdH3cj8"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "GET",
 						"header": [],
-						"url": "http://localhost:8080/creator/more/65e3650dcf30254b69a5025b"
+						"url": "{{dev_url}}/creator/more/65e3650dcf30254b69a5025b"
 					},
 					"response": []
 				},
@@ -632,7 +698,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -642,12 +708,12 @@
 							"urlencoded": [
 								{
 									"key": "creatorId",
-									"value": "65e379aa882d362f46303db2",
+									"value": "661248be4835dbd5a7086333",
 									"type": "text"
 								}
 							]
 						},
-						"url": "http://localhost:8080/creator/follow"
+						"url": "{{dev_url}}/creator/follow"
 					},
 					"response": []
 				},
@@ -657,7 +723,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMDYzOTQzMywiZXhwIjoxNzEwNzI1ODMzfQ.B3dCkcwAV74XEVThbrw5GwiWAV88tuVC2csiQ3NO5ZQ"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -667,12 +733,12 @@
 							"urlencoded": [
 								{
 									"key": "creatorId",
-									"value": "65e379aa882d362f46303db2",
+									"value": "661248be4835dbd5a7086333",
 									"type": "text"
 								}
 							]
 						},
-						"url": "http://localhost:8080/creator/unfollow"
+						"url": "{{dev_url}}/creator/unfollow"
 					},
 					"response": []
 				},
@@ -682,6 +748,12 @@
 						"disableBodyPruning": true
 					},
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -689,12 +761,10 @@
 							"urlencoded": []
 						},
 						"url": {
-							"raw": "http://localhost:8080/creator/creator-detail/65e3650dcf30254b69a5025b?id=65fb34d0681ef8f2071e4fc0",
-							"protocol": "http",
+							"raw": "{{dev_url}}/creator/creator-detail/65e3650dcf30254b69a5025b?id=65fb34d0681ef8f2071e4fc0",
 							"host": [
-								"localhost"
+								"{{dev_url}}"
 							],
-							"port": "8080",
 							"path": [
 								"creator",
 								"creator-detail",
@@ -721,7 +791,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDM0ZDJjOGQ3ODI4OTY5N2ZmMTBlZiIsImlhdCI6MTcxMTUwMDY5NiwiZXhwIjoxNzExNTg3MDk2fQ.wJhIWYt1ox-RWGt0b-F2x_AJuk8JOQyqHlYVPjTkR-U"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -736,7 +806,7 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/like/blog/like"
+						"url": "{{dev_url}}/like/blog/like"
 					},
 					"response": []
 				},
@@ -746,7 +816,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MDM0ZDJjOGQ3ODI4OTY5N2ZmMTBlZiIsImlhdCI6MTcxMTUwMDY5NiwiZXhwIjoxNzExNTg3MDk2fQ.wJhIWYt1ox-RWGt0b-F2x_AJuk8JOQyqHlYVPjTkR-U"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -756,12 +826,12 @@
 							"urlencoded": [
 								{
 									"key": "blogId",
-									"value": "65e37bcd882d362f46303db4",
+									"value": "66142b098590fadef28bd334",
 									"type": "text"
 								}
 							]
 						},
-						"url": "http://localhost:8080/like/blog/dislike"
+						"url": "{{dev_url}}/like/blog/dislike"
 					},
 					"response": []
 				},
@@ -771,7 +841,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -791,7 +861,7 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/like/comment/like"
+						"url": "{{dev_url}}/like/comment/like"
 					},
 					"response": []
 				},
@@ -801,7 +871,7 @@
 						"auth": {
 							"type": "bearer",
 							"bearer": {
-								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxMTQzMTk3OCwiZXhwIjoxNzExNTE4Mzc4fQ.-uoOOXLC7GbY4H6kNNemIAibygCj1KQz0ABysgJAYMg"
+								"token": "{{bearer_token}}"
 							}
 						},
 						"method": "PATCH",
@@ -821,11 +891,56 @@
 								}
 							]
 						},
-						"url": "http://localhost:8080/like/comment/dislike"
+						"url": "{{dev_url}}/like/comment/dislike"
 					},
 					"response": []
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "{{bearer_token}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "bearer_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "dev_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "prod_url",
+			"value": "https://backend-travlog.vercel.app",
+			"type": "string"
 		}
 	]
 }
