@@ -27,12 +27,12 @@ async function getUserBlogs(req, res) {
     const limit = req.query.limit || 20
     const skip = req.query.skip || 0
     try {
-        // const cachedBlogs = await redis.get(`user_blogs:${req.userId}`)
-        // if(cachedBlogs) {
-        //     return res.status(200).json(JSON.parse(cachedBlogs))
-        // }
+        const cachedBlogs = await redis.get(`user_blogs:${req.userId}`)
+        if(cachedBlogs) {
+            return res.status(200).json(JSON.parse(cachedBlogs))
+        }
         const blogs = await Blog.find({ author: req.userId }).limit(limit).skip(skip).select("_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt").populate("author", "_id name profileLogo profileImage")
-        // redis.setEx(`user_blogs:${req.userId}`, 3600, JSON.stringify(blogs))
+        redis.setEx(`user_blogs:${req.userId}`, 3600, JSON.stringify(blogs))
         res.status(200).json(blogs)
     } catch (err) {
         res.status(500).json({ message: err.message })
