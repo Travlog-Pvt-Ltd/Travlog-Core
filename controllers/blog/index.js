@@ -43,10 +43,7 @@ async function getBlogDetail(req, res) {
     const id = req.query.id
     try {
         if (!id) {
-            const cachedData = await redis.get(`blog_data#blog:${req.params.blogId}`)
-            if (cachedData) return res.status(200).json(JSON.parse(cachedData))
             const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
-            await redis.setEx(`blog_data#blog:${req.params.blogId}`, 3600, JSON.stringify(blog))
             res.status(200).json(blog)
         }
         else {
@@ -57,16 +54,12 @@ async function getBlogDetail(req, res) {
                 if (item.userId.equals(userObject)) check = true
             })
             if (check) {
-                const cachedData = await redis.get(`blog_data#user:${id}#blog:${req.params.blogId}`)
-                if (cachedData) return res.status(200).json(JSON.parse(cachedData))
                 const blog = await Blog.findById(req.params.blogId).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
-                await redis.setEx(`blog_data#user:${id}#blog:${req.params.blogId}`, 3600, JSON.stringify(blog))
                 res.status(200).json(blog)
             }
             else {
                 const instance = await UserInstance.create({ userId: id })
                 const blog = await Blog.findByIdAndUpdate(req.params.blogId, { $push: { views: instance._id }, $inc: { viewCount: 1 } }, { new: true }).select("-system_tags -likes -shares -dislikes -views -comments -bookmarks").populate("author", "_id name profileLogo profileImage")
-                await redis.setEx(`blog_data#user:${id}#blog:${req.params.blogId}`, 3600, JSON.stringify(blog))
                 res.status(201).json(blog)
             }
         }
