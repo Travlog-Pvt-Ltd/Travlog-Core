@@ -2,9 +2,12 @@ import Redis from 'redis'
 
 const redis = Redis.createClient({
     password: process.env.REDIS_PASSWORD,
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
+    socket: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT
+    }
 })
+
 redis.connect().then(()=>{
     console.log("Connected to Redis!")
 }).catch(error=>{
