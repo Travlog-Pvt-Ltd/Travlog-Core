@@ -6,14 +6,19 @@ import redis from '../../config/redis.js';
 import { commentFields, replyFields } from './utils/constants.js';
 
 const getComments = async (req, res) => {
-    const { id, type } = req.query;
+    const { id, type, limit = 10, skip = 0 } = req.query;
     try {
         if (type == 0) {
-            const foundBlog = await Blog.findById(id).populate(commentFields);
+            const foundBlog = await Blog.findById(id).populate({
+                ...commentFields,
+                options: { ...commentFields.options, limit: limit, skip: skip },
+            });
             res.status(201).json(foundBlog.comments);
         } else {
-            const foundComment =
-                await Comment.findById(id).populate(replyFields);
+            const foundComment = await Comment.findById(id).populate({
+                ...replyFields,
+                options: { ...replyFields.options, limit: limit, skip: skip },
+            });
             res.status(201).json(foundComment.replies);
         }
     } catch (err) {
