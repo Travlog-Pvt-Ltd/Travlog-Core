@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import LCEvent from "./likeCommentEvent.js";
+import UserActivity from "./userActivity.js";
 
 const commentSchema = new mongoose.Schema({
     userId: {
@@ -41,6 +43,41 @@ const commentSchema = new mongoose.Schema({
     },
 }, { timestamps: true }
 )
+
+commentSchema.pre('deleteOne', async function (next){
+    try {
+        const commentId = this.getQuery()._id
+        const comment = await Comment.findById(commentId)
+        await Comment.findByIdAndUpdate(comment?.parent, {$pull: {replies: commentId}, $inc: {replyCount: -1}})
+        next()
+    } catch (err) {
+        throw err
+    }
+})
+
+commentSchema.post('deleteOne', async function (doc, next) {
+    try {
+        const commentId = this.getQuery()._id
+        const events = await LCEvent.find({ commentId })
+        await LCEvent.deleteMany({ commentId })
+        await UserActivity.updateMany({
+            $or: [
+                { likeEvent: { $in: events } },
+                { dislikeEvent: { $in: events } },
+                { commentEvent: { $in: events } }
+            ]
+        }, {
+            $pull: {
+                likeEvent: { $in: events },
+                dislikeEvent: { $in: events },
+                commentEvent: { $in: events }
+            }
+        })
+        next()
+    } catch (err) {
+        throw err
+    }
+});
 
 const Comment = mongoose.model("Comment", commentSchema);
 

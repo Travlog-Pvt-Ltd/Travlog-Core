@@ -182,7 +182,7 @@ const refresh = async (req, res) => {
                     }
                 })
         } else {
-            return res.status(401).json({ message: 'No refresh token!' });
+            return res.status(401).json({ message: 'No refresh token! Please login to continue.' });
         }
     } catch (err) {
         res.status(500).json({ message: err.message })

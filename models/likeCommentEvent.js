@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import UserActivity from "./userActivity.js";
 
 const likeCommentEventSchema = new mongoose.Schema({
     blogId: {
@@ -15,6 +16,14 @@ const likeCommentEventSchema = new mongoose.Schema({
     isDislike: Boolean
 }, { timestamps: true }
 )
+
+likeCommentEventSchema.pre('remove', async function (next) {
+    try {
+        console.log("LCEvent deleted!");
+    } catch (err) {
+        throw err
+    }
+});
 
 const LCEvent = mongoose.model("LCEvent", likeCommentEventSchema);
 
