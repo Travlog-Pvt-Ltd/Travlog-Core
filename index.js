@@ -31,8 +31,6 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
         console.error('Error connecting to MongoDB:', error);
     });
 
-
-
 app.use("/user", userRouter)
 app.use("/creator", creatorRouter)
 app.use("/auth", authRouter)
