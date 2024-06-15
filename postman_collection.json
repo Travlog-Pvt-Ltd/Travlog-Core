@@ -539,6 +539,36 @@
 					"response": []
 				},
 				{
+					"name": "Edit comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "commentId",
+									"value": "65f36734a1ee3ac83c279e5e",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Booooo!!",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{dev_url}}/comment/comment/edit"
+					},
+					"response": []
+				},
+				{
 					"name": "Reply on comments",
 					"request": {
 						"auth": {
@@ -948,7 +978,7 @@
 	"variable": [
 		{
 			"key": "bearer_token",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxODQzNTExMiwiZXhwIjoxNzE4NDM4NzEyfQ.SblHU6-i0mraIaGTeHWyy9V9Mwrz6SVZqQFBLw8aD6o",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxODQ1NTY4MywiZXhwIjoxNzE4NDc3MjgzfQ.9Jf1APvKsLgGchCuwS8jABhBHsEHomfXUUtvlSFL34s",
 			"type": "string"
 		},
 		{
