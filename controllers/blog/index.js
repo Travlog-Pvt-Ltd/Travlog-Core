@@ -1,4 +1,4 @@
-import Activity from "../../models/userActivity.js";
+import UserActivity from "../../models/userActivity.js";
 import Blog from "../../models/blog.js"
 import BlogInstance from "../../models/blogInstance.js";
 import LCEvent from "../../models/likeCommentEvent.js";
@@ -171,12 +171,12 @@ async function deleteBlog(req, res) {
         await Blog.findByIdAndDelete(req.params.blogId)
         await User.findByIdAndUpdate(req.userId, { $pull: { blogs: req.params.blogId } })
         const blogInstances = await BlogInstance.find({ blogId: req.params.blogId })
-        await Activity.updateOne({ userId: req.userId }, { $pull: { readEvent: { $in: blogInstances } } })
+        await UserActivity.updateOne({ userId: req.userId }, { $pull: { readEvent: { $in: blogInstances } } })
         await BlogInstance.deleteMany({ blogId: req.params.blogId })
         const lceEvents = await LCEvent.find({ blogId: req.params.blogId })
-        await Activity.updateOne({ userId: req.userId }, { $pull: { likeEvent: { $in: lceEvents } } })
-        await Activity.updateOne({ userId: req.userId }, { $pull: { dislikeEvent: { $in: lceEvents } } })
-        await Activity.updateOne({ userId: req.userId }, { $pull: { commentEvent: { $in: lceEvents } } })
+        await UserActivity.updateOne({ userId: req.userId }, { $pull: { likeEvent: { $in: lceEvents } } })
+        await UserActivity.updateOne({ userId: req.userId }, { $pull: { dislikeEvent: { $in: lceEvents } } })
+        await UserActivity.updateOne({ userId: req.userId }, { $pull: { commentEvent: { $in: lceEvents } } })
         await LCEvent.deleteMany({ blogId: req.params.blogId })
         res.status(204).json("Successfully deleted blog!")
     } catch (err) {

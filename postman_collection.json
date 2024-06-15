@@ -253,7 +253,7 @@
 							"urlencoded": [
 								{
 									"key": "email",
-									"value": "aryan6400cool@gmail.com",
+									"value": "singharyan7481@gmail.com",
 									"type": "text"
 								},
 								{
@@ -570,6 +570,25 @@
 							]
 						},
 						"url": "{{dev_url}}/comment/comment/reply"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": "{{dev_url}}/comment/delete/666d36f6f04080bcd1fbf1ce"
 					},
 					"response": []
 				},
@@ -929,7 +948,7 @@
 	"variable": [
 		{
 			"key": "bearer_token",
-			"value": "",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZjVkMWMxMmM4NDE3MWM2NjNlNTQ0ZSIsImlhdCI6MTcxODQzNTExMiwiZXhwIjoxNzE4NDM4NzEyfQ.SblHU6-i0mraIaGTeHWyy9V9Mwrz6SVZqQFBLw8aD6o",
 			"type": "string"
 		},
 		{
