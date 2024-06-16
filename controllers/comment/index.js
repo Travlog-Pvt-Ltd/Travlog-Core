@@ -13,13 +13,20 @@ const getComments = async (req, res) => {
                 ...commentFields,
                 options: { ...commentFields.options, limit: limit, skip: skip },
             });
-            res.status(201).json(foundBlog.comments);
+            res.status(201).json({
+                comment: foundBlog.comments,
+                skip: Number(skip + limit),
+                limit: limit,
+            });
         } else {
             const foundComment = await Comment.findById(id).populate({
                 ...replyFields,
                 options: { ...replyFields.options, limit: limit, skip: skip },
             });
-            res.status(201).json(foundComment.replies);
+            res.status(201).json({
+                comment: foundComment.replies,
+                skip: Number(skip + limit),
+            });
         }
     } catch (err) {
         res.status(500).json({ message: err.message });
