@@ -40,7 +40,9 @@ const addBookmark = async (req, res) => {
             { new: true }
         )
             .select(blogFieldsToSelect)
-            .populate('author', authorFieldsForBlog);
+            .populate('author', authorFieldsForBlog)
+            .populate('tags.places', 'name')
+            .populate('tags.activities', 'name');
         await redis.setEx(
             `bookmarks#user:${req.userId}#limit:$10#skip:$0`,
             3600,

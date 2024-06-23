@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import UserActivity from '../../models/userActivity.js';
 import Blog from '../../models/blog.js';
 import BlogInstance from '../../models/blogInstance.js';
@@ -5,7 +6,6 @@ import LCEvent from '../../models/likeCommentEvent.js';
 import User from '../../models/user.js';
 import OrganicUserInstance from '../../models/organicUserInstance.js';
 import UserInstance from '../../models/userInstance.js';
-import mongoose from 'mongoose';
 import Draft from '../../models/draft.js';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { getFirebaseStorage } from '../../config/Firebase.js';
@@ -21,7 +21,9 @@ async function getAllBlogs(req, res) {
             .limit(limit)
             .skip(skip)
             .select(blogFieldsToSelect)
-            .populate('author', authorFieldsForBlog);
+            .populate('author', authorFieldsForBlog)
+            .populate('tags.places', 'name')
+            .populate('tags.activities', 'name');
         res.status(200).json(blogs);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -40,7 +42,9 @@ async function getUserBlogs(req, res) {
             .limit(limit)
             .skip(skip)
             .select(blogFieldsToSelect)
-            .populate('author', authorFieldsForBlog);
+            .populate('author', authorFieldsForBlog)
+            .populate('tags.places', 'name')
+            .populate('tags.activities', 'name');
         redis.setEx(`user_blogs:${req.userId}`, 3600, JSON.stringify(blogs));
         res.status(200).json(blogs);
     } catch (err) {
@@ -56,7 +60,9 @@ async function getBlogDetail(req, res) {
                 .select(
                     '-system_tags -likes -shares -dislikes -views -comments -bookmarks'
                 )
-                .populate('author', authorFieldsForBlog);
+                .populate('author', authorFieldsForBlog)
+                .populate('tags.places', 'name')
+                .populate('tags.activities', 'name');
             res.status(200).json(blog);
         } else {
             const blog = await Blog.findById(req.params.blogId).populate(
@@ -72,7 +78,9 @@ async function getBlogDetail(req, res) {
                     .select(
                         '-system_tags -likes -shares -dislikes -views -comments -bookmarks'
                     )
-                    .populate('author', authorFieldsForBlog);
+                    .populate('author', authorFieldsForBlog)
+                    .populate('tags.places', 'name')
+                    .populate('tags.activities', 'name');
                 res.status(200).json(blog);
             } else {
                 const instance = await UserInstance.create({ userId: id });
@@ -84,7 +92,9 @@ async function getBlogDetail(req, res) {
                     .select(
                         '-system_tags -likes -shares -dislikes -views -comments -bookmarks'
                     )
-                    .populate('author', authorFieldsForBlog);
+                    .populate('author', authorFieldsForBlog)
+                    .populate('tags.places', 'name')
+                    .populate('tags.activities', 'name');
                 res.status(201).json(blog);
             }
         }
@@ -248,4 +258,51 @@ async function deleteBlog(req, res) {
     }
 }
 
-export { createBlog, getAllBlogs, getUserBlogs, getBlogDetail, deleteBlog };
+const getSearchedBlogs = async (req, res) => {
+    const { tagId } = req.params;
+    const isPlace = req.query.isPlace || false;
+    const limit = req.query.limit || 10;
+    const skip = req.query.skip || 0;
+    try {
+        if (isPlace) {
+            await UserActivity.findOneAndUpdate(
+                { userId: req.userId },
+                { $push: { placeSearches: tagId } }
+            );
+            const result = await Blog.find({ 'tags.places': tagId })
+                .sort({ likeCount: -1 })
+                .limit(limit)
+                .skip(skip)
+                .select(blogFieldsToSelect)
+                .populate('author', authorFieldsForBlog)
+                .populate('tags.places', 'name')
+                .populate('tags.activities', 'name');
+            res.status(200).json(result);
+        } else {
+            await UserActivity.findOneAndUpdate(
+                { userId: req.userId },
+                { $push: { activitySearches: tagId } }
+            );
+            const result = await Blog.find({ 'tags.activities': tagId })
+                .sort({ likeCount: -1 })
+                .limit(limit)
+                .skip(skip)
+                .select(blogFieldsToSelect)
+                .populate('author', authorFieldsForBlog)
+                .populate('tags.places', 'name')
+                .populate('tags.activities', 'name');
+            res.status(200).json(result);
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+export {
+    createBlog,
+    getAllBlogs,
+    getUserBlogs,
+    getBlogDetail,
+    deleteBlog,
+    getSearchedBlogs,
+};
