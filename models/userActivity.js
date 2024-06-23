@@ -1,42 +1,65 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
-const activitySchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+const userActivitySchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        followEvent: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'UserInstance',
+            },
+        ],
+        unfollowEvent: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'UserInstance',
+            },
+        ],
+        readEvent: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'BlogInstance',
+            },
+        ],
+        likeEvent: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'LCEvent',
+            },
+        ],
+        dislikeEvent: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'LCEvent',
+            },
+        ],
+        commentEvent: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'LCEvent',
+            },
+        ],
+        placeSearches: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Place',
+                set: (placeSearches) => [...new Set(placeSearches)],
+            },
+        ],
+        activitySearches: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Activity',
+                set: (activitySearches) => [...new Set(activitySearches)],
+            },
+        ],
     },
-    followEvent: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserInstance"
-    }],
-    unfollowEvent: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "UserInstance"
-    }],
-    readEvent: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "BlogInstance"
-    }],
-    likeEvent: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "LCEvent"
-    }],
-    dislikeEvent: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "LCEvent"
-    }],
-    commentEvent: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "LCEvent"
-    }],
-    searches: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tag",
-        set: (searches) => [...new Set(searches)],
-    }]
-}, { timestamps: true }
-)
+    { timestamps: true }
+);
 
-const UserActivity = mongoose.model("UserActivity", activitySchema);
+const UserActivity = mongoose.model('UserActivity', userActivitySchema);
 
 export default UserActivity;

@@ -21,40 +21,13 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "title",
-									"value": "Exploring Pattaya Street's Nightlife: A Two-Night Adventure",
-									"type": "text"
-								},
-								{
-									"key": "content",
-									"value": "Welcome to Pattaya Street, a bustling hub of nightlife and entertainment located in the vibrant city of Pattaya, Thailand. Join me as we delve into the electrifying atmosphere, iconic clubs, and unforgettable experiences this famous street has to offer during a two-night escapade.\nNight 1: Dive into the Neon Glow\nAs the sun sets and the neon lights come alive, Pattaya Street transforms into a playground for night owls and party enthusiasts. Start your evening by exploring the diverse range of clubs and bars lining the street. From pulsating dance floors to laid-back lounges, there's something for every taste.\nKick off the night at Club Insomnia, a renowned hotspot known for its energetic beats and lively crowd. Dance the night away to the latest hits spun by top DJs, surrounded by a sea of enthusiastic revelers. For a more upscale experience, venture into Walking Street's upscale clubs like Mixx Discotheque or Lucifer. Sip on signature cocktails and soak in the glamorous ambiance as you mingle with fellow partygoers from around the world.\nNight 2: A Taste of Thai Nightlife\nOn your second night in Pattaya Street, delve deeper into the local nightlife scene and discover hidden gems along the bustling strip. Start your evening with a visit to The Pier Disco Club, where live bands and talented performers entertain guests with a mix of Thai and international music.\nFor a unique experience, head to Tony's Entertainment Complex, known for its cabaret shows featuring dazzling performers and extravagant costumes. Marvel at the talent on stage as singers, dancers, and drag queens put on a spectacle that's both entertaining and visually stunning.\nAs the night progresses, make your way to the iconic Walking Street, where the party never stops. Explore themed bars like Candy Shop Bar or Marine Disco for a taste of Pattaya's eclectic nightlife offerings. End your night on a high note by joining the vibrant street parties and soaking in the lively atmosphere until the early hours of the morning.\nConclusion: Memories of Pattaya Street\nAs your two-night adventure on Pattaya Street comes to an end, take with you memories of pulsating beats, colorful lights, and the vibrant energy that defines this iconic nightlife destination. Whether you're a dance enthusiast, music lover, or simply seeking a lively atmosphere, Pattaya Street's clubs and entertainment venues offer an unforgettable experience that's sure to leave you wanting more. Until next time, farewell to the electrifying streets of Pattaya.",
-									"type": "text"
-								},
-								{
-									"key": "tags",
-									"value": "Pattaya Street",
-									"type": "text"
-								},
-								{
-									"key": "tags",
-									"value": "Thailand",
-									"type": "text"
-								},
-								{
-									"key": "thumbnailUrl",
-									"value": "https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "thumbnailFile",
-									"type": "file",
-									"src": "/C:/Users/Lenovo/Downloads/pres2.jpeg"
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Testing tag object\",\r\n    \"content\": \"Some content again\",\r\n    \"thumbnailUrl\": \"https://live.staticflickr.com/1841/43838186614_3b3f380ff3_b.jpg\",\r\n    \"tags\": {\r\n        \"places\": [\r\n            {\r\n                \"isPlace\": true,\r\n                \"_id\": \"6671eb9b2d50bcfdfa0b1754\",\r\n                \"name\": \"Tokyo\",\r\n                \"hasInfo\": false,\r\n                \"createdAt\": \"2024-06-18T20:18:41.512Z\",\r\n                \"updatedAt\": \"2024-06-18T20:18:41.512Z\",\r\n                \"__v\": 0\r\n            }\r\n        ],\r\n        \"activities\": [\r\n            {\r\n                \"_id\": \"6677428e14809e3a305196a2\",\r\n                \"name\": \"Snowmobiling\",\r\n                \"types\": [\r\n                    \"Adventure\",\r\n                    \"Mountains\",\r\n                    \"Hill Station\"\r\n                ],\r\n                \"__v\": 0,\r\n                \"createdAt\": \"2024-06-22T21:30:54.931Z\",\r\n                \"updatedAt\": \"2024-06-22T21:30:54.931Z\"\r\n            },\r\n            {\r\n                \"_id\": \"6677428e14809e3a30519685\",\r\n                \"name\": \"Hiking\",\r\n                \"types\": [\r\n                    \"Adventure\",\r\n                    \"Mountains\",\r\n                    \"Hill Station\"\r\n                ],\r\n                \"__v\": 0,\r\n                \"createdAt\": \"2024-06-22T21:30:54.928Z\",\r\n                \"updatedAt\": \"2024-06-22T21:30:54.928Z\"\r\n            }\r\n        ]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{dev_url}}/blog?draftId=null",
@@ -86,6 +59,41 @@
 						"method": "GET",
 						"header": [],
 						"url": "{{dev_url}}/blog/all"
+					},
+					"response": []
+				},
+				{
+					"name": "Get searched blogs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{dev_url}}/blog/results/6677428e14809e3a305196a2?limit=10&skip=0",
+							"host": [
+								"{{dev_url}}"
+							],
+							"path": [
+								"blog",
+								"results",
+								"6677428e14809e3a305196a2"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "skip",
+									"value": "0"
+								}
+							]
+						}
 					},
 					"response": []
 				},
@@ -128,22 +136,7 @@
 							"mode": "urlencoded",
 							"urlencoded": []
 						},
-						"url": {
-							"raw": "{{dev_url}}/blog/65e368a528a3d9c51a81fc4f?id=65e379aa882d362f46303db2",
-							"host": [
-								"{{dev_url}}"
-							],
-							"path": [
-								"blog",
-								"65e368a528a3d9c51a81fc4f"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "65e379aa882d362f46303db2"
-								}
-							]
-						}
+						"url": "{{dev_url}}/blog/6677cc830eac78132423a6a9"
 					},
 					"response": []
 				}
@@ -711,7 +704,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{dev_url}}/tags/search?search=hiki",
+							"raw": "{{dev_url}}/tags/search?search=sn",
 							"host": [
 								"{{dev_url}}"
 							],
@@ -722,10 +715,25 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "hiki"
+									"value": "sn"
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Tags Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{dev_url}}/tags/place/info/6671eb9b2d50bcfdfa0b13aa"
 					},
 					"response": []
 				}
@@ -986,7 +994,7 @@
 	"variable": [
 		{
 			"key": "bearer_token",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxODUzNjQzOSwiZXhwIjoxNzE4NTQwMDM5fQ.DUfPOsL8cFJYNB6flaNGHp7iQTRfYgsQMjimqL8hUXo",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxOTE0MDg2MSwiZXhwIjoxNzE5MTQ0NDYxfQ.W6tDjVwhKyzhUZSqdEv3DuEdX6oVmk55cNxpVeWqO_c",
 			"type": "string"
 		},
 		{
