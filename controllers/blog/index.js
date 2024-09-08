@@ -11,6 +11,8 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { getFirebaseStorage } from '../../config/Firebase.js';
 import redis, { updateUserInCache } from '../../config/redis.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from './utils/constants.js';
+import Place from '../../models/place.js';
+import Activity from '../../models/activities.js';
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
@@ -219,6 +221,14 @@ async function createBlog(req, res) {
         }
         await updateUserInCache(user);
         res.status(201).json({ messsage: 'Blog created successfully!' });
+        await Place.updateMany(
+            { _id: { $in: tags.places } },
+            { $inc: { blogCount: 1 } }
+        );
+        await Activity.updateMany(
+            { _id: { $in: tags.activities } },
+            { $inc: { blogCount: 1 } }
+        );
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -226,6 +236,15 @@ async function createBlog(req, res) {
 
 async function deleteBlog(req, res) {
     try {
+        const tags = await Blog.findById(req.params.blogId).tags;
+        await Place.updateMany(
+            { _id: { $in: tags.places } },
+            { $inc: { blogCount: -1 } }
+        );
+        await Activity.updateMany(
+            { _id: { $in: tags.activities } },
+            { $inc: { blogCount: -1 } }
+        );
         await Blog.findByIdAndDelete(req.params.blogId);
         await User.findByIdAndUpdate(req.userId, {
             $pull: { blogs: req.params.blogId },
@@ -269,6 +288,7 @@ const getSearchedBlogs = async (req, res) => {
                 { userId: req.userId },
                 { $push: { placeSearches: tagId } }
             );
+            await Place.findByIdAndUpdate(tagId, { $inc: { searchCount: 1 } });
             const result = await Blog.find({ 'tags.places': tagId })
                 .sort({ likeCount: -1 })
                 .limit(limit)
@@ -283,6 +303,9 @@ const getSearchedBlogs = async (req, res) => {
                 { userId: req.userId },
                 { $push: { activitySearches: tagId } }
             );
+            await Activity.findByIdAndUpdate(tagId, {
+                $inc: { searchCount: 1 },
+            });
             const result = await Blog.find({ 'tags.activities': tagId })
                 .sort({ likeCount: -1 })
                 .limit(limit)
