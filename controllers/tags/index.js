@@ -1,17 +1,11 @@
-import Activity from '../../models/activities.js';
 import Place from '../../models/place.js';
+import { customSearchTags } from './searchUtils.js';
 
 const searchTags = async (req, res) => {
     try {
-        const keyword = req.query.search
-            ? {
-                  $and: [{ name: { $regex: req.query.search, $options: 'i' } }],
-              }
-            : {};
-        const places = await Place.find(keyword).limit(5);
-        const activities = await Activity.find(keyword).limit(5);
-        const results = [...places, ...activities];
-        res.status(200).json(results);
+        const result = await customSearchTags(req.query.search);
+        // Todo: Serialize this data into required format before sending as response
+        res.status(200).json(result);
     } catch (err) {
         res.status(401).json({ message: err.message });
     }

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { updateTagIndex } from '../controllers/tags/searchUtils.js';
 
 const activitySchema = new mongoose.Schema(
     {
@@ -21,6 +22,15 @@ const activitySchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+activitySchema.post('save', async function (doc, next) {
+    try {
+        await updateTagIndex(doc);
+        next();
+    } catch (error) {
+        throw error;
+    }
+});
 
 const Activity = mongoose.model('Activity', activitySchema);
 
