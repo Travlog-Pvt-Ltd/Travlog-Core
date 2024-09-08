@@ -35,6 +35,14 @@ const placeSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'PlaceInfo',
         },
+        searchCount: {
+            type: Number,
+            default: 0,
+        },
+        blogCount: {
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true }
 );

@@ -10,6 +10,14 @@ const activitySchema = new mongoose.Schema(
                 type: String,
             },
         ],
+        searchCount: {
+            type: Number,
+            default: 0,
+        },
+        blogCount: {
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true }
 );
