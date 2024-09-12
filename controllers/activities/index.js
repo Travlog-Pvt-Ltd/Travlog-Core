@@ -1,4 +1,4 @@
-import Activity from '../../models/activities.js';
+import Activity from '@models/activities.js';
 
 const createActivities = async (req, res) => {
     const data = [

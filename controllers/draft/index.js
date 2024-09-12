@@ -1,8 +1,8 @@
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { getFirebaseStorage } from '../../config/Firebase.js';
-import Draft from '../../models/draft.js';
-import User from '../../models/user.js';
-import redis, { updateUserInCache } from '../../config/redis.js';
+import { getFirebaseStorage } from '@config/Firebase.js';
+import Draft from '@models/draft.js';
+import User from '@models/user.js';
+import redis, { updateUserInCache } from '@config/redis.js';
 
 async function createDraft(req, res) {
     const { title, content, tags, thumbnailUrl } = req.body;
@@ -20,7 +20,7 @@ async function createDraft(req, res) {
             );
             const fileRef = ref(
                 storage,
-                `thumbnails/${thumbnailFile.originalname}---${currentDate}`
+                `thumbnails/${thumbnailFile.originalname}::${currentDate}`
             );
             const uploadTask = await uploadBytesResumable(
                 fileRef,
@@ -95,11 +95,9 @@ async function getDraftDetail(req, res) {
             author: req.userId,
         });
         if (!foundDraft)
-            return res
-                .status(401)
-                .json({
-                    message: 'User is not authorized to view this draft!',
-                });
+            return res.status(401).json({
+                message: 'User is not authorized to view this draft!',
+            });
         foundDraft
             .populate('tags.places', 'name')
             .populate('tags.activities', 'name');

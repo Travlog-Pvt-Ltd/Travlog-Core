@@ -1,5 +1,5 @@
+import { tagsIndexProducer } from '@controllers/tags/asyncService/producers';
 import mongoose from 'mongoose';
-import { updateTagIndex } from '../controllers/tags/searchUtils.js';
 
 const activitySchema = new mongoose.Schema(
     {
@@ -25,7 +25,17 @@ const activitySchema = new mongoose.Schema(
 
 activitySchema.post('save', async function (doc, next) {
     try {
-        await updateTagIndex(doc);
+        await tagsIndexProducer({ activities: [doc._id] });
+        next();
+    } catch (error) {
+        throw error;
+    }
+});
+
+activitySchema.post('updateOne', async function (doc, next) {
+    try {
+        const docId = this.getQuery()._id;
+        await tagsIndexProducer({ activities: [docId] });
         next();
     } catch (error) {
         throw error;
