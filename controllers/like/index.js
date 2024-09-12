@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import Blog from '../../models/blog.js';
-import LCEvent from '../../models/likeCommentEvent.js';
-import UserActivity from '../../models/userActivity.js';
-import UserInstance from '../../models/userInstance.js';
-import Comment from '../../models/comment.js';
-import User from '../../models/user.js';
-import redis, { updateUserInCache } from '../../config/redis.js';
+import Blog from '@models/blog.js';
+import LCEvent from '@models/likeCommentEvent.js';
+import UserActivity from '@models/userActivity.js';
+import UserInstance from '@models/userInstance.js';
+import Comment from '@models/comment.js';
+import User from '@models/user.js';
+import redis, { updateUserInCache } from '@config/redis.js';
 
 const likeBlog = async (req, res) => {
     const blog = req.body.blogId;

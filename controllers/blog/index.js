@@ -1,18 +1,19 @@
 import mongoose from 'mongoose';
-import UserActivity from '../../models/userActivity.js';
-import Blog from '../../models/blog.js';
-import BlogInstance from '../../models/blogInstance.js';
-import LCEvent from '../../models/likeCommentEvent.js';
-import User from '../../models/user.js';
-import OrganicUserInstance from '../../models/organicUserInstance.js';
-import UserInstance from '../../models/userInstance.js';
-import Draft from '../../models/draft.js';
+import UserActivity from '@models/userActivity.js';
+import Blog from '@models/blog.js';
+import BlogInstance from '@models/blogInstance.js';
+import LCEvent from '@models/likeCommentEvent.js';
+import User from '@models/user.js';
+import OrganicUserInstance from '@models/organicUserInstance.js';
+import UserInstance from '@models/userInstance.js';
+import Draft from '@models/draft.js';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { getFirebaseStorage } from '../../config/Firebase.js';
-import redis, { updateUserInCache } from '../../config/redis.js';
+import { getFirebaseStorage } from '@config/Firebase.js';
+import redis, { updateUserInCache } from '@config/redis.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from './utils/constants.js';
-import Place from '../../models/place.js';
-import Activity from '../../models/activities.js';
+import Place from '@models/place.js';
+import Activity from '@models/activities.js';
+import { tagsIndexProducer } from '@controllers/tags/asyncService/producers.js';
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
@@ -177,7 +178,7 @@ async function createBlog(req, res) {
             );
             const fileRef = ref(
                 storage,
-                `thumbnails/${thumbnailFile.originalname}---${currentDate}`
+                `thumbnails/${thumbnailFile.originalname}::${currentDate}`
             );
             const uploadTask = await uploadBytesResumable(
                 fileRef,
@@ -219,16 +220,22 @@ async function createBlog(req, res) {
                 )
                 .populate('followings', '_id userId');
         }
-        await updateUserInCache(user);
+        await Promise.all([
+            updateUserInCache(user),
+            Place.updateMany(
+                { _id: { $in: tags.places } },
+                { $inc: { blogCount: 1 } }
+            ),
+            Activity.updateMany(
+                { _id: { $in: tags.activities } },
+                { $inc: { blogCount: 1 } }
+            ),
+        ]);
+        await tagsIndexProducer({
+            places: tags.places,
+            activities: tags.activities,
+        });
         res.status(201).json({ messsage: 'Blog created successfully!' });
-        await Place.updateMany(
-            { _id: { $in: tags.places } },
-            { $inc: { blogCount: 1 } }
-        );
-        await Activity.updateMany(
-            { _id: { $in: tags.activities } },
-            { $inc: { blogCount: 1 } }
-        );
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -237,40 +244,41 @@ async function createBlog(req, res) {
 async function deleteBlog(req, res) {
     try {
         const tags = await Blog.findById(req.params.blogId).tags;
-        await Place.updateMany(
-            { _id: { $in: tags.places } },
-            { $inc: { blogCount: -1 } }
-        );
-        await Activity.updateMany(
-            { _id: { $in: tags.activities } },
-            { $inc: { blogCount: -1 } }
-        );
-        await Blog.findByIdAndDelete(req.params.blogId);
-        await User.findByIdAndUpdate(req.userId, {
-            $pull: { blogs: req.params.blogId },
-        });
         const blogInstances = await BlogInstance.find({
             blogId: req.params.blogId,
         });
-        await UserActivity.updateOne(
-            { userId: req.userId },
-            { $pull: { readEvent: { $in: blogInstances } } }
-        );
-        await BlogInstance.deleteMany({ blogId: req.params.blogId });
         const lceEvents = await LCEvent.find({ blogId: req.params.blogId });
-        await UserActivity.updateOne(
-            { userId: req.userId },
-            { $pull: { likeEvent: { $in: lceEvents } } }
-        );
-        await UserActivity.updateOne(
-            { userId: req.userId },
-            { $pull: { dislikeEvent: { $in: lceEvents } } }
-        );
-        await UserActivity.updateOne(
-            { userId: req.userId },
-            { $pull: { commentEvent: { $in: lceEvents } } }
-        );
-        await LCEvent.deleteMany({ blogId: req.params.blogId });
+        await Promise.all([
+            Place.updateMany(
+                { _id: { $in: tags.places } },
+                { $inc: { blogCount: -1 } }
+            ),
+            Activity.updateMany(
+                { _id: { $in: tags.activities } },
+                { $inc: { blogCount: -1 } }
+            ),
+            Blog.findByIdAndDelete(req.params.blogId),
+            User.findByIdAndUpdate(req.userId, {
+                $pull: { blogs: req.params.blogId },
+            }),
+            BlogInstance.deleteMany({ blogId: req.params.blogId }),
+            UserActivity.updateOne(
+                { userId: req.userId },
+                {
+                    $pull: {
+                        readEvent: { $in: blogInstances },
+                    },
+                    likeEvent: { $in: lceEvents },
+                    dislikeEvent: { $in: lceEvents },
+                    commentEvent: { $in: lceEvents },
+                }
+            ),
+            LCEvent.deleteMany({ blogId: req.params.blogId }),
+        ]);
+        await tagsIndexProducer({
+            places: tags.places,
+            activities: tags.activities,
+        });
         res.status(204).json('Successfully deleted blog!');
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -278,17 +286,19 @@ async function deleteBlog(req, res) {
 }
 
 const getSearchedBlogs = async (req, res) => {
-    const { tagId } = req.params;
+    const tagId = req.params.tagId;
     const isPlace = req.query.isPlace || false;
     const limit = req.query.limit || 10;
     const skip = req.query.skip || 0;
     try {
         if (isPlace) {
-            await UserActivity.findOneAndUpdate(
-                { userId: req.userId },
-                { $push: { placeSearches: tagId } }
-            );
-            await Place.findByIdAndUpdate(tagId, { $inc: { searchCount: 1 } });
+            await Promise.all([
+                UserActivity.findOneAndUpdate(
+                    { userId: req.userId },
+                    { $addToSet: { placeSearches: tagId } }
+                ),
+                Place.updateOne({ _id: tagId }, { $inc: { searchCount: 1 } }),
+            ]);
             const result = await Blog.find({ 'tags.places': tagId })
                 .sort({ likeCount: -1 })
                 .limit(limit)
@@ -299,13 +309,16 @@ const getSearchedBlogs = async (req, res) => {
                 .populate('tags.activities', 'name');
             res.status(200).json(result);
         } else {
-            await UserActivity.findOneAndUpdate(
-                { userId: req.userId },
-                { $push: { activitySearches: tagId } }
-            );
-            await Activity.findByIdAndUpdate(tagId, {
-                $inc: { searchCount: 1 },
-            });
+            await Promise.all([
+                UserActivity.findOneAndUpdate(
+                    { userId: req.userId },
+                    { $addToSet: { activitySearches: tagId } }
+                ),
+                Activity.updateOne(
+                    { _id: tagId },
+                    { $inc: { searchCount: 1 } }
+                ),
+            ]);
             const result = await Blog.find({ 'tags.activities': tagId })
                 .sort({ likeCount: -1 })
                 .limit(limit)
@@ -317,6 +330,7 @@ const getSearchedBlogs = async (req, res) => {
             res.status(200).json(result);
         }
     } catch (err) {
+        console.log(err.message);
         res.status(500).json({ message: err.message });
     }
 };

@@ -1,4 +1,4 @@
-import Place from '../../models/place.js';
+import Place from '@models/place.js';
 import { customSearchTags } from './searchUtils.js';
 
 const searchTags = async (req, res) => {

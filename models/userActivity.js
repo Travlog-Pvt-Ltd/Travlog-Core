@@ -46,14 +46,12 @@ const userActivitySchema = new mongoose.Schema(
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Place',
-                set: (placeSearches) => [...new Set(placeSearches)],
             },
         ],
         activitySearches: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Activity',
-                set: (activitySearches) => [...new Set(activitySearches)],
             },
         ],
     },

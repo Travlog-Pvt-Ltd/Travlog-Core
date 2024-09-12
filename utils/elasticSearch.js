@@ -1,4 +1,5 @@
-import getESClient from '../config/elasticSearch.js';
+import getESClient from '@config/elasticSearch';
+import log from 'npmlog';
 
 export const createDataIndex = async (id, doc, index) => {
     try {
@@ -44,7 +45,9 @@ export const bulkCreateDataIndex = async (docs, index) => {
             const { _id, ...newDoc } = doc;
             return [{ index: { _index: index, _id: doc._id } }, newDoc];
         });
+        log.info(`Started indexing ${docs.length} entries...`);
         const result = await getESClient().bulk({ refresh: true, operations });
+        log.info(`Finished indexing ${docs.length} entries...`);
         return result;
     } catch (error) {
         throw error;

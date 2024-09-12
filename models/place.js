@@ -1,3 +1,4 @@
+import { tagsIndexProducer } from '@controllers/tags/asyncService/producers';
 import mongoose from 'mongoose';
 
 const placeSchema = new mongoose.Schema(
@@ -46,6 +47,25 @@ const placeSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+placeSchema.post('save', async function (doc, next) {
+    try {
+        await tagsIndexProducer({ places: [doc._id] });
+        next();
+    } catch (error) {
+        throw error;
+    }
+});
+
+placeSchema.post('updateOne', async function (doc, next) {
+    try {
+        const docId = this.getQuery()._id;
+        await tagsIndexProducer({ places: [docId] });
+        next();
+    } catch (error) {
+        throw error;
+    }
+});
 
 const Place = mongoose.model('Place', placeSchema);
 

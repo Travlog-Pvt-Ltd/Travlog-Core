@@ -1,8 +1,8 @@
-import Blog from '../../models/blog.js';
-import LCEvent from '../../models/likeCommentEvent.js';
-import UserActivity from '../../models/userActivity.js';
-import Comment from '../../models/comment.js';
-import redis from '../../config/redis.js';
+import Blog from '@models/blog.js';
+import LCEvent from '@models/likeCommentEvent.js';
+import UserActivity from '@models/userActivity.js';
+import Comment from '@models/comment.js';
+import redis from '@config/redis.js';
 import { commentFields, replyFields } from './utils/constants.js';
 
 const getComments = async (req, res) => {
