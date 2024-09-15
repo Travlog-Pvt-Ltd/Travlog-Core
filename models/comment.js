@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import LCEvent from './likeCommentEvent.js';
 import UserActivity from './userActivity.js';
+import { deleteCommentProducer } from '../controllers/comment/asyncService/producer.js';
 
 const commentSchema = new mongoose.Schema(
     {
@@ -18,6 +19,15 @@ const commentSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        deleted: {
+            type: Boolean,
+            default: false,
+        },
+        toDelete: {
+            type: Boolean,
+            default: false,
+        },
+        markedForDeletionAt: Date,
         blog: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Blog',
@@ -55,6 +65,13 @@ const commentSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+commentSchema.post('findOneAndUpdate', async function (doc, next) {
+    if (doc.deleted && doc.replies?.length) {
+        await deleteCommentProducer(doc);
+    }
+    next();
+});
 
 commentSchema.pre('deleteOne', async function (next) {
     try {

@@ -1,4 +1,4 @@
-import { tagsIndexProducer } from '@controllers/tags/asyncService/producers';
+import { tagsIndexProducer } from '../controllers/tags/asyncService/producers.js';
 import mongoose from 'mongoose';
 
 const placeSchema = new mongoose.Schema(

@@ -1,5 +1,3 @@
-import Activity from '@models/activities.js';
-
 const createActivities = async (req, res) => {
     const data = [
         { name: 'Hiking', types: ['Adventure', 'Mountains', 'Hill Station'] },

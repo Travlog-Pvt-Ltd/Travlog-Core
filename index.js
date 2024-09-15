@@ -13,6 +13,9 @@ import commentRouter from './routers/comment/index.js';
 import creatorRouter from './routers/creator/index.js';
 import bookmarkRouter from './routers/bookmark/index.js';
 import { broker } from './utils/kafka/index.js';
+import log from 'npmlog';
+import './config/redis.js';
+import './cron.config.js';
 
 dotenv.config();
 const app = express();
@@ -28,12 +31,12 @@ app.use(
 );
 
 mongoose
-    .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+    .connect(process.env.MONGO_URL)
     .then(() => {
-        console.log('Connected to MongoDB');
+        log.info('Connected to MongoDB');
     })
     .catch((error) => {
-        console.error('Error connecting to MongoDB:', error);
+        log.error('Error connecting to MongoDB:', error);
     });
 
 app.use('/user', userRouter);
@@ -47,7 +50,7 @@ app.use('/comment', commentRouter);
 app.use('/bookmark', bookmarkRouter);
 
 app.listen(process.env.PORT, () => {
-    console.log(`Server listening on port ${process.env.PORT}!`);
+    log.info(`Server listening on port ${process.env.PORT}!`);
 });
 
 broker.startConsumers();

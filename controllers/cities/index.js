@@ -1,5 +1,5 @@
 import xlsx from 'xlsx';
-import Place from '@models/place.js';
+import Place from '../../models/place.js';
 
 const createCities = async (req, res) => {
     try {

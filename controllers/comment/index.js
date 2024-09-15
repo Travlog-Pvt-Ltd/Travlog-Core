@@ -1,9 +1,13 @@
-import Blog from '@models/blog.js';
-import LCEvent from '@models/likeCommentEvent.js';
-import UserActivity from '@models/userActivity.js';
-import Comment from '@models/comment.js';
-import redis from '@config/redis.js';
-import { commentFields, replyFields } from './utils/constants.js';
+import Blog from '../../models/blog.js';
+import LCEvent from '../../models/likeCommentEvent.js';
+import UserActivity from '../../models/userActivity.js';
+import Comment from '../../models/comment.js';
+import redis from '../../config/redis.js';
+import {
+    commentFields,
+    replyFields,
+    deletedContent,
+} from './utils/constants.js';
 
 const getComments = async (req, res) => {
     const { id, type, limit = 10, skip = 0 } = req.query;
@@ -130,8 +134,15 @@ const replyOnComment = async (req, res) => {
 const deleteComment = async (req, res) => {
     try {
         const { comment } = req.params;
-        await Comment.deleteOne({ _id: comment });
-        res.status(201).json({ message: 'Comment deleted successfully!' });
+        const result = await Comment.findByIdAndUpdate(
+            comment,
+            { content: deletedContent, deleted: true },
+            { new: true }
+        );
+        res.status(201).json({
+            message: 'Comment marked for deletion!',
+            data: result,
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

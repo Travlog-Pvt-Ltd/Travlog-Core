@@ -1,4 +1,4 @@
-import getESClient from '@config/elasticSearch';
+import getESClient from '../config/elasticSearch.js';
 import log from 'npmlog';
 
 export const createDataIndex = async (id, doc, index) => {

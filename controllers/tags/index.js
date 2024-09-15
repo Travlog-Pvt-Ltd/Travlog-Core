@@ -1,10 +1,11 @@
-import Place from '@models/place.js';
+import Place from '../../models/place.js';
 import { customSearchTags } from './searchUtils.js';
+import { parseEsTagData } from './utils.js';
 
 const searchTags = async (req, res) => {
     try {
-        const result = await customSearchTags(req.query.search);
-        // Todo: Serialize this data into required format before sending as response
+        let result = await customSearchTags(req.query.search);
+        result = parseEsTagData(result);
         res.status(200).json(result);
     } catch (err) {
         res.status(401).json({ message: err.message });
