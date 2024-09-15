@@ -1,21 +1,16 @@
-import { KafkaConnectionError, broker } from '../../../utils/kafka/index.js';
+import { broker, KafkaConnectionError } from '../../../utils/kafka/index.js';
 
-export const tagsIndexProducer = async (data) => {
+export const deleteCommentProducer = async (comment) => {
     try {
         const kafkaClient = broker.getKafkaClient();
         const producer = kafkaClient.producer();
         await producer.connect();
 
-        const payload = {
-            places: data?.places || [],
-            activities: data?.activities || [],
-        };
-
         await producer.send({
-            topic: 'tags-es-sync',
+            topic: 'mark-comment-delete',
             messages: [
                 {
-                    value: JSON.stringify(payload),
+                    value: JSON.stringify(comment),
                 },
             ],
         });

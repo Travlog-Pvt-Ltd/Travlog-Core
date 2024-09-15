@@ -1,5 +1,6 @@
 import { Kafka, logLevel } from 'kafkajs';
 import { consumersList, kafkaTopics } from './constant.js';
+import log from 'npmlog';
 
 export class KafkaConnectionError extends Error {
     constructor(message, err) {
@@ -11,11 +12,16 @@ export class KafkaConnectionError extends Error {
 
 class KafkaBroker {
     constructor() {
-        this.kafkaClient = new Kafka({
-            clientId: 'travlog',
-            brokers: ['127.0.0.1:9092'],
-            logLevel: logLevel.ERROR,
-        });
+        try {
+            this.kafkaClient = new Kafka({
+                clientId: 'travlog',
+                brokers: ['127.0.0.1:9092'],
+                logLevel: logLevel.ERROR,
+            });
+            log.info('Connected to Kafka');
+        } catch (error) {
+            log.error('Conection to kafka failed. ', error.message);
+        }
     }
 
     getKafkaClient() {
@@ -65,6 +71,9 @@ class KafkaBroker {
         consumersList.forEach((consumer) => {
             consumer();
         });
+        log.info(
+            `Started ${consumersList.length} ${consumersList.length > 1 ? 'consumers' : 'consumer'}`
+        );
     }
 }
 

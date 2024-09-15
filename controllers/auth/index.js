@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '@models/user.js';
+import User from '../../models/user.js';
 import nodemailer from 'nodemailer';
-import OTPModel from '@models/otp.js';
-import redis, { updateUserInCache } from '@config/redis.js';
+import OTPModel from '../../models/otp.js';
+import redis, { updateUserInCache } from '../../config/redis.js';
 
 async function register(req, res) {
     const { name, email, password, deviceId } = req.body;
@@ -63,11 +63,9 @@ const sendOtp = async (req, res) => {
     try {
         const foundUser = await User.findOne({ email: email });
         if (foundUser)
-            return res
-                .status(401)
-                .json({
-                    message: 'User already exists! Please login to proceed.',
-                });
+            return res.status(401).json({
+                message: 'User already exists! Please login to proceed.',
+            });
         let config = {
             service: 'gmail',
             auth: {
@@ -263,11 +261,9 @@ const refresh = async (req, res) => {
                             )
                             .populate('followings', '_id userId');
                         if (user.token != refreshToken)
-                            return res
-                                .status(401)
-                                .json({
-                                    message: "Refresh token doesn't match!",
-                                });
+                            return res.status(401).json({
+                                message: "Refresh token doesn't match!",
+                            });
                         const accessToken = jwt.sign(
                             { id: user._id },
                             process.env.USER_SECRET,
@@ -283,22 +279,18 @@ const refresh = async (req, res) => {
                         });
                         delete user.token;
                         updateUserInCache(user);
-                        return res
-                            .status(201)
-                            .json({
-                                token: accessToken,
-                                refreshToken: newRefreshToken,
-                                user,
-                            });
+                        return res.status(201).json({
+                            token: accessToken,
+                            refreshToken: newRefreshToken,
+                            user,
+                        });
                     }
                 }
             );
         } else {
-            return res
-                .status(401)
-                .json({
-                    message: 'No refresh token! Please login to continue.',
-                });
+            return res.status(401).json({
+                message: 'No refresh token! Please login to continue.',
+            });
         }
     } catch (err) {
         res.status(500).json({ message: err.message });

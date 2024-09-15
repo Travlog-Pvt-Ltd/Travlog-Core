@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
-import Blog from '@models/blog.js';
-import Follower from '@models/follower.js';
-import User from '@models/user.js';
-import UserActivity from '@models/userActivity.js';
-import UserInstance from '@models/userInstance.js';
-import OrganicUserInstance from '@models/organicUserInstance.js';
-import redis, { updateUserInCache } from '@config/redis.js';
+import Blog from '../../models/blog.js';
+import Follower from '../../models/follower.js';
+import User from '../../models/user.js';
+import UserActivity from '../../models/userActivity.js';
+import UserInstance from '../../models/userInstance.js';
+import OrganicUserInstance from '../../models/organicUserInstance.js';
+import redis, { updateUserInCache } from '../../config/redis.js';
 
 const moreFromAuthor = async (req, res) => {
     const author = req.params.authorId;

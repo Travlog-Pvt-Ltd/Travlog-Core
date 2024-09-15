@@ -1,5 +1,5 @@
-import redis, { updateUserInCache } from '@config/redis.js';
-import User from '@models/user.js';
+import redis, { updateUserInCache } from '../../config/redis.js';
+import User from '../../models/user.js';
 
 async function getUserDetails(req, res) {
     try {

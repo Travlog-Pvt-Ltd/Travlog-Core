@@ -1,19 +1,19 @@
 import mongoose from 'mongoose';
-import UserActivity from '@models/userActivity.js';
-import Blog from '@models/blog.js';
-import BlogInstance from '@models/blogInstance.js';
-import LCEvent from '@models/likeCommentEvent.js';
-import User from '@models/user.js';
-import OrganicUserInstance from '@models/organicUserInstance.js';
-import UserInstance from '@models/userInstance.js';
-import Draft from '@models/draft.js';
+import UserActivity from '../../models/userActivity.js';
+import Blog from '../../models/blog.js';
+import BlogInstance from '../../models/blogInstance.js';
+import LCEvent from '../../models/likeCommentEvent.js';
+import User from '../../models/user.js';
+import OrganicUserInstance from '../../models/organicUserInstance.js';
+import UserInstance from '../../models/userInstance.js';
+import Draft from '../../models/draft.js';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { getFirebaseStorage } from '@config/Firebase.js';
-import redis, { updateUserInCache } from '@config/redis.js';
+import { getFirebaseStorage } from '../../config/Firebase.js';
+import redis, { updateUserInCache } from '../../config/redis.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from './utils/constants.js';
-import Place from '@models/place.js';
-import Activity from '@models/activities.js';
-import { tagsIndexProducer } from '@controllers/tags/asyncService/producers.js';
+import Place from '../../models/place.js';
+import Activity from '../../models/activities.js';
+import { tagsIndexProducer } from '../../controllers/tags/asyncService/producers.js';
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
@@ -330,7 +330,6 @@ const getSearchedBlogs = async (req, res) => {
             res.status(200).json(result);
         }
     } catch (err) {
-        console.log(err.message);
         res.status(500).json({ message: err.message });
     }
 };
