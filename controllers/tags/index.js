@@ -8,7 +8,7 @@ const searchTags = async (req, res) => {
         result = parseEsTagData(result);
         res.status(200).json(result);
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
