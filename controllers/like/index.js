@@ -81,7 +81,6 @@ const likeBlog = async (req, res) => {
                 await User.findByIdAndUpdate(req.userId, {
                     $pull: { dislikes: blog },
                 });
-                const newDislikes = [];
                 const toDelete = [];
                 found.dislikes.forEach((dislike) => {
                     if (dislike.userId.equals(userObject))
@@ -160,7 +159,7 @@ const likeBlog = async (req, res) => {
                 }),
             ]);
             if (userActivityCount > 0) {
-                await UserActivity.findByIdAndUpdate(
+                await UserActivity.findOneAndUpdate(
                     { userId: req.userId },
                     {
                         $push: { likeEvent: likeEvent._id },
@@ -181,7 +180,7 @@ const likeBlog = async (req, res) => {
             res.status(201).json({ blog: newBlog, user: user });
         }
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -336,7 +335,7 @@ const dislikeBlog = async (req, res) => {
                     UserActivity.countDocuments({ userId: req.userId }),
                 ]);
             if (userActivityCount > 0)
-                await UserActivity.findByIdAndUpdate(
+                await UserActivity.findOneAndUpdate(
                     { userId: req.userId },
                     {
                         $push: { dislikeEvent: dislikeEvent._id },
@@ -356,7 +355,7 @@ const dislikeBlog = async (req, res) => {
             res.status(201).json({ blog: newBlog, user: user });
         }
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -431,7 +430,7 @@ const likeComment = async (req, res) => {
                     UserActivity.countDocuments({ userId: req.userId }),
                 ]);
             if (userActivityCount > 0) {
-                await UserActivity.findByIdAndUpdate(
+                await UserActivity.findOneAndUpdate(
                     { userId: req.userId },
                     {
                         $push: { likeEvent: likeEvent._id },
@@ -446,7 +445,7 @@ const likeComment = async (req, res) => {
             res.status(201).json(newComment);
         }
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -526,7 +525,7 @@ const dislikeComment = async (req, res) => {
                     }),
                 ]);
             if (userActivityCount > 0) {
-                await UserActivity.findByIdAndUpdate(
+                await UserActivity.findOneAndUpdate(
                     { userId: req.userId },
                     {
                         $push: { dislikeEvent: dislikeEvent._id },
@@ -541,7 +540,7 @@ const dislikeComment = async (req, res) => {
             res.status(201).json(newComment);
         }
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
