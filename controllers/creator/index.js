@@ -134,10 +134,20 @@ const unfollow = async (req, res) => {
         });
         await Promise.all([
             UserInstance.deleteMany({ _id: { $in: toDelete } }),
-            UserActivity.findByIdAndUpdate(activity._id, {
-                $pull: { unfollowEvent: { $in: toDelete } },
-                $push: { unfollowEvent: instance },
-            }),
+            UserActivity.bulkWrite([
+                {
+                    updateOne: {
+                        filter: { _id: activity._id },
+                        update: { $pull: { unfollowEvent: { $in: toDelete } } },
+                    },
+                },
+                {
+                    updateOne: {
+                        filter: { _id: activity._id },
+                        update: { $push: { unfollowEvent: instance } },
+                    },
+                },
+            ]),
         ]);
         updateUserInCache(newUser);
         res.status(201).json(newUser);
