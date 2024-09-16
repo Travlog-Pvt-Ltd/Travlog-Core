@@ -9,7 +9,10 @@ import UserInstance from '../../models/userInstance.js';
 import Draft from '../../models/draft.js';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { getFirebaseStorage } from '../../config/Firebase.js';
-import redis, { updateUserInCache } from '../../config/redis.js';
+import redis, {
+    deleteKeysByPatternWithScan,
+    updateUserInCache,
+} from '../../config/redis.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from './utils/constants.js';
 import Place from '../../models/place.js';
 import Activity from '../../models/activities.js';
@@ -37,7 +40,9 @@ async function getUserBlogs(req, res) {
     const limit = req.query.limit || 20;
     const skip = req.query.skip || 0;
     try {
-        const cachedBlogs = await redis.get(`user_blogs:${req.userId}`);
+        const cachedBlogs = await redis.get(
+            `user_blogs:${req.userId}?limit:${limit}&skip:${skip}`
+        );
         if (cachedBlogs) {
             return res.status(200).json(JSON.parse(cachedBlogs));
         }
@@ -48,7 +53,11 @@ async function getUserBlogs(req, res) {
             .populate('author', authorFieldsForBlog)
             .populate('tags.places', 'name')
             .populate('tags.activities', 'name');
-        redis.setEx(`user_blogs:${req.userId}`, 3600, JSON.stringify(blogs));
+        redis.setEx(
+            `user_blogs:${req.userId}?limit:${limit}&skip:${skip}`,
+            3600,
+            JSON.stringify(blogs)
+        );
         res.status(200).json(blogs);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -73,7 +82,7 @@ async function getBlogDetail(req, res) {
             );
             const userObject = new mongoose.Types.ObjectId(id);
             let check = false;
-            blog.views.map((item) => {
+            blog.views.forEach((item) => {
                 if (item.userId.equals(userObject)) check = true;
             });
             if (check) {
@@ -108,7 +117,7 @@ async function getBlogDetail(req, res) {
         //     const foundUser = await User.findById(id)
         //     const userObject = new mongoose.Types.ObjectId(id)
         //     let check = false
-        //     blog.views.map(item => {
+        //     blog.views.forEach(item => {
         //         if (item.userId.equals(userObject)) check = true
         //     })
         //     if (check) {
@@ -119,7 +128,7 @@ async function getBlogDetail(req, res) {
         //         check = false
         //         const toDelete = []
         //         const newOrganicInstance = []
-        //         blog.organicViews.map(item => {
+        //         blog.organicViews.forEach(item => {
         //             if (item.userId == foundUser.deviceId) {
         //                 check = true
         //                 toDelete.push(item)
@@ -145,7 +154,7 @@ async function getBlogDetail(req, res) {
         // }
         // else {
         //     let check = false
-        //     blog.organicViews.map(item => {
+        //     blog.organicViews.forEach(item => {
         //         if (item.userId == id) check = true
         //     })
         //     if (check) {
@@ -230,6 +239,7 @@ async function createBlog(req, res) {
                 { _id: { $in: tags.activities } },
                 { $inc: { blogCount: 1 } }
             ),
+            deleteKeysByPatternWithScan(`user_blogs:${req.userId}`),
         ]);
         await tagsIndexProducer({
             places: tags.places,
@@ -274,6 +284,7 @@ async function deleteBlog(req, res) {
                 }
             ),
             LCEvent.deleteMany({ blogId: req.params.blogId }),
+            deleteKeysByPatternWithScan(`user_blogs:${req.userId}`),
         ]);
         await tagsIndexProducer({
             places: tags.places,

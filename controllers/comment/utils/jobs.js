@@ -49,34 +49,40 @@ export const cleanDeletedComments = async () => {
         });
         log.info('Successfully cleaned deleted comments');
         log.info('Updating parent comments...');
+        const updatePromises = [];
         for (let i = 0; i < data.length; i++) {
             if (data.parent) {
-                await Comment.findByIdAndUpdate(data.parent, {
-                    $pull: { replies: data._id },
-                    $inc: { replyCount: -1 },
-                });
+                updatePromises.push(
+                    Comment.findByIdAndUpdate(data.parent, {
+                        $pull: { replies: data._id },
+                        $inc: { replyCount: -1 },
+                    })
+                );
             }
         }
+        await Promise.all(updatePromises);
         log.info('Updated parent comments');
         log.info('Started cleaning related user activities...');
         const events = await LCEvent.find({ commentId: { $in: comments } });
-        await LCEvent.deleteMany({ commentId: { $in: comments } });
-        await UserActivity.updateMany(
-            {
-                $or: [
-                    { likeEvent: { $in: events } },
-                    { dislikeEvent: { $in: events } },
-                    { commentEvent: { $in: events } },
-                ],
-            },
-            {
-                $pull: {
-                    likeEvent: { $in: events },
-                    dislikeEvent: { $in: events },
-                    commentEvent: { $in: events },
+        await Promise.all([
+            LCEvent.deleteMany({ commentId: { $in: comments } }),
+            UserActivity.updateMany(
+                {
+                    $or: [
+                        { likeEvent: { $in: events } },
+                        { dislikeEvent: { $in: events } },
+                        { commentEvent: { $in: events } },
+                    ],
                 },
-            }
-        );
+                {
+                    $pull: {
+                        likeEvent: { $in: events },
+                        dislikeEvent: { $in: events },
+                        commentEvent: { $in: events },
+                    },
+                }
+            ),
+        ]);
         log.info('Successfully cleaned related user activities...');
     } catch (error) {
         log.error('Cleaning deleted comments failed! ', error.message);

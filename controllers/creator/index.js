@@ -30,41 +30,42 @@ const follow = async (req, res) => {
         const following = await UserInstance.create({
             userId: creator,
         });
-        const newUser = await User.findByIdAndUpdate(
-            req.userId,
-            { $push: { followings: following } },
-            { new: true }
-        )
-            .select(
-                '-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
-            )
-            .populate('followings', '_id userId');
         const follower = await Follower.create({
             userId: req.userId,
             notify: false,
         });
-        await User.findByIdAndUpdate(creator, {
-            $push: { followers: follower },
-        });
-        const activity = await UserActivity.findOne({
-            userId: req.userId,
-        }).populate('followEvent');
-        const newEvents = [];
+        const [newUser, _a, activity, newInstance] = await Promise.all([
+            User.findByIdAndUpdate(
+                req.userId,
+                { $push: { followings: following } },
+                { new: true }
+            )
+                .select(
+                    '-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
+                )
+                .populate('followings', '_id userId'),
+            User.findByIdAndUpdate(creator, {
+                $push: { followers: follower },
+            }),
+            UserActivity.findOne({
+                userId: req.userId,
+            }).populate('followEvent'),
+            UserInstance.create({
+                userId: creator,
+            }),
+        ]);
         const toDeleteEvents = [];
-        activity.followEvent.map((event) => {
-            if (!event.userId.equals(creatorObject)) newEvents.push(event);
-            else toDeleteEvents.push(event);
+        activity.followEvent.forEach((event) => {
+            if (event.userId.equals(creatorObject))
+                toDeleteEvents.push(event._id);
         });
-        toDeleteEvents.forEach(async (el) => {
-            await UserInstance.findByIdAndDelete(el._id);
-        });
-        const instance = await UserInstance.create({
-            userId: creator,
-        });
-        newEvents.push(instance);
-        await UserActivity.findByIdAndUpdate(activity._id, {
-            $set: { followEvent: newEvents },
-        });
+        await Promise.all([
+            UserInstance.deleteMany({ _id: { $in: toDeleteEvents } }),
+            UserActivity.findByIdAndUpdate(activity._id, {
+                $pull: { followEvent: { $in: toDeleteEvents } },
+                $push: { followEvent: newInstance },
+            }),
+        ]);
         updateUserInCache(newUser);
         res.status(201).json(newUser);
     } catch (err) {
@@ -78,22 +79,21 @@ const unfollow = async (req, res) => {
     const userObject = new mongoose.Types.ObjectId(req.userId);
     try {
         const found = await User.findById(req.userId).populate('followings');
-        const newFollowing = [];
+        const foundCreator = await User.findById(creator).populate('followers');
         let toDelete = [];
-        found.followings.map((following) => {
+        found.followings.forEach((following) => {
             if (!following.userId.equals(creatorObject))
-                newFollowing.push(following);
-            else toDelete.push(following);
+                toDelete.push(following._id);
         });
-        toDelete.forEach(async (el) => {
-            await UserInstance.findByIdAndDelete(el._id);
-        });
+        await UserInstance.deleteMany({ _id: { $in: toDelete } });
         const newUser = await User.findByIdAndUpdate(
             req.userId,
             {
-                $set: {
-                    followings: newFollowing,
-                    followingCount: newFollowing.length,
+                $pull: {
+                    followings: { $in: toDelete },
+                },
+                $inc: {
+                    followingCount: -1 * toDelete.length,
                 },
             },
             { new: true }
@@ -102,46 +102,43 @@ const unfollow = async (req, res) => {
                 '-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
             )
             .populate('followings', '_id userId');
-        const foundCreator = await User.findById(creator).populate('followers');
-        const newFollowers = [];
         toDelete = [];
-        foundCreator.followers.map((follower) => {
-            if (!follower.userId.equals(userObject))
-                newFollowers.push(follower);
-            else toDelete.push(follower);
+        foundCreator.followers.forEach((follower) => {
+            if (follower.userId.equals(userObject)) toDelete.push(follower._id);
         });
-        toDelete.forEach(async (el) => {
-            await Follower.findByIdAndDelete(el._id);
-        });
-        await User.findByIdAndUpdate(
-            creator,
-            {
-                $set: {
-                    followers: newFollowers,
-                    followerCount: newFollowers.length,
+        await Promise.all([
+            Follower.deleteMany({ _id: { $in: toDelete } }),
+            User.findByIdAndUpdate(
+                creator,
+                {
+                    $pull: {
+                        followers: { $in: toDelete },
+                    },
+                    $inc: {
+                        followerCount: -1 * toDelete.length,
+                    },
                 },
-            },
-            { new: true }
-        );
-        const activity = await UserActivity.findOne({
-            userId: req.userId,
-        }).populate('unfollowEvent');
-        const newEvents = [];
+                { new: true }
+            ),
+        ]);
+        const [activity, instance] = await Promise.all([
+            UserActivity.findOne({
+                userId: req.userId,
+            }).populate('unfollowEvent'),
+            await UserInstance.create({ userId: creator }),
+        ]);
         const toDeleteEvents = [];
-        activity.unfollowEvent.map((event) => {
-            if (!event.userId.equals(creatorObject)) newEvents.push(event);
-            else toDeleteEvents.push(event);
+        activity.unfollowEvent.forEach((event) => {
+            if (event.userId.equals(creatorObject))
+                toDeleteEvents.push(event._id);
         });
-        toDeleteEvents.forEach(async (el) => {
-            await UserInstance.findByIdAndDelete(el._id);
-        });
-        const instance = await UserInstance.create({
-            userId: creator,
-        });
-        newEvents.push(instance);
-        await UserActivity.findByIdAndUpdate(activity._id, {
-            $set: { unfollowEvent: newEvents },
-        });
+        await Promise.all([
+            UserInstance.deleteMany({ _id: { $in: toDelete } }),
+            UserActivity.findByIdAndUpdate(activity._id, {
+                $pull: { unfollowEvent: { $in: toDelete } },
+                $push: { unfollowEvent: instance },
+            }),
+        ]);
         updateUserInCache(newUser);
         res.status(201).json(newUser);
     } catch (err) {
@@ -177,7 +174,7 @@ const getCreatorDetails = async (req, res) => {
             );
             const userObject = new mongoose.Types.ObjectId(id);
             let check = false;
-            creator.visitors.map((item) => {
+            creator.visitors.forEach((item) => {
                 if (item.userId.equals(userObject)) check = true;
             });
             if (check) {
@@ -231,7 +228,7 @@ const getCreatorDetails = async (req, res) => {
         //         const foundUser = await User.findById(id)
         //         const userObject = new mongoose.Types.ObjectId(id)
         //         let check = false
-        //         creator.visitors.map(item => {
+        //         creator.visitors.forEach(item => {
         //             if (item.userId.equals(userObject)) check = true
         //         })
         //         if (check) {
@@ -242,7 +239,7 @@ const getCreatorDetails = async (req, res) => {
         //             check = false
         //             const toDelete = []
         //             const newOrganicInstance = []
-        //             creator.organicVisitors.map(item => {
+        //             creator.organicVisitors.forEach(item => {
         //                 if (item.userId == foundUser.deviceId) {
         //                     check = true
         //                     toDelete.push(item)
@@ -268,7 +265,7 @@ const getCreatorDetails = async (req, res) => {
         //     }
         //     else {
         //         let check = false
-        //         creator.organicVisitors.map(item => {
+        //         creator.organicVisitors.forEach(item => {
         //             if (item.userId == id) check = true
         //         })
         //         if (check) {

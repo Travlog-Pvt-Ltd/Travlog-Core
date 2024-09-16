@@ -47,23 +47,28 @@ const commentOnBlog = async (req, res) => {
             isReply: false,
             blog: blog,
         });
-        await Blog.findByIdAndUpdate(blog, {
-            $push: { comments: newComment._id },
-            $inc: { commentCount: 1 },
-        });
-        const commentEvent = await LCEvent.create({
-            blogId: blog,
-            isComment: true,
-            commentId: newComment._id,
-            content: content,
-            onComment: false,
-            isDislike: null,
-        });
-        const isUserActive = await UserActivity.findOne({ userId: req.userId });
-        if (isUserActive) {
-            await UserActivity.findByIdAndUpdate(isUserActive._id, {
-                $push: { commentEvent: commentEvent._id },
-            });
+        const [_a, commentEvent, userActivityCount] = await Promise.all([
+            Blog.findByIdAndUpdate(blog, {
+                $push: { comments: newComment._id },
+                $inc: { commentCount: 1 },
+            }),
+            LCEvent.create({
+                blogId: blog,
+                isComment: true,
+                commentId: newComment._id,
+                content: content,
+                onComment: false,
+                isDislike: null,
+            }),
+            UserActivity.countDocuments({ userId: req.userId }),
+        ]);
+        if (userActivityCount > 0) {
+            await UserActivity.findOneAndUpdate(
+                { userId: req.userId },
+                {
+                    $push: { commentEvent: commentEvent._id },
+                }
+            );
         } else {
             await UserActivity.create({
                 userId: req.userId,
@@ -89,28 +94,34 @@ const replyOnComment = async (req, res) => {
             blog: blog,
             parent: comment,
         });
-        await Comment.findByIdAndUpdate(comment, {
-            $push: { replies: newReply._id },
-            $inc: { replyCount: 1 },
-        });
-        const newBlog = await Blog.findByIdAndUpdate(
-            blog,
-            { $inc: { commentCount: 1 } },
-            { new: true }
-        );
-        const commentEvent = await LCEvent.create({
-            blogId: blog,
-            isComment: true,
-            commentId: newReply._id,
-            content: content,
-            onComment: true,
-            isDislike: null,
-        });
-        const isUserActive = await UserActivity.findOne({ userId: req.userId });
-        if (isUserActive) {
-            await UserActivity.findByIdAndUpdate(isUserActive._id, {
-                $push: { commentEvent: commentEvent._id },
-            });
+        const [_b, newBlog, commentEvent, userActivityCount] =
+            await Promise.all([
+                Comment.findByIdAndUpdate(comment, {
+                    $push: { replies: newReply._id },
+                    $inc: { replyCount: 1 },
+                }),
+                Blog.findByIdAndUpdate(
+                    blog,
+                    { $inc: { commentCount: 1 } },
+                    { new: true }
+                ),
+                LCEvent.create({
+                    blogId: blog,
+                    isComment: true,
+                    commentId: newReply._id,
+                    content: content,
+                    onComment: true,
+                    isDislike: null,
+                }),
+                UserActivity.countDocuments({ userId: req.userId }),
+            ]);
+        if (userActivityCount > 0) {
+            await UserActivity.findOneAndUpdate(
+                { userId: req.userId },
+                {
+                    $push: { commentEvent: commentEvent._id },
+                }
+            );
         } else {
             await UserActivity.create({
                 userId: req.userId,

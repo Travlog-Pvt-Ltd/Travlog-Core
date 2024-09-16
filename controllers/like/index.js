@@ -14,7 +14,7 @@ const likeBlog = async (req, res) => {
     try {
         const found = await Blog.findById(blog).populate('likes dislikes');
         let check = false;
-        found.likes.map((like) => {
+        found.likes.forEach((like) => {
             if (like.userId.equals(userObject)) check = true;
         });
         if (check) {
@@ -27,47 +27,44 @@ const likeBlog = async (req, res) => {
                     '-password -token -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
                 )
                 .populate('followings', '_id userId');
-            const newLikes = [];
             const toDelete = [];
-            found.likes.map((like) => {
-                if (!like.userId.equals(userObject)) newLikes.push(like);
-                else toDelete.push(like);
+            found.likes.forEach((like) => {
+                if (like.userId.equals(userObject)) toDelete.push(like._id);
             });
-            toDelete.forEach(async (el) => {
-                await UserInstance.findByIdAndDelete(el._id);
-            });
-            const newBlog = await Blog.findByIdAndUpdate(
-                blog,
-                { $set: { likes: newLikes, likeCount: newLikes.length } },
-                { new: true }
-            )
-                .select(
-                    '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
+            const [_a, newBlog] = await Promise.all([
+                await UserInstance.deleteMany({ _id: { $in: toDelete } }),
+                await Blog.findByIdAndUpdate(
+                    blog,
+                    { $pull: { likes: toDelete } },
+                    { $inc: { likeCount: -1 * toDelete.length } },
+                    { new: true }
                 )
-                .populate('author', '_id name profileLogo profileImage')
-                .populate('tags.places', 'name')
-                .populate('tags.activities', 'name');
+                    .select(
+                        '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
+                    )
+                    .populate('author', '_id name profileLogo profileImage')
+                    .populate('tags.places', 'name')
+                    .populate('tags.activities', 'name'),
+            ]);
             const activity = await UserActivity.findOne({
                 userId: req.userId,
             }).populate('likeEvent');
-            const newEvents = [];
             const toDeleteEvents = [];
-            activity.likeEvent.map((event) => {
+            activity.likeEvent.forEach((event) => {
                 if (
-                    !event.blogId.equals(blogObject) ||
-                    event.isComment === true ||
-                    event.onComment === true ||
-                    event.isDislike === true
+                    event.blogId.equals(blogObject) &&
+                    event.isComment === false &&
+                    event.onComment === false &&
+                    event.isDislike === false
                 )
-                    newEvents.push(event);
-                else toDeleteEvents.push(event);
+                    toDeleteEvents.push(event._id);
             });
-            toDeleteEvents.forEach(async (el) => {
-                await LCEvent.findByIdAndDelete(el._id);
-            });
-            await UserActivity.findByIdAndUpdate(activity._id, {
-                $set: { likeEvent: newEvents },
-            });
+            await Promise.all([
+                LCEvent.deleteMany({ _id: { $in: toDeleteEvents } }),
+                UserActivity.findByIdAndUpdate(activity._id, {
+                    $pull: { likeEvent: { $in: toDeleteEvents } },
+                }),
+            ]);
             await updateUserInCache(user);
             await redis.setEx(
                 `blog_data#user:${user._id}#blog:${newBlog._id}`,
@@ -77,7 +74,7 @@ const likeBlog = async (req, res) => {
             res.status(201).json({ blog: newBlog, user: user });
         } else {
             check = false;
-            found.dislikes.map((dislike) => {
+            found.dislikes.forEach((dislike) => {
                 if (dislike.userId.equals(userObject)) check = true;
             });
             if (check) {
@@ -86,80 +83,89 @@ const likeBlog = async (req, res) => {
                 });
                 const newDislikes = [];
                 const toDelete = [];
-                found.dislikes.map((dislike) => {
-                    if (!dislike.userId.equals(userObject))
-                        newDislikes.push(dislike);
-                    else toDelete.push(dislike);
+                found.dislikes.forEach((dislike) => {
+                    if (dislike.userId.equals(userObject))
+                        toDelete.push(dislike._id);
                 });
-                toDelete.forEach(async (el) => {
-                    await UserInstance.findByIdAndDelete(el._id);
-                });
-                await Blog.findByIdAndUpdate(blog, {
-                    $set: {
-                        dislikes: newDislikes,
-                        dislikeCount: newDislikes.length,
-                    },
-                });
+                await Promise.all([
+                    UserInstance.deleteMany({ _id: { $in: toDelete } }),
+                    Blog.findByIdAndUpdate(blog, {
+                        $pull: {
+                            dislikes: { $in: toDelete },
+                        },
+                        $inc: {
+                            dislikeCount: -1 * toDelete.length,
+                        },
+                    }),
+                ]);
                 const activity = await UserActivity.findOne({
                     userId: req.userId,
                 }).populate('dislikeEvent');
-                const newEvents = [];
                 const toDeleteEvents = [];
-                activity.dislikeEvent.map((event) => {
+                activity.dislikeEvent.forEach((event) => {
                     if (
-                        !event.blogId.equals(blogObject) ||
-                        event.isComment === true ||
-                        event.onComment === true ||
-                        event.isDislike === false
+                        event.blogId.equals(blogObject) &&
+                        event.isComment === false &&
+                        event.onComment === false &&
+                        event.isDislike === true
                     )
-                        newEvents.push(event);
-                    else toDeleteEvents.push(event);
+                        toDeleteEvents.push(event._id);
                 });
-                toDeleteEvents.forEach(async (el) => {
-                    await LCEvent.findByIdAndDelete(el._id);
-                });
-                await UserActivity.findByIdAndUpdate(activity._id, {
-                    $set: { dislikeEvent: newEvents },
-                });
+                await Promise.all([
+                    LCEvent.deleteMany({ _id: { $in: toDeleteEvents } }),
+                    UserActivity.findByIdAndUpdate(activity._id, {
+                        $pull: { dislikeEvent: { $in: toDeleteEvents } },
+                    }),
+                ]);
             }
-            const user = await User.findByIdAndUpdate(
-                req.userId,
-                { $push: { likes: blog } },
-                { new: true }
-            )
-                .select(
-                    '-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
+            const [user, userInstance] = await Promise.all([
+                User.findByIdAndUpdate(
+                    req.userId,
+                    { $push: { likes: blog } },
+                    { new: true }
                 )
-                .populate('followings', '_id userId');
-            const userInstance = await UserInstance.create({
-                userId: req.userId,
-            });
-            const newBlog = await Blog.findByIdAndUpdate(
-                blog,
-                { $push: { likes: userInstance._id }, $inc: { likeCount: 1 } },
-                { new: true }
-            )
-                .select(
-                    '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
+                    .select(
+                        '-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
+                    )
+                    .populate('followings', '_id userId'),
+                UserInstance.create({
+                    userId: req.userId,
+                }),
+            ]);
+            const [newBlog, likeEvent, userActivityCount] = await Promise.all([
+                Blog.findByIdAndUpdate(
+                    blog,
+                    {
+                        $push: { likes: userInstance._id },
+                        $inc: { likeCount: 1 },
+                    },
+                    { new: true }
                 )
-                .populate('author', '_id name profileLogo profileImage')
-                .populate('tags.places', 'name')
-                .populate('tags.activities', 'name');
-            const likeEvent = await LCEvent.create({
-                blogId: blog,
-                isComment: false,
-                commentId: null,
-                content: null,
-                onComment: false,
-                isDislike: false,
-            });
-            const isUserActive = await UserActivity.findOne({
-                userId: req.userId,
-            });
-            if (isUserActive) {
-                await UserActivity.findByIdAndUpdate(isUserActive._id, {
-                    $push: { likeEvent: likeEvent._id },
-                });
+                    .select(
+                        '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
+                    )
+                    .populate('author', '_id name profileLogo profileImage')
+                    .populate('tags.places', 'name')
+                    .populate('tags.activities', 'name'),
+                LCEvent.create({
+                    blogId: blog,
+                    isComment: false,
+                    commentId: null,
+                    content: null,
+                    onComment: false,
+                    isDislike: false,
+                }),
+                UserActivity.countDocuments({
+                    userId: req.userId,
+                }),
+            ]);
+            if (userActivityCount > 0) {
+                await UserActivity.findByIdAndUpdate(
+                    { userId: req.userId },
+                    {
+                        $push: { likeEvent: likeEvent._id },
+                    }
+                );
             } else {
                 await UserActivity.create({
                     userId: req.userId,
@@ -186,7 +192,7 @@ const dislikeBlog = async (req, res) => {
     try {
         const found = await Blog.findById(blog).populate('likes dislikes');
         let check = false;
-        found.dislikes.map((dislike) => {
+        found.dislikes.forEach((dislike) => {
             if (dislike.userId.equals(userObject)) check = true;
         });
         if (check) {
@@ -199,53 +205,47 @@ const dislikeBlog = async (req, res) => {
                     '-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
                 )
                 .populate('followings', '_id userId');
-            const newDislikes = [];
             const toDelete = [];
-            found.dislikes.map((dislike) => {
-                if (!dislike.userId.equals(userObject))
-                    newDislikes.push(dislike);
-                else toDelete.push(dislike);
+            found.dislikes.forEach((dislike) => {
+                if (dislike.userId.equals(userObject))
+                    toDelete.push(dislike._id);
             });
-            toDelete.forEach(async (el) => {
-                await UserInstance.findByIdAndDelete(el._id);
-            });
-            const newBlog = await Blog.findByIdAndUpdate(
-                blog,
-                {
-                    $set: {
-                        dislikes: newDislikes,
-                        dislikeCount: newDislikes.length,
+            const [_a, newBlog] = await Promise.all([
+                UserInstance.deleteMany({ _id: { $in: toDelete } }),
+                Blog.findByIdAndUpdate(
+                    blog,
+                    {
+                        $pull: { dislikes: { $in: toDelete } },
+                        $inc: { dislikeCount: -1 * toDelete.length },
                     },
-                },
-                { new: true }
-            )
-                .select(
-                    '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
+                    { new: true }
                 )
-                .populate('author', '_id name profileLogo profileImage')
-                .populate('tags.places', 'name')
-                .populate('tags.activities', 'name');
+                    .select(
+                        '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
+                    )
+                    .populate('author', '_id name profileLogo profileImage')
+                    .populate('tags.places', 'name')
+                    .populate('tags.activities', 'name'),
+            ]);
             const activity = await UserActivity.findOne({
                 userId: req.userId,
             }).populate('dislikeEvent');
-            const newEvents = [];
             const toDeleteEvents = [];
-            activity.dislikeEvent.map((event) => {
+            activity.dislikeEvent.forEach((event) => {
                 if (
-                    !event.blogId.equals(blogObject) ||
-                    event.isComment === true ||
-                    event.onComment === true ||
-                    event.isDislike === false
+                    event.blogId.equals(blogObject) &&
+                    event.isComment === false &&
+                    event.onComment === false &&
+                    event.isDislike === true
                 )
-                    newEvents.push(event);
-                else toDeleteEvents.push(event);
+                    toDeleteEvents.push(event._id);
             });
-            toDeleteEvents.forEach(async (el) => {
-                await LCEvent.findByIdAndDelete(el._id);
-            });
-            await UserActivity.findByIdAndUpdate(activity._id, {
-                $set: { dislikeEvent: newEvents },
-            });
+            await Promise.all([
+                LCEvent.deleteMany({ _id: { $in: toDeleteEvents } }),
+                UserActivity.findByIdAndUpdate(activity._id, {
+                    $pull: { dislikeEvent: { $in: toDeleteEvents } },
+                }),
+            ]);
             await updateUserInCache(user);
             await redis.setEx(
                 `blog_data#user:${user._id}#blog:${newBlog._id}`,
@@ -255,7 +255,7 @@ const dislikeBlog = async (req, res) => {
             res.status(201).json({ blog: newBlog, user: user });
         } else {
             check = false;
-            found.likes.map((like) => {
+            found.likes.forEach((like) => {
                 if (like.userId.equals(userObject)) check = true;
             });
             if (check) {
@@ -264,79 +264,84 @@ const dislikeBlog = async (req, res) => {
                 });
                 const newLikes = [];
                 const toDelete = [];
-                found.likes.map((like) => {
-                    if (!like.userId.equals(userObject)) newLikes.push(like);
-                    else toDelete.push(like);
+                found.likes.forEach((like) => {
+                    if (like.userId.equals(userObject)) toDelete.push(like._id);
                 });
-                toDelete.forEach(async (el) => {
-                    await UserInstance.findByIdAndDelete(el._id);
-                });
-                await Blog.findByIdAndUpdate(blog, {
-                    $set: { likes: newLikes, likeCount: newLikes.length },
-                });
+                await Promise.all([
+                    UserInstance.deleteMany({ _id: { $in: toDelete } }),
+                    Blog.findByIdAndUpdate(blog, {
+                        $pull: { likes: { $in: toDelete } },
+                        $inc: { likeCount: -1 * toDelete.length },
+                    }),
+                ]);
                 const activity = await UserActivity.findOne({
                     userId: req.userId,
                 }).populate('likeEvent');
                 const newEvents = [];
                 const toDeleteEvents = [];
-                activity.likeEvent.map((event) => {
+                activity.likeEvent.forEach((event) => {
                     if (
-                        !event.blogId.equals(blogObject) ||
-                        event.isComment === true ||
-                        event.onComment === true ||
-                        event.isDislike === true
+                        event.blogId.equals(blogObject) &&
+                        event.isComment === false &&
+                        event.onComment === false &&
+                        event.isDislike === false
                     )
-                        newEvents.push(event);
-                    else toDeleteEvents.push(event);
+                        toDeleteEvents.push(event._id);
                 });
-                toDeleteEvents.forEach(async (el) => {
-                    await LCEvent.findByIdAndDelete(el._id);
-                });
-                await UserActivity.findByIdAndUpdate(activity._id, {
-                    $set: { likeEvent: newEvents },
-                });
+                await Promise.all([
+                    LCEvent.deleteMany({ _id: { $in: toDeleteEvents } }),
+                    UserActivity.findByIdAndUpdate(activity._id, {
+                        $pull: { likeEvent: { $in: toDeleteEvents } },
+                    }),
+                ]);
             }
-            const user = await User.findByIdAndUpdate(
-                req.userId,
-                { $push: { dislikes: blog } },
-                { new: true }
-            )
-                .select(
-                    '-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
+            const [user, userInstance] = await Promise.all([
+                User.findByIdAndUpdate(
+                    req.userId,
+                    { $push: { dislikes: blog } },
+                    { new: true }
                 )
-                .populate('followings', '_id userId');
-            const userInstance = await UserInstance.create({
-                userId: req.userId,
-            });
-            const newBlog = await Blog.findByIdAndUpdate(
-                blog,
-                {
-                    $push: { dislikes: userInstance._id },
-                    $inc: { dislikeCount: 1 },
-                },
-                { new: true }
-            )
-                .select(
-                    '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
-                )
-                .populate('author', '_id name profileLogo profileImage')
-                .populate('tags.places', 'name')
-                .populate('tags.activities', 'name');
-            const dislikeEvent = await LCEvent.create({
-                blogId: blog,
-                isComment: false,
-                commentId: null,
-                content: null,
-                onComment: false,
-                isDislike: true,
-            });
-            const isUserActive = await UserActivity.findOne({
-                userId: req.userId,
-            });
-            if (isUserActive)
-                await UserActivity.findByIdAndUpdate(isUserActive._id, {
-                    $push: { dislikeEvent: dislikeEvent._id },
-                });
+                    .select(
+                        '-password -deviceId -followers -visitors -organicVisitors -blogs -bookmarks -drafts -itenaries -notifications'
+                    )
+                    .populate('followings', '_id userId'),
+                UserInstance.create({
+                    userId: req.userId,
+                }),
+            ]);
+            const [newBlog, dislikeEvent, userActivityCount] =
+                await Promise.all([
+                    Blog.findByIdAndUpdate(
+                        blog,
+                        {
+                            $push: { dislikes: userInstance._id },
+                            $inc: { dislikeCount: 1 },
+                        },
+                        { new: true }
+                    )
+                        .select(
+                            '_id title content author tags likeCount commentCount viewCount shareCount thumbnail createdAt updatedAt'
+                        )
+                        .populate('author', '_id name profileLogo profileImage')
+                        .populate('tags.places', 'name')
+                        .populate('tags.activities', 'name'),
+                    LCEvent.create({
+                        blogId: blog,
+                        isComment: false,
+                        commentId: null,
+                        content: null,
+                        onComment: false,
+                        isDislike: true,
+                    }),
+                    UserActivity.countDocuments({ userId: req.userId }),
+                ]);
+            if (userActivityCount > 0)
+                await UserActivity.findByIdAndUpdate(
+                    { userId: req.userId },
+                    {
+                        $push: { dislikeEvent: dislikeEvent._id },
+                    }
+                );
             else
                 await UserActivity.create({
                     userId: req.userId,
@@ -363,71 +368,75 @@ const likeComment = async (req, res) => {
     try {
         const found = await Comment.findById(comment).populate('likes');
         let check = false;
-        found.likes.map((like) => {
+        found.likes.forEach((like) => {
             if (like.userId.equals(userObject)) check = true;
         });
         if (check) {
-            const newLikes = [];
             const toDelete = [];
-            found.likes.map((like) => {
-                if (!like.userId.equals(userObject)) newLikes.push(like);
-                else toDelete.push(like);
+            found.likes.forEach((like) => {
+                if (like.userId.equals(userObject)) toDelete.push(like._id);
             });
-            toDelete.forEach(async (el) => {
-                await UserInstance.findByIdAndDelete(el._id);
-            });
-            const newComment = await Comment.findByIdAndUpdate(
-                comment,
-                { $set: { likes: newLikes, likeCount: newLikes.length } },
-                { new: true }
-            );
+            const [_a, newComment] = await Promise.all([
+                UserInstance.deleteMany({ _id: { $in: toDelete } }),
+                Comment.findByIdAndUpdate(
+                    comment,
+                    { $pull: { likes: { $in: toDelete } } },
+                    { $inc: { likeCount: -1 * toDelete.length } },
+                    { new: true }
+                ),
+            ]);
             const activity = await UserActivity.findOne({
                 userId: req.userId,
             }).populate('likeEvent');
-            const newEvents = [];
             const toDeleteEvents = [];
-            activity.likeEvent.map((event) => {
+            activity.likeEvent.forEach((event) => {
                 if (
-                    !event.blogId.equals(blogObject) ||
-                    event.isComment === true ||
-                    !event.commentId.equals(commentObject) ||
-                    event.onComment === false ||
-                    event.isDislike === true
+                    event.blogId.equals(blogObject) &&
+                    event.isComment === false &&
+                    event.commentId.equals(commentObject) &&
+                    event.onComment === true &&
+                    event.isDislike === false
                 )
-                    newEvents.push(event);
-                else toDeleteEvents.push(event);
+                    toDeleteEvents.push(event._id);
             });
-            toDeleteEvents.forEach(async (el) => {
-                await LCEvent.findByIdAndDelete(el._id);
-            });
-            await UserActivity.findByIdAndUpdate(activity._id, {
-                $set: { likeEvent: newEvents },
-            });
+            await Promise.all([
+                LCEvent.toDelete({ _id: { $in: toDeleteEvents } }),
+                UserActivity.findByIdAndUpdate(activity._id, {
+                    $pull: { likeEvent: { $in: toDeleteEvents } },
+                }),
+            ]);
             res.status(201).json(newComment);
         } else {
             const userInstance = await UserInstance.create({
                 userId: req.userId,
             });
-            const newComment = await Comment.findByIdAndUpdate(
-                comment,
-                { $push: { likes: userInstance._id }, $inc: { likeCount: 1 } },
-                { new: true }
-            );
-            const likeEvent = await LCEvent.create({
-                blogId: blog,
-                isComment: false,
-                commentId: comment,
-                content: null,
-                onComment: true,
-                isDislike: false,
-            });
-            const isUserActive = await UserActivity.findOne({
-                userId: req.userId,
-            });
-            if (isUserActive) {
-                await UserActivity.findByIdAndUpdate(isUserActive._id, {
-                    $push: { likeEvent: likeEvent._id },
-                });
+            const [newComment, likeEvent, userActivityCount] =
+                await Promise.all([
+                    Comment.findByIdAndUpdate(
+                        comment,
+                        {
+                            $push: { likes: userInstance._id },
+                            $inc: { likeCount: 1 },
+                        },
+                        { new: true }
+                    ),
+                    LCEvent.create({
+                        blogId: blog,
+                        isComment: false,
+                        commentId: comment,
+                        content: null,
+                        onComment: true,
+                        isDislike: false,
+                    }),
+                    UserActivity.countDocuments({ userId: req.userId }),
+                ]);
+            if (userActivityCount > 0) {
+                await UserActivity.findByIdAndUpdate(
+                    { userId: req.userId },
+                    {
+                        $push: { likeEvent: likeEvent._id },
+                    }
+                );
             } else {
                 await UserActivity.create({
                     userId: req.userId,
@@ -449,80 +458,80 @@ const dislikeComment = async (req, res) => {
     try {
         const found = await Comment.findById(comment).populate('dislikes');
         let check = false;
-        found.dislikes.map((dislike) => {
+        found.dislikes.forEach((dislike) => {
             if (dislike.userId.equals(userObject)) check = true;
         });
         if (check) {
-            const newDislikes = [];
             const toDelete = [];
-            found.dislikes.map((dislike) => {
-                if (!dislike.userId.equals(userObject))
-                    newDislikes.push(dislike);
-                else toDelete.push(dislike);
+            found.dislikes.forEach((dislike) => {
+                if (dislike.userId.equals(userObject))
+                    toDelete.push(dislike._id);
             });
-            toDelete.forEach(async (el) => {
-                await UserInstance.findByIdAndDelete(el._id);
-            });
-            const newComment = await Comment.findByIdAndUpdate(
-                comment,
-                {
-                    $set: {
-                        dislikes: newDislikes,
-                        dislikeCount: newDislikes.length,
+            const [_a, newComment] = await Promise.all([
+                UserInstance.deleteMany({ _id: { $in: toDelete } }),
+                Comment.findByIdAndUpdate(
+                    comment,
+                    {
+                        $pull: { dislikes: { $in: toDelete } },
+                        $inc: { dislikeCount: -1 * toDelete.length },
                     },
-                },
-                { new: true }
-            );
+                    { new: true }
+                ),
+            ]);
             const activity = await UserActivity.findOne({
                 userId: req.userId,
             }).populate('dislikeEvent');
-            const newEvents = [];
             const toDeleteEvents = [];
-            activity.dislikeEvent.map((event) => {
+            activity.dislikeEvent.forEach((event) => {
                 if (
-                    !event.blogId.equals(blogObject) ||
-                    event.isComment === true ||
-                    !event.commentId.equals(commentObject) ||
-                    event.onComment === false ||
-                    event.isDislike === false
+                    event.blogId.equals(blogObject) &&
+                    event.isComment === false &&
+                    event.commentId.equals(commentObject) &&
+                    event.onComment === true &&
+                    event.isDislike === true
                 )
-                    newEvents.push(event);
-                else toDeleteEvents.push(event);
+                    toDeleteEvents.push(event._id);
             });
-            toDeleteEvents.forEach(async (el) => {
-                await LCEvent.findByIdAndDelete(el._id);
-            });
-            await UserActivity.findByIdAndUpdate(activity._id, {
-                $set: { dislikeEvent: newEvents },
-            });
+            await Promise.all([
+                LCEvent.deleteMany({ _id: { $in: toDeleteEvents } }),
+                UserActivity.findByIdAndUpdate(activity._id, {
+                    $pull: { dislikeEvent: { $in: toDeleteEvents } },
+                }),
+            ]);
             res.status(201).json(newComment);
         } else {
             const userInstance = await UserInstance.create({
                 userId: req.userId,
             });
-            const newComment = await Comment.findByIdAndUpdate(
-                comment,
-                {
-                    $push: { dislikes: userInstance._id },
-                    $inc: { dislikeCount: 1 },
-                },
-                { new: true }
-            );
-            const dislikeEvent = await LCEvent.create({
-                blogId: blog,
-                isComment: false,
-                commentId: comment,
-                content: null,
-                onComment: true,
-                isDislike: true,
-            });
-            const isUserActive = await UserActivity.findOne({
-                userId: req.userId,
-            });
-            if (isUserActive) {
-                await UserActivity.findByIdAndUpdate(isUserActive._id, {
-                    $push: { dislikeEvent: dislikeEvent._id },
-                });
+            const [newComment, dislikeEvent, userActivityCount] =
+                await Promise.all([
+                    Comment.findByIdAndUpdate(
+                        comment,
+                        {
+                            $push: { dislikes: userInstance._id },
+                            $inc: { dislikeCount: 1 },
+                        },
+                        { new: true }
+                    ),
+                    LCEvent.create({
+                        blogId: blog,
+                        isComment: false,
+                        commentId: comment,
+                        content: null,
+                        onComment: true,
+                        isDislike: true,
+                    }),
+                    UserActivity.countDocuments({
+                        userId: req.userId,
+                    }),
+                ]);
+            if (userActivityCount > 0) {
+                await UserActivity.findByIdAndUpdate(
+                    { userId: req.userId },
+                    {
+                        $push: { dislikeEvent: dislikeEvent._id },
+                    }
+                );
             } else {
                 await UserActivity.create({
                     userId: req.userId,
