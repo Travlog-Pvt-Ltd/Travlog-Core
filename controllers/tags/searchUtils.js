@@ -5,7 +5,7 @@ import {
     deleteDataIndex,
     searchByQuery,
     updateDataIndex,
-} from '../../utils/elasticSearch.js';
+} from '../../utils/elasticSearch/elasticSearch.js';
 
 const tagESIndex = indices.searchIndex;
 

@@ -8,7 +8,7 @@ const createCities = async (req, res) => {
         // const sheet = workbook.Sheets[sheetName]
         // const data = xlsx.utils.sheet_to_json(sheet)
         // let cities = []
-        // data.map(item => {
+        // data.forEach(item => {
         //     const admin = item.admin_name ? item.admin_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : null
         //     if (!admin || admin == item.city) {
         //         cities.push({ name: item.city, parent: item.country })

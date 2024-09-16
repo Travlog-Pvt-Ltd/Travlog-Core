@@ -95,8 +95,9 @@ async function getDraftDetail(req, res) {
             author: req.userId,
         });
         if (!foundDraft)
-            return res.status(401).json({
-                message: 'User is not authorized to view this draft!',
+            return res.status(403).json({
+                message:
+                    'Permission denied! Only the author can view this draft.',
             });
         foundDraft
             .populate('tags.places', 'name')
