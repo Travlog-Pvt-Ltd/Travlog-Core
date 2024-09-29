@@ -19,3 +19,23 @@ export const deleteCommentProducer = async (comment) => {
         throw new KafkaConnectionError('Something went wrong', err);
     }
 };
+
+export const commentNotificationProducer = async (data) => {
+    try {
+        const kafkaClient = broker.getKafkaClient();
+        const producer = kafkaClient.producer();
+        await producer.connect();
+
+        await producer.send({
+            topic: 'process-comment-notification',
+            messages: [
+                {
+                    value: JSON.stringify(data),
+                },
+            ],
+        });
+        await producer.disconnect();
+    } catch (err) {
+        throw new KafkaConnectionError('Something went wrong', err);
+    }
+};

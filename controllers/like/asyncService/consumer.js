@@ -1,6 +1,7 @@
 import log from 'npmlog';
-import { broker, KafkaConnectionError } from '../../../utils/kafka';
-import UserActivityService from '../../userActivity/service';
+import { broker, KafkaConnectionError } from '../../../utils/kafka/index.js';
+import UserActivityService from '../../userActivity/service.js';
+import { NotificationSendingService } from '../../notifications/service.js';
 
 export const updateBlogLDActivityConsumer = async () => {
     try {
@@ -30,6 +31,9 @@ export const updateBlogLDActivityConsumer = async () => {
                         create,
                         clean
                     );
+                    log.info(
+                        `UserActivity updated for userId: ${userId}, blogId: ${blogId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
+                    );
                 } catch (error) {
                     log.error(error.message);
                     log.info('Retrying after 5 seconds...');
@@ -42,16 +46,13 @@ export const updateBlogLDActivityConsumer = async () => {
                             create,
                             clean
                         );
-                    } catch (err) {
-                        throw new KafkaConnectionError(
-                            'Something went wrong, retry failed ',
-                            err
+                        log.info(
+                            `UserActivity updated for userId: ${userId}, blogId: ${blogId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
                         );
+                    } catch (err) {
+                        log.error('Something went wrong, retry failed ', err);
                     }
                 }
-                log.info(
-                    `UserActivity updated for userId: ${userId}, blogId: ${blogId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
-                );
             },
         });
     } catch (err) {
@@ -88,6 +89,9 @@ export const updateCommentLDActivityConsumer = async () => {
                         create,
                         clean
                     );
+                    log.info(
+                        `UserActivity updated for userId: ${userId}, blogId: ${blogId}, commentId: ${commentId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
+                    );
                 } catch (error) {
                     log.error(error.message);
                     log.info('Retrying after 5 seconds...');
@@ -101,16 +105,50 @@ export const updateCommentLDActivityConsumer = async () => {
                             create,
                             clean
                         );
-                    } catch (err) {
-                        throw new KafkaConnectionError(
-                            'Something went wrong, retry failed ',
-                            err
+                        log.info(
+                            `UserActivity updated for userId: ${userId}, blogId: ${blogId}, commentId: ${commentId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
                         );
+                    } catch (err) {
+                        log.error('Something went wrong, retry failed ', err);
                     }
                 }
-                log.info(
-                    `UserActivity updated for userId: ${userId}, blogId: ${blogId}, commentId: ${commentId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
-                );
+            },
+        });
+    } catch (err) {
+        throw new KafkaConnectionError('Something went wrong ', err);
+    }
+};
+
+export const blogLDNotificationConsumer = async () => {
+    try {
+        const service = new NotificationSendingService();
+        const kafkaClient = broker.getKafkaClient();
+        const consumer = kafkaClient.consumer({
+            groupId: 'blog-LD-notification-group',
+        });
+        await consumer.connect();
+        await consumer.subscribe({ topics: ['process-blog-LD-notification'] });
+
+        await consumer.run({
+            eachMessage: async ({
+                topic,
+                partition,
+                message,
+                heartbeat,
+                pause,
+            }) => {
+                const data = JSON.parse(message.value.toString());
+                try {
+                    await service.processLDOnBlog(data);
+                    log.info(
+                        `Processing notification for blog ${data.blogId}, event ${data.event} and creator ${data.creatorId}`
+                    );
+                } catch (error) {
+                    log.error(
+                        `Failed to process notification for blog ${data.blogId}, event ${data.event} and creator ${data.creatorId} `,
+                        error.message
+                    );
+                }
             },
         });
     } catch (err) {

@@ -8,6 +8,7 @@ import {
     replyFields,
     deletedContent,
 } from './utils/constants.js';
+import { commentNotificationProducer } from './asyncService/producer.js';
 
 const getComments = async (req, res) => {
     const { id, type, limit = 10, skip = 0 } = req.query;
@@ -46,7 +47,9 @@ const commentOnBlog = async (req, res) => {
             content: content,
             isReply: false,
             blog: blog,
-        });
+        })
+            .select('-likes -replies -dislikes')
+            .populate('userId', '_id name profileLogo');
         const [_a, commentEvent, userActivityCount] = await Promise.all([
             Blog.findByIdAndUpdate(blog, {
                 $push: { comments: newComment._id },
@@ -75,10 +78,13 @@ const commentOnBlog = async (req, res) => {
                 commentEvent: [commentEvent._id],
             });
         }
-        const data = await Comment.findById(newComment._id)
-            .select('-likes -replies -dislikes')
-            .populate('userId', '_id name profileLogo');
-        res.status(201).json({ comment: data });
+        await commentNotificationProducer({
+            creatorId: req.userId,
+            type: 'comment',
+            blogId: blog,
+            commentId: newComment._id,
+        });
+        res.status(201).json({ comment: newComment });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -93,7 +99,9 @@ const replyOnComment = async (req, res) => {
             isReply: true,
             blog: blog,
             parent: comment,
-        });
+        })
+            .select('-likes -replies -dislikes')
+            .populate('userId', '_id name profileLogo');
         const [_b, newBlog, commentEvent, userActivityCount] =
             await Promise.all([
                 Comment.findByIdAndUpdate(comment, {
@@ -128,15 +136,19 @@ const replyOnComment = async (req, res) => {
                 commentEvent: [commentEvent._id],
             });
         }
-        const data = await Comment.findById(newReply._id)
-            .select('-likes -replies -dislikes')
-            .populate('userId', '_id name profileLogo');
         await redis.setEx(
             `blog_data#user:${req.userId}#blog:${newBlog._id}`,
             3600,
             JSON.stringify(newBlog)
         );
-        res.status(201).json({ comment: data });
+        await commentNotificationProducer({
+            creatorId: req.userId,
+            type: 'reply',
+            blogId: blog,
+            commentId: comment,
+            replyId: newReply._id,
+        });
+        res.status(201).json({ comment: newReply });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }

@@ -4,8 +4,8 @@ import Follower from '../../models/follower.js';
 import User from '../../models/user.js';
 import UserActivity from '../../models/userActivity.js';
 import UserInstance from '../../models/userInstance.js';
-import OrganicUserInstance from '../../models/organicUserInstance.js';
 import redis, { updateUserInCache } from '../../config/redis.js';
+import { createNotificationsProducer } from '../common/producer.js';
 
 const moreFromAuthor = async (req, res) => {
     const author = req.params.authorId;
@@ -66,6 +66,11 @@ const follow = async (req, res) => {
                 $push: { followEvent: newInstance },
             }),
         ]);
+        await createNotificationsProducer({
+            creatorId: req.userId,
+            type: 'follow',
+            userId: creator,
+        });
         updateUserInCache(newUser);
         res.status(201).json(newUser);
     } catch (err) {
@@ -74,6 +79,10 @@ const follow = async (req, res) => {
 };
 
 const unfollow = async (req, res) => {
+    /*
+        TODO [Aryan | 2024-09-30]
+        - Return if user is not following the creator
+    */
     const creator = req.body.creatorId;
     const creatorObject = new mongoose.Types.ObjectId(creator);
     const userObject = new mongoose.Types.ObjectId(req.userId);
@@ -139,6 +148,11 @@ const unfollow = async (req, res) => {
                 $push: { unfollowEvent: instance },
             }),
         ]);
+        await createNotificationsProducer({
+            creatorId: req.userId,
+            type: 'follow',
+            userId: creator,
+        });
         updateUserInCache(newUser);
         res.status(201).json(newUser);
     } catch (err) {

@@ -5,9 +5,11 @@ import Comment from '../../models/comment.js';
 import User from '../../models/user.js';
 import redis, { updateUserInCache } from '../../config/redis.js';
 import {
+    blogLDNotificationProducer,
     updateBlogLDActivityProducer,
     updateCommentLDActivityProducer,
 } from './asyncService/producer.js';
+import { createNotificationsProducer } from '../common/producer.js';
 
 const likeBlog = async (req, res) => {
     const blog = req.body.blogId;
@@ -131,6 +133,11 @@ const likeBlog = async (req, res) => {
                 type: 'like',
                 create: true,
                 clean: false,
+            });
+            await blogLDNotificationProducer({
+                creatorId: req.userId,
+                notificationType: 'like',
+                blogId: blog,
             });
             await updateUserInCache(user);
             await redis.setEx(
@@ -264,6 +271,11 @@ const dislikeBlog = async (req, res) => {
                 create: true,
                 clean: false,
             });
+            await blogLDNotificationProducer({
+                creatorId: req.userId,
+                notificationType: 'dislike',
+                blogId: blog,
+            });
             await updateUserInCache(user);
             await redis.setEx(
                 `blog_data#user:${user._id}#blog:${newBlog._id}`,
@@ -333,6 +345,13 @@ const likeComment = async (req, res) => {
                 create: true,
                 clean: false,
             });
+            await createNotificationsProducer({
+                creatorId: req.userId,
+                userId: newComment.userId,
+                notificationType: 'like',
+                commentId: comment,
+                blogId: blog,
+            });
             res.status(201).json(newComment);
         }
     } catch (err) {
@@ -398,6 +417,13 @@ const dislikeComment = async (req, res) => {
                 type: 'dislike',
                 create: true,
                 clean: false,
+            });
+            await createNotificationsProducer({
+                creatorId: req.userId,
+                userId: newComment.userId,
+                notificationType: 'dislike',
+                commentId: comment,
+                blogId: blog,
             });
             res.status(201).json(newComment);
         }
