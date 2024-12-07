@@ -6,7 +6,7 @@ import LCEvent from '../models/likeCommentEvent.js';
 import User from '../models/user.js';
 import OrganicUserInstance from '../models/organicUserInstance.js';
 import UserInstance from '../models/userInstance.js';
-import Draft from '../models/draft.js';
+import Draft from '../draft/model.js';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { getFirebaseStorage } from '../config/Firebase.js';
 import redis, {

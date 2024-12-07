@@ -1,14 +1,11 @@
 import mongoose from 'mongoose';
-import Blog from '../../blog/model.js';
-import BlogInstance from '../../models/blogInstance.js';
-import User from '../../models/user.js';
-import UserInstance from '../../models/userInstance.js';
-import redis, { deleteKeysByPatternWithScan } from '../../config/redis.js';
-import { bookmarkField } from './utils/constants.js';
-import {
-    authorFieldsForBlog,
-    blogFieldsToSelect,
-} from '../../blog/constants.js';
+import Blog from '../blog/model.js';
+import BlogInstance from '../models/blogInstance.js';
+import User from '../models/user.js';
+import UserInstance from '../models/userInstance.js';
+import redis, { deleteKeysByPatternWithScan } from '../config/redis.js';
+import { bookmarkField } from './constants.js';
+import { authorFieldsForBlog, blogFieldsToSelect } from '../blog/constants.js';
 
 const addBookmark = async (req, res) => {
     const { blog } = req.body;
