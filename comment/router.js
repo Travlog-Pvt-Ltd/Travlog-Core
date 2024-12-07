@@ -1,16 +1,16 @@
 import express from 'express';
-import auth from '../../middlewares/auth.js';
+import auth from '../middlewares/auth.js';
 import {
     commentOnBlog,
     deleteComment,
     getComments,
     replyOnComment,
     editComment,
-} from '../../controllers/comment/index.js';
+} from './controller.js';
 import {
     doesCommentExistAndIsAuthor,
     isCommentDeleted,
-} from '../../controllers/comment/utils/permissions.js';
+} from './permissions.js';
 
 const commentRouter = express.Router();
 

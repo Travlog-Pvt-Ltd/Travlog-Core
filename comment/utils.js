@@ -1,4 +1,4 @@
-import Comment from '../../models/comment.js';
+import Comment from './model.js';
 
 export const markRepliesForDeletion = async (comment) => {
     await Comment.updateMany(

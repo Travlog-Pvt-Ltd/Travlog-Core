@@ -1,7 +1,7 @@
 import {
     blogCommentNotificationConsumer,
     deleteCommentConsumer,
-} from '../../controllers/comment/asyncService/consumer.js';
+} from '../../comment/consumer.js';
 import { createNotificationsConsumer } from '../../controllers/common/consumer.js';
 import {
     blogLDNotificationConsumer,

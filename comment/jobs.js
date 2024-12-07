@@ -1,8 +1,8 @@
 import log from 'npmlog';
-import Comment from '../../../models/comment.js';
+import Comment from './model.js';
 import { timeTillCommentDeletion } from './constants.js';
-import LCEvent from '../../../models/likeCommentEvent.js';
-import UserActivity from '../../../models/userActivity.js';
+import LCEvent from '../models/likeCommentEvent.js';
+import UserActivity from '../models/userActivity.js';
 
 export const cleanDeletedComments = async () => {
     const deleteTimestamp = new Date();

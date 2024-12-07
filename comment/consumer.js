@@ -1,7 +1,7 @@
 import log from 'npmlog';
-import { broker, KafkaConnectionError } from '../../../utils/kafka/index.js';
-import { markRepliesForDeletion } from '../utils.js';
-import { NotificationSendingService } from '../../notifications/service.js';
+import { broker, KafkaConnectionError } from '../utils/kafka/index.js';
+import { markRepliesForDeletion } from './utils.js';
+import { NotificationSendingService } from '../controllers/notifications/service.js';
 
 export const deleteCommentConsumer = async () => {
     try {

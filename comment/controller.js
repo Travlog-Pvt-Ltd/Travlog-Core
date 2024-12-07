@@ -1,14 +1,10 @@
-import Blog from '../../blog/model.js';
-import LCEvent from '../../models/likeCommentEvent.js';
-import UserActivity from '../../models/userActivity.js';
-import Comment from '../../models/comment.js';
-import redis from '../../config/redis.js';
-import {
-    commentFields,
-    replyFields,
-    deletedContent,
-} from './utils/constants.js';
-import { commentNotificationProducer } from './asyncService/producer.js';
+import Blog from '../blog/model.js';
+import LCEvent from '../models/likeCommentEvent.js';
+import UserActivity from '../models/userActivity.js';
+import Comment from './model.js';
+import redis from '../config/redis.js';
+import { commentFields, replyFields, deletedContent } from './constants.js';
+import { commentNotificationProducer } from './producer.js';
 
 const getComments = async (req, res) => {
     const { id, type, limit = 10, skip = 0 } = req.query;

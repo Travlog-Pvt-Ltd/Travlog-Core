@@ -9,7 +9,7 @@ import blogRouter from './blog/router.js';
 import draftRouter from './routers/draft/index.js';
 import tagRouter from './routers/tags/index.js';
 import likeRouter from './routers/like/index.js';
-import commentRouter from './routers/comment/index.js';
+import commentRouter from './comment/router.js';
 import creatorRouter from './routers/creator/index.js';
 import bookmarkRouter from './routers/bookmark/index.js';
 import { broker } from './utils/kafka/index.js';

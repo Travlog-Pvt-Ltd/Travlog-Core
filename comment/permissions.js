@@ -1,4 +1,4 @@
-import Comment from '../../../models/comment.js';
+import Comment from './model.js';
 
 const doesCommentExistAndIsAuthor = async (req, res, next) => {
     try {

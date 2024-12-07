@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Blog from '../../blog/model.js';
 import UserInstance from '../../models/userInstance.js';
-import Comment from '../../models/comment.js';
+import Comment from '../../comment/model.js';
 import User from '../../models/user.js';
 import redis, { updateUserInCache } from '../../config/redis.js';
 import {

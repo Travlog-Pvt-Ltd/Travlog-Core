@@ -1,5 +1,5 @@
 import Blog from '../../blog/model.js';
-import Comment from '../../models/comment.js';
+import Comment from '../../comment/model.js';
 import { createNotificationsProducer } from '../common/producer.js';
 
 export class NotificationSendingService {

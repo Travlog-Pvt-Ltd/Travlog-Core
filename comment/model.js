@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import LCEvent from './likeCommentEvent.js';
-import UserActivity from './userActivity.js';
-import { deleteCommentProducer } from '../controllers/comment/asyncService/producer.js';
+import LCEvent from '../models/likeCommentEvent.js';
+import UserActivity from '../models/userActivity.js';
+import { deleteCommentProducer } from './producer.js';
 
 const commentSchema = new mongoose.Schema(
     {
