@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Blog from '../../models/blog.js';
+import Blog from '../../blog/model.js';
 import Follower from '../../models/follower.js';
 import User from '../../models/user.js';
 import UserActivity from '../../models/userActivity.js';

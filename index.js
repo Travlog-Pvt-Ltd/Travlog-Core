@@ -5,7 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import userRouter from './routers/user/index.js';
 import authRouter from './routers/auth/index.js';
-import blogRouter from './routers/blog/index.js';
+import blogRouter from './blog/router.js';
 import draftRouter from './routers/draft/index.js';
 import tagRouter from './routers/tags/index.js';
 import likeRouter from './routers/like/index.js';

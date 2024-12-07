@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../../middlewares/auth.js';
+import auth from '../middlewares/auth.js';
 import {
     createBlog,
     deleteBlog,
@@ -7,8 +7,8 @@ import {
     getBlogDetail,
     getUserBlogs,
     getSearchedBlogs,
-} from '../../controllers/blog/index.js';
-import { upload } from '../../config/Multer.js';
+} from './controller.js';
+import { upload } from '../config/Multer.js';
 
 const blogRouter = express.Router();
 

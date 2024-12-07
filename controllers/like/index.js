@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Blog from '../../models/blog.js';
+import Blog from '../../blog/model.js';
 import UserInstance from '../../models/userInstance.js';
 import Comment from '../../models/comment.js';
 import User from '../../models/user.js';
