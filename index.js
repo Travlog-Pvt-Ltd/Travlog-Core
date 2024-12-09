@@ -27,8 +27,10 @@ app.use(
         origin: '*',
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         allowedHeaders: ['Content-Type', 'Authorization'],
+        optionsSuccessStatus: 204,
     })
 );
+app.options('*', cors());
 
 mongoose
     .connect(process.env.MONGO_URL)

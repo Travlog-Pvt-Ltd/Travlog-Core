@@ -65,7 +65,7 @@ async function createDraft(req, res) {
         }
         res.status(201).json({ message: 'Draft saved successfully!' });
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -80,7 +80,7 @@ async function getDrafts(req, res) {
             .populate('tags.activities', 'name');
         res.status(200).json(foundDrafts);
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 }
 
@@ -109,7 +109,7 @@ async function getDraftDetail(req, res) {
         );
         res.status(200).json(foundDraft);
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 }
 
