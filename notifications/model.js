@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { UserActions } from '../controllers/notifications/constant.js';
+import { UserActions } from './constant.js';
 
 const notificationSchema = new mongoose.Schema(
     {

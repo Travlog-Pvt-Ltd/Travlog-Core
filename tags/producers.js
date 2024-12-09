@@ -1,4 +1,4 @@
-import { KafkaConnectionError, broker } from '../../../utils/kafka/index.js';
+import { KafkaConnectionError, broker } from '../utils/kafka/index.js';
 
 export const tagsIndexProducer = async (data) => {
     try {

@@ -1,11 +1,11 @@
-import { indices } from '../../config/elasticSearch.js';
+import { indices } from '../config/elasticSearch.js';
 import {
     bulkCreateDataIndex,
     createDataIndex,
     deleteDataIndex,
     searchByQuery,
     updateDataIndex,
-} from '../../utils/elasticSearch/elasticSearch.js';
+} from '../utils/elasticSearch/elasticSearch.js';
 
 const tagESIndex = indices.searchIndex;
 

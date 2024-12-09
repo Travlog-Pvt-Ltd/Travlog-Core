@@ -5,7 +5,7 @@ import User from '../models/user.js';
 import UserActivity from '../models/userActivity.js';
 import UserInstance from '../models/userInstance.js';
 import redis, { updateUserInCache } from '../config/redis.js';
-import { createNotificationsProducer } from '../controllers/common/producer.js';
+import { createNotificationsProducer } from '../notifications/producer.js';
 
 const moreFromAuthor = async (req, res) => {
     const author = req.params.authorId;

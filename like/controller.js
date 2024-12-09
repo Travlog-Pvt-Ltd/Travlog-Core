@@ -1,15 +1,15 @@
 import mongoose from 'mongoose';
-import Blog from '../../blog/model.js';
-import UserInstance from '../../models/userInstance.js';
-import Comment from '../../comment/model.js';
-import User from '../../models/user.js';
-import redis, { updateUserInCache } from '../../config/redis.js';
+import Blog from '../blog/model.js';
+import UserInstance from '../models/userInstance.js';
+import Comment from '../comment/model.js';
+import User from '../models/user.js';
+import redis, { updateUserInCache } from '../config/redis.js';
 import {
     blogLDNotificationProducer,
     updateBlogLDActivityProducer,
     updateCommentLDActivityProducer,
-} from './asyncService/producer.js';
-import { createNotificationsProducer } from '../common/producer.js';
+} from './producer.js';
+import { createNotificationsProducer } from '../notifications/producer.js';
 
 const likeBlog = async (req, res) => {
     const blog = req.body.blogId;

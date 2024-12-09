@@ -16,7 +16,7 @@ import redis, {
 import { authorFieldsForBlog, blogFieldsToSelect } from './constants.js';
 import Place from '../models/place.js';
 import Activity from '../models/activities.js';
-import { tagsIndexProducer } from '../controllers/tags/asyncService/producers.js';
+import { tagsIndexProducer } from '../tags/producers.js';
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;

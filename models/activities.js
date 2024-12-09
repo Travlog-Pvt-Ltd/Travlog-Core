@@ -1,4 +1,4 @@
-import { tagsIndexProducer } from '../controllers/tags/asyncService/producers.js';
+import { tagsIndexProducer } from '../tags/producers.js';
 import mongoose from 'mongoose';
 
 const activitySchema = new mongoose.Schema(

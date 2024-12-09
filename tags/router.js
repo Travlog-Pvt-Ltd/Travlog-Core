@@ -1,8 +1,8 @@
 import express from 'express';
-import auth from '../../middlewares/auth.js';
-import { getPlaceInfo, searchTags } from '../../controllers/tags/index.js';
-import { createCities } from '../../controllers/cities/index.js';
-import { createActivities } from '../../controllers/activities/index.js';
+import auth from '../middlewares/auth.js';
+import { getPlaceInfo, searchTags } from './controller.js';
+import { createCities } from '../controllers/cities/index.js';
+import { createActivities } from '../controllers/activities/index.js';
 
 const tagRouter = express.Router();
 
