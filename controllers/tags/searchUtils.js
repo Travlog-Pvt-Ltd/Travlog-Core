@@ -113,7 +113,10 @@ export const deleteTagIndex = async (id) => {
 };
 
 export const searchTagsQuery = (queryText) => {
-    // Todo: Add logic to break tie of relevancy score with searchCount
+    /*
+        TODO [Aryan | 2024-09-28]
+        - Add logic to break tie of relevancy score with searchCount
+    */
     return {
         bool: {
             should: [
