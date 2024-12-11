@@ -118,6 +118,18 @@ const blogSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+const singleBlogSchema = new mongoose.Schema(
+    {
+        blogId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Blog',
+        },
+    },
+    { timestamps: true }
+);
+
 const Blog = mongoose.model('Blog', blogSchema);
 
-export default Blog;
+const BlogInstance = mongoose.model('BlogInstance', singleBlogSchema);
+
+export { Blog, BlogInstance };

@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
-import Blog from '../blog/model.js';
-import Follower from '../models/follower.js';
-import User from '../models/user.js';
-import UserActivity from '../models/userActivity.js';
-import UserInstance from '../models/userInstance.js';
-import redis, { updateUserInCache } from '../config/redis.js';
-import { createNotificationsProducer } from '../controllers/common/producer.js';
+import { Blog } from '../blog/model.js';
+import { User, Follower, UserInstance } from '../user/model.js';
+import { UserActivity } from '../userActivity/model.js';
+import redis from '../redis/index.js';
+import { updateUserInCache } from '../redis/utils.js';
+import { createNotificationsProducer } from '../notifications/producer.js';
 
 const moreFromAuthor = async (req, res) => {
     const author = req.params.authorId;

@@ -1,16 +1,16 @@
 import { broker, KafkaConnectionError } from '../kafka/index.js';
 
-export const deleteCommentProducer = async (comment) => {
+export const updateBlogLDActivityProducer = async (data) => {
     try {
         const kafkaClient = broker.getKafkaClient();
         const producer = kafkaClient.producer();
         await producer.connect();
 
         await producer.send({
-            topic: 'mark-comment-delete',
+            topic: 'update-blog-LD-activity',
             messages: [
                 {
-                    value: JSON.stringify(comment),
+                    value: JSON.stringify(data),
                 },
             ],
         });
@@ -20,14 +20,34 @@ export const deleteCommentProducer = async (comment) => {
     }
 };
 
-export const commentNotificationProducer = async (data) => {
+export const updateCommentLDActivityProducer = async (data) => {
     try {
         const kafkaClient = broker.getKafkaClient();
         const producer = kafkaClient.producer();
         await producer.connect();
 
         await producer.send({
-            topic: 'process-comment-notification',
+            topic: 'update-comment-LD-activity',
+            messages: [
+                {
+                    value: JSON.stringify(data),
+                },
+            ],
+        });
+        await producer.disconnect();
+    } catch (err) {
+        throw new KafkaConnectionError('Something went wrong', err);
+    }
+};
+
+export const blogLDNotificationProducer = async (data) => {
+    try {
+        const kafkaClient = broker.getKafkaClient();
+        const producer = kafkaClient.producer();
+        await producer.connect();
+
+        await producer.send({
+            topic: 'process-blog-LD-notification',
             messages: [
                 {
                     value: JSON.stringify(data),

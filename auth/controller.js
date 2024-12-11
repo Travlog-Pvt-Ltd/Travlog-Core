@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../models/user.js';
+import { User } from '../user/model.js';
 import nodemailer from 'nodemailer';
-import OTPModel from '../models/otp.js';
-import redis, { updateUserInCache } from '../config/redis.js';
+import { OTPModel } from './model.js';
+import redis from '../redis/index.js';
+import { updateUserInCache } from '../redis/utils.js';
 
 async function register(req, res) {
     const { name, email, password, deviceId } = req.body;

@@ -1,8 +1,9 @@
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { getFirebaseStorage } from '../config/Firebase.js';
+import { getFirebaseStorage } from '../common/config/Firebase.js';
 import Draft from './model.js';
-import User from '../models/user.js';
-import redis, { updateUserInCache } from '../config/redis.js';
+import { User } from '../user/model.js';
+import redis from '../redis/index.js';
+import { updateUserInCache } from '../redis/utils.js';
 
 async function createDraft(req, res) {
     const { title, content, tags, thumbnailUrl } = req.body;
