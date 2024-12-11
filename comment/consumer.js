@@ -1,5 +1,5 @@
 import log from 'npmlog';
-import { broker, KafkaConnectionError } from '../utils/kafka/index.js';
+import { broker, KafkaConnectionError } from '../kafka/index.js';
 import { markRepliesForDeletion } from './utils.js';
 import { NotificationSendingService } from '../notifications/service.js';
 

@@ -1,14 +1,14 @@
 import {
     blogCommentNotificationConsumer,
     deleteCommentConsumer,
-} from '../../comment/consumer.js';
-import { createNotificationsConsumer } from '../../notifications/consumer.js';
+} from '../comment/consumer.js';
+import { createNotificationsConsumer } from '../notifications/consumer.js';
 import {
     blogLDNotificationConsumer,
     updateBlogLDActivityConsumer,
     updateCommentLDActivityConsumer,
-} from '../../like/consumer.js';
-import { tagsIndexConsumer } from '../../tags/consumers.js';
+} from '../like/consumer.js';
+import { tagsIndexConsumer } from '../tags/consumers.js';
 
 export const kafkaTopics = [
     'tags-es-sync',

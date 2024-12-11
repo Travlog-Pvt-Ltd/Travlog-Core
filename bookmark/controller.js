@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 import Blog from '../blog/model.js';
-import BlogInstance from '../models/blogInstance.js';
+import BlogInstance from '../common/models/blogInstance.js';
 import User from '../user/model.js';
-import UserInstance from '../models/userInstance.js';
-import redis, { deleteKeysByPatternWithScan } from '../config/redis.js';
+import UserInstance from '../common/models/userInstance.js';
+import redis from '../redis/index.js';
+import { deleteKeysByPatternWithScan } from '../redis/utils.js';
 import { bookmarkField } from './constants.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from '../blog/constants.js';
 

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import LCEvent from '../models/likeCommentEvent.js';
+import LCEvent from '../common/models/likeCommentEvent.js';
 import UserActivity from '../userActivity/model.js';
 import { deleteCommentProducer } from './producer.js';
 

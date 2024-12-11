@@ -12,9 +12,9 @@ import draftRouter from './draft/router.js';
 import commentRouter from './comment/router.js';
 import creatorRouter from './creator/router.js';
 import bookmarkRouter from './bookmark/router.js';
-import { broker } from './utils/kafka/index.js';
+import { broker } from './kafka/index.js';
 import log from 'npmlog';
-import './config/redis.js';
+import './redis/index.js';
 import './cron.config.js';
 
 dotenv.config();

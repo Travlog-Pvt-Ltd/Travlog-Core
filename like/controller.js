@@ -1,9 +1,10 @@
 import mongoose from 'mongoose';
 import Blog from '../blog/model.js';
-import UserInstance from '../models/userInstance.js';
+import UserInstance from '../common/models/userInstance.js';
 import Comment from '../comment/model.js';
 import User from '../user/model.js';
-import redis, { updateUserInCache } from '../config/redis.js';
+import redis from '../redis/index.js';
+import { updateUserInCache } from '../redis/utils.js';
 import {
     blogLDNotificationProducer,
     updateBlogLDActivityProducer,

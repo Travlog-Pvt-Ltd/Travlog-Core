@@ -1,7 +1,7 @@
-import Place from '../models/place.js';
+import Place from '../common/models/place.js';
 import { bulkCreateTagIndex } from './searchUtils.js';
-import { broker, KafkaConnectionError } from '../utils/kafka/index.js';
-import Activity from '../models/activities.js';
+import { broker, KafkaConnectionError } from '../kafka/index.js';
+import Activity from '../common/models/activities.js';
 
 export const tagsIndexConsumer = async () => {
     try {

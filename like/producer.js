@@ -1,4 +1,4 @@
-import { broker, KafkaConnectionError } from '../utils/kafka/index.js';
+import { broker, KafkaConnectionError } from '../kafka/index.js';
 
 export const updateBlogLDActivityProducer = async (data) => {
     try {

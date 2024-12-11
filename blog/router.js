@@ -8,7 +8,7 @@ import {
     getUserBlogs,
     getSearchedBlogs,
 } from './controller.js';
-import { upload } from '../config/Multer.js';
+import { upload } from '../common/config/Multer.js';
 
 const blogRouter = express.Router();
 

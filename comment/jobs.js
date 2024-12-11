@@ -1,7 +1,7 @@
 import log from 'npmlog';
 import Comment from './model.js';
 import { timeTillCommentDeletion } from './constants.js';
-import LCEvent from '../models/likeCommentEvent.js';
+import LCEvent from '../common/models/likeCommentEvent.js';
 import UserActivity from '../userActivity/model.js';
 
 export const cleanDeletedComments = async () => {
