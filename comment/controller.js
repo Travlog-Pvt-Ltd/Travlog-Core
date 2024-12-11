@@ -1,6 +1,6 @@
 import Blog from '../blog/model.js';
 import LCEvent from '../models/likeCommentEvent.js';
-import UserActivity from '../models/userActivity.js';
+import UserActivity from '../userActivity/model.js';
 import Comment from './model.js';
 import redis from '../config/redis.js';
 import { commentFields, replyFields, deletedContent } from './constants.js';

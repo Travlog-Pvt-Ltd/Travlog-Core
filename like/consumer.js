@@ -1,6 +1,6 @@
 import log from 'npmlog';
 import { broker, KafkaConnectionError } from '../utils/kafka/index.js';
-import UserActivityService from '../controllers/userActivity/service.js';
+import UserActivityService from '../userActivity/service.js';
 import { NotificationSendingService } from '../notifications/service.js';
 
 export const updateBlogLDActivityConsumer = async () => {

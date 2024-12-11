@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import userRouter from './routers/user/index.js';
+import userRouter from './user/router.js';
 import tagRouter from './tags/router.js';
 import likeRouter from './like/router.js';
 import authRouter from './auth/router.js';

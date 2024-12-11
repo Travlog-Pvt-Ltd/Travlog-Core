@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import Blog from '../blog/model.js';
 import Follower from '../models/follower.js';
-import User from '../models/user.js';
-import UserActivity from '../models/userActivity.js';
+import User from '../user/model.js';
+import UserActivity from '../userActivity/model.js';
 import UserInstance from '../models/userInstance.js';
 import redis, { updateUserInCache } from '../config/redis.js';
 import { createNotificationsProducer } from '../notifications/producer.js';

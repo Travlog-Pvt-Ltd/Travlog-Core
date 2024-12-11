@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import LCEvent from '../models/likeCommentEvent.js';
-import UserActivity from '../models/userActivity.js';
+import UserActivity from '../userActivity/model.js';
 import { deleteCommentProducer } from './producer.js';
 
 const commentSchema = new mongoose.Schema(
