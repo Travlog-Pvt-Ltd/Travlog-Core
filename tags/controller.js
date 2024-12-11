@@ -1,5 +1,5 @@
 import xlsx from 'xlsx';
-import Place from '../common/models/place.js';
+import { Place } from './model.js';
 import { customSearchTags } from './searchUtils.js';
 import { parseEsTagData } from './utils.js';
 

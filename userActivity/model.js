@@ -58,6 +58,26 @@ const userActivitySchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+const likeCommentEventSchema = new mongoose.Schema(
+    {
+        blogId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Blog',
+        },
+        isComment: Boolean,
+        commentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Comment',
+        },
+        content: String,
+        onComment: Boolean,
+        isDislike: Boolean,
+    },
+    { timestamps: true }
+);
+
 const UserActivity = mongoose.model('UserActivity', userActivitySchema);
 
-export default UserActivity;
+const LCEvent = mongoose.model('LCEvent', likeCommentEventSchema);
+
+export { UserActivity, LCEvent };

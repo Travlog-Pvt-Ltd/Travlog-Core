@@ -1,11 +1,7 @@
 import mongoose from 'mongoose';
-import UserActivity from '../userActivity/model.js';
-import Blog from './model.js';
-import BlogInstance from '../common/models/blogInstance.js';
-import LCEvent from '../common/models/likeCommentEvent.js';
-import User from '../user/model.js';
-import OrganicUserInstance from '../common/models/organicUserInstance.js';
-import UserInstance from '../common/models/userInstance.js';
+import { UserActivity, LCEvent } from '../userActivity/model.js';
+import { Blog, BlogInstance } from './model.js';
+import { User, UserInstance, OrganicUserInstance } from '../user/model.js';
 import Draft from '../draft/model.js';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { getFirebaseStorage } from '../common/config/Firebase.js';
@@ -15,8 +11,7 @@ import {
     deleteKeysByPatternWithScan,
 } from '../redis/utils.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from './constants.js';
-import Place from '../common/models/place.js';
-import Activity from '../common/models/activities.js';
+import { Place, Activity } from '../tags/model.js';
 import { tagsIndexProducer } from '../tags/producers.js';
 
 async function getAllBlogs(req, res) {

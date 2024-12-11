@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from '../user/model.js';
+import { User } from '../user/model.js';
 import nodemailer from 'nodemailer';
-import OTPModel from '../common/models/otp.js';
+import { OTPModel } from './model.js';
 import redis from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 

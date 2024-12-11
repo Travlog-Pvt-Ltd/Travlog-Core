@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-import LCEvent from '../common/models/likeCommentEvent.js';
-import UserActivity from './model.js';
+import { UserActivity, LCEvent } from './model.js';
 
 class UserActivityService {
     constructor() {

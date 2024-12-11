@@ -1,4 +1,4 @@
-import Blog from '../blog/model.js';
+import { Blog } from '../blog/model.js';
 import Comment from '../comment/model.js';
 import { createNotificationsProducer } from './producer.js';
 

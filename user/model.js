@@ -160,6 +160,45 @@ const userSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+const followerSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        notify: Boolean,
+    },
+    { timestamps: true }
+);
+
+const userInstanceSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    },
+    { timestamps: true }
+);
+
+const organicUserInstanceSchema = new mongoose.Schema(
+    {
+        userId: {
+            type: String,
+        },
+    },
+    { timestamps: true }
+);
+
 const User = mongoose.model('User', userSchema);
 
-export default User;
+const Follower = mongoose.model('Follower', followerSchema);
+
+const UserInstance = mongoose.model('UserInstance', userInstanceSchema);
+
+const OrganicUserInstance = mongoose.model(
+    'OrganicUserInstance',
+    organicUserInstanceSchema
+);
+
+export { User, Follower, UserInstance, OrganicUserInstance };

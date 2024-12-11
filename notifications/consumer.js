@@ -1,7 +1,7 @@
 import log from 'npmlog';
 import { broker, KafkaConnectionError } from '../kafka/index.js';
 import { getNotificationObjectFromData } from './utils.js';
-import Notification, { UserNotification } from './model.js';
+import { Notification, UserNotification } from './model.js';
 import { emitNotificationUpdate } from './sockets.js';
 
 export const createNotificationsConsumer = async () => {

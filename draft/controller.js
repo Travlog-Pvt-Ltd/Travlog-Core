@@ -1,7 +1,7 @@
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { getFirebaseStorage } from '../common/config/Firebase.js';
 import Draft from './model.js';
-import User from '../user/model.js';
+import { User } from '../user/model.js';
 import redis from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 
