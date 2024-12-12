@@ -1,5 +1,5 @@
 import express from 'express';
-import auth from '../auth/middlewares/auth.js';
+import { auth } from '../auth/middleware.js';
 import { createDraft, getDraftDetail, getDrafts } from './controller.js';
 import { upload } from '../common/config/Multer.js';
 
