@@ -1,8 +1,9 @@
 import { Place, Activity } from './model.js';
 import { bulkCreateTagIndex } from './searchUtils.js';
 import { broker, KafkaConnectionError } from '../kafka/index.js';
+import { registerConsumer } from '../common/utils.js';
 
-export const tagsIndexConsumer = async () => {
+registerConsumer(async () => {
     try {
         const kafkaClient = broker.getKafkaClient();
         const consumer = kafkaClient.consumer({ groupId: 'tags-es-group' });
@@ -10,13 +11,7 @@ export const tagsIndexConsumer = async () => {
         await consumer.subscribe({ topics: ['tags-es-sync'] });
 
         await consumer.run({
-            eachMessage: async ({
-                topic,
-                partition,
-                message,
-                heartbeat,
-                pause,
-            }) => {
+            eachMessage: async ({ message }) => {
                 const data = JSON.parse(message.value.toString());
                 const places = await Place.find({ _id: { $in: data.places } });
                 const activities = await Activity.find({
@@ -28,4 +23,4 @@ export const tagsIndexConsumer = async () => {
     } catch (err) {
         throw new KafkaConnectionError('Something went wrong', err);
     }
-};
+});

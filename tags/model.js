@@ -1,4 +1,4 @@
-import { tagsIndexProducer } from './producers.js';
+import { tagsIndexProducer } from './producer.js';
 import mongoose from 'mongoose';
 
 const activitySchema = new mongoose.Schema(

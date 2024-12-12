@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import log from 'npmlog';
 import userRouter from './user/router.js';
 import tagRouter from './tags/router.js';
 import likeRouter from './like/router.js';
@@ -13,7 +14,6 @@ import commentRouter from './comment/router.js';
 import creatorRouter from './creator/router.js';
 import bookmarkRouter from './bookmark/router.js';
 import { broker } from './kafka/index.js';
-import log from 'npmlog';
 import './redis/index.js';
 import './cron.config.js';
 
