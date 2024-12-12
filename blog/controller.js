@@ -12,7 +12,7 @@ import {
 } from '../redis/utils.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from './constants.js';
 import { Place, Activity } from '../tags/model.js';
-import { tagsIndexProducer } from '../tags/producers.js';
+import { tagsIndexProducer } from '../tags/producer.js';
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;

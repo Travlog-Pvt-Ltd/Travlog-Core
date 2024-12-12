@@ -1,6 +1,7 @@
-import { Kafka, logLevel } from 'kafkajs';
-import { consumersList, kafkaTopics } from './constant.js';
 import log from 'npmlog';
+import { Kafka, logLevel } from 'kafkajs';
+import { kafkaTopics } from './constant.js';
+import { consumerRegistry } from './registry.js';
 
 export class KafkaConnectionError extends Error {
     constructor(message, err) {
@@ -68,12 +69,8 @@ class KafkaBroker {
     }
 
     startConsumers() {
-        consumersList.forEach((consumer) => {
-            consumer();
-        });
-        log.info(
-            `Started ${consumersList.length} ${consumersList.length > 1 ? 'consumers' : 'consumer'}`
-        );
+        console.log('Starting consumers');
+        consumerRegistry.startConsumers();
     }
 }
 

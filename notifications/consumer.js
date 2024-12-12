@@ -3,8 +3,9 @@ import { broker, KafkaConnectionError } from '../kafka/index.js';
 import { getNotificationObjectFromData } from './utils.js';
 import { Notification, UserNotification } from './model.js';
 import { emitNotificationUpdate } from './sockets.js';
+import { registerConsumer } from '../common/utils.js';
 
-export const createNotificationsConsumer = async () => {
+registerConsumer(async () => {
     try {
         const kafkaClient = broker.getKafkaClient();
         const consumer = kafkaClient.consumer({
@@ -14,13 +15,7 @@ export const createNotificationsConsumer = async () => {
         await consumer.subscribe({ topics: ['create-notification'] });
 
         await consumer.run({
-            eachMessage: async ({
-                topic,
-                partition,
-                message,
-                heartbeat,
-                pause,
-            }) => {
+            eachMessage: async ({ message }) => {
                 try {
                     const data = JSON.parse(message.value.toString());
                     const notificationObj = getNotificationObjectFromData(data);
@@ -48,4 +43,4 @@ export const createNotificationsConsumer = async () => {
     } catch (err) {
         throw new KafkaConnectionError('Something went wrong', err);
     }
-};
+});

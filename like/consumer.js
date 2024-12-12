@@ -2,8 +2,9 @@ import log from 'npmlog';
 import { broker, KafkaConnectionError } from '../kafka/index.js';
 import UserActivityService from '../userActivity/service.js';
 import { NotificationSendingService } from '../notifications/service.js';
+import { registerConsumer } from '../common/utils.js';
 
-export const updateBlogLDActivityConsumer = async () => {
+registerConsumer(async () => {
     try {
         const service = new UserActivityService();
         const kafkaClient = broker.getKafkaClient();
@@ -14,13 +15,7 @@ export const updateBlogLDActivityConsumer = async () => {
         await consumer.subscribe({ topics: ['update-blog-LD-activity'] });
 
         await consumer.run({
-            eachMessage: async ({
-                topic,
-                partition,
-                message,
-                heartbeat,
-                pause,
-            }) => {
+            eachMessage: async ({ message }) => {
                 const data = JSON.parse(message.value.toString());
                 const { blogId, userId, type, create, clean } = data;
                 try {
@@ -58,9 +53,9 @@ export const updateBlogLDActivityConsumer = async () => {
     } catch (err) {
         throw new KafkaConnectionError('Something went wrong', err);
     }
-};
+});
 
-export const updateCommentLDActivityConsumer = async () => {
+registerConsumer(async () => {
     try {
         const service = new UserActivityService();
         const kafkaClient = broker.getKafkaClient();
@@ -71,13 +66,7 @@ export const updateCommentLDActivityConsumer = async () => {
         await consumer.subscribe({ topics: ['update-comment-LD-activity'] });
 
         await consumer.run({
-            eachMessage: async ({
-                topic,
-                partition,
-                message,
-                heartbeat,
-                pause,
-            }) => {
+            eachMessage: async ({ message }) => {
                 const data = JSON.parse(message.value.toString());
                 const { blogId, commentId, userId, type, create, clean } = data;
                 try {
@@ -117,9 +106,9 @@ export const updateCommentLDActivityConsumer = async () => {
     } catch (err) {
         throw new KafkaConnectionError('Something went wrong ', err);
     }
-};
+});
 
-export const blogLDNotificationConsumer = async () => {
+registerConsumer(async () => {
     try {
         const service = new NotificationSendingService();
         const kafkaClient = broker.getKafkaClient();
@@ -130,13 +119,7 @@ export const blogLDNotificationConsumer = async () => {
         await consumer.subscribe({ topics: ['process-blog-LD-notification'] });
 
         await consumer.run({
-            eachMessage: async ({
-                topic,
-                partition,
-                message,
-                heartbeat,
-                pause,
-            }) => {
+            eachMessage: async ({ message }) => {
                 const data = JSON.parse(message.value.toString());
                 try {
                     await service.processLDOnBlog(data);
@@ -154,4 +137,4 @@ export const blogLDNotificationConsumer = async () => {
     } catch (err) {
         throw new KafkaConnectionError('Something went wrong ', err);
     }
-};
+});
