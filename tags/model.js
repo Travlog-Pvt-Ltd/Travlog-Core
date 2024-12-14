@@ -1,4 +1,4 @@
-import { tagsIndexProducer } from './producer.js';
+import { tagsProducer } from './producer.js';
 import mongoose from 'mongoose';
 
 const activitySchema = new mongoose.Schema(
@@ -25,7 +25,7 @@ const activitySchema = new mongoose.Schema(
 
 activitySchema.post('save', async function (doc, next) {
     try {
-        await tagsIndexProducer({ activities: [doc._id] });
+        await tagsProducer.tagsIndexProducer({ activities: [doc._id] });
         next();
     } catch (error) {
         throw error;
@@ -35,7 +35,7 @@ activitySchema.post('save', async function (doc, next) {
 activitySchema.post('updateOne', async function (doc, next) {
     try {
         const docId = this.getQuery()._id;
-        await tagsIndexProducer({ activities: [docId] });
+        await tagsProducer.tagsIndexProducer({ activities: [docId] });
         next();
     } catch (error) {
         throw error;
@@ -91,7 +91,7 @@ const placeSchema = new mongoose.Schema(
 
 placeSchema.post('save', async function (doc, next) {
     try {
-        await tagsIndexProducer({ places: [doc._id] });
+        await tagsProducer.tagsIndexProducer({ places: [doc._id] });
         next();
     } catch (error) {
         throw error;
@@ -101,7 +101,7 @@ placeSchema.post('save', async function (doc, next) {
 placeSchema.post('updateOne', async function (doc, next) {
     try {
         const docId = this.getQuery()._id;
-        await tagsIndexProducer({ places: [docId] });
+        await tagsProducer.tagsIndexProducer({ places: [docId] });
         next();
     } catch (error) {
         throw error;

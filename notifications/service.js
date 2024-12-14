@@ -1,6 +1,6 @@
 import { Blog } from '../blog/model.js';
 import Comment from '../comment/model.js';
-import { createNotificationsProducer } from './producer.js';
+import { notificationProducer } from './producer.js';
 
 export class NotificationSendingService {
     constructor() {}
@@ -15,7 +15,7 @@ export class NotificationSendingService {
             const receivers = [blog.author];
             for (let i = 0; i < receivers.length; i++) {
                 const payload = { ...data, userId: receivers[i] };
-                await createNotificationsProducer(payload);
+                await notificationProducer.createNotificationsProducer(payload);
             }
         } catch (error) {
             throw error;
@@ -37,7 +37,7 @@ export class NotificationSendingService {
             }
             for (let i = 0; i < receivers.length; i++) {
                 const payload = { ...data, userId: receivers[i] };
-                await createNotificationsProducer(payload);
+                await notificationProducer.createNotificationsProducer(payload);
             }
         } catch (error) {
             throw error;

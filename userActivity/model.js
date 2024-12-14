@@ -64,14 +64,27 @@ const likeCommentEventSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Blog',
         },
-        isComment: Boolean,
+        isComment: {
+            type: Boolean,
+            default: false,
+        },
         commentId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comment',
         },
         content: String,
-        onComment: Boolean,
-        isDislike: Boolean,
+        onComment: {
+            type: Boolean,
+            default: false,
+        },
+        isDislike: {
+            type: Boolean,
+            default: false,
+        },
+        edited: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 );

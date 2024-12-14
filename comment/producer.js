@@ -1,41 +1,23 @@
-import { broker, KafkaConnectionError } from '../kafka/index.js';
+import BaseProducer from '../kafka/producer.js';
 
-export const deleteCommentProducer = async (comment) => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const producer = kafkaClient.producer();
-        await producer.connect();
-
-        await producer.send({
-            topic: 'mark-comment-delete',
-            messages: [
-                {
-                    value: JSON.stringify(comment),
-                },
-            ],
-        });
-        await producer.disconnect();
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
+class CommentProducer extends BaseProducer {
+    async deleteCommentProducer(data) {
+        await this.produceMessage(data, 'mark-comment-delete');
     }
-};
 
-export const commentNotificationProducer = async (data) => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const producer = kafkaClient.producer();
-        await producer.connect();
-
-        await producer.send({
-            topic: 'process-comment-notification',
-            messages: [
-                {
-                    value: JSON.stringify(data),
-                },
-            ],
-        });
-        await producer.disconnect();
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
+    async createCommentActivityProducer(data) {
+        await this.produceMessage(data, 'create-comment-activity');
     }
-};
+
+    async editedCommentActivityProducer(data) {
+        await this.produceMessage(data, 'edited-comment-activity');
+    }
+
+    async commentNotificationProducer(data) {
+        await this.produceMessage(data, 'process-comment-notification');
+    }
+}
+
+export const commentProducer = new CommentProducer();
+
+export default CommentProducer;

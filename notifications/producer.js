@@ -1,21 +1,11 @@
-import { broker, KafkaConnectionError } from '../kafka/index.js';
+import BaseProducer from '../kafka/producer.js';
 
-export const createNotificationsProducer = async (data) => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const producer = kafkaClient.producer();
-        await producer.connect();
-
-        await producer.send({
-            topic: 'create-notification',
-            messages: [
-                {
-                    value: JSON.stringify(data),
-                },
-            ],
-        });
-        await producer.disconnect();
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
+class NotificationProducer extends BaseProducer {
+    async createNotificationsProducer(data) {
+        await this.produceMessage(data, 'create-notification');
     }
-};
+}
+
+export const notificationProducer = new NotificationProducer();
+
+export default NotificationProducer;

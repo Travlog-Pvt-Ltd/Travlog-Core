@@ -12,7 +12,7 @@ import {
 } from '../redis/utils.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from './constants.js';
 import { Place, Activity } from '../tags/model.js';
-import { tagsIndexProducer } from '../tags/producer.js';
+import { tagsProducer } from '../tags/producer.js';
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
@@ -237,7 +237,7 @@ async function createBlog(req, res) {
             ),
             deleteKeysByPatternWithScan(`user_blogs:${req.userId}`),
         ]);
-        await tagsIndexProducer({
+        await tagsProducer.tagsIndexProducer({
             places: tags.places,
             activities: tags.activities,
         });
@@ -282,7 +282,7 @@ async function deleteBlog(req, res) {
             LCEvent.deleteMany({ blogId: req.params.blogId }),
             deleteKeysByPatternWithScan(`user_blogs:${req.userId}`),
         ]);
-        await tagsIndexProducer({
+        await tagsProducer.tagsIndexProducer({
             places: tags.places,
             activities: tags.activities,
         });
