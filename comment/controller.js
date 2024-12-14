@@ -1,9 +1,8 @@
 import { Blog } from '../blog/model.js';
-import { UserActivity, LCEvent } from '../userActivity/model.js';
 import Comment from './model.js';
 import redis from '../redis/index.js';
 import { commentFields, replyFields, deletedContent } from './constants.js';
-import { commentNotificationProducer } from './producer.js';
+import { commentProducer } from './producer.js';
 
 const getComments = async (req, res) => {
     const { id, type, limit = 10, skip = 0 } = req.query;
@@ -45,35 +44,19 @@ const commentOnBlog = async (req, res) => {
         })
             .select('-likes -replies -dislikes')
             .populate('userId', '_id name profileLogo');
-        const [_a, commentEvent, userActivityCount] = await Promise.all([
-            Blog.findByIdAndUpdate(blog, {
-                $push: { comments: newComment._id },
-                $inc: { commentCount: 1 },
-            }),
-            LCEvent.create({
-                blogId: blog,
-                isComment: true,
-                commentId: newComment._id,
-                content: content,
-                onComment: false,
-                isDislike: null,
-            }),
-            UserActivity.countDocuments({ userId: req.userId }),
-        ]);
-        if (userActivityCount > 0) {
-            await UserActivity.findOneAndUpdate(
-                { userId: req.userId },
-                {
-                    $push: { commentEvent: commentEvent._id },
-                }
-            );
-        } else {
-            await UserActivity.create({
-                userId: req.userId,
-                commentEvent: [commentEvent._id],
-            });
-        }
-        await commentNotificationProducer({
+        await Blog.findByIdAndUpdate(blog, {
+            $push: { comments: newComment._id },
+            $inc: { commentCount: 1 },
+        });
+        await commentProducer.createCommentActivityProducer({
+            blogId: blog,
+            isComment: true,
+            commentId: newComment._id,
+            onComment: false,
+            content,
+            userId: req.userId,
+        });
+        await commentProducer.commentNotificationProducer({
             creatorId: req.userId,
             type: 'comment',
             blogId: blog,
@@ -97,46 +80,35 @@ const replyOnComment = async (req, res) => {
         })
             .select('-likes -replies -dislikes')
             .populate('userId', '_id name profileLogo');
-        const [_b, newBlog, commentEvent, userActivityCount] =
-            await Promise.all([
-                Comment.findByIdAndUpdate(comment, {
-                    $push: { replies: newReply._id },
-                    $inc: { replyCount: 1 },
-                }),
-                Blog.findByIdAndUpdate(
-                    blog,
-                    { $inc: { commentCount: 1 } },
-                    { new: true }
-                ),
-                LCEvent.create({
-                    blogId: blog,
-                    isComment: true,
-                    commentId: newReply._id,
-                    content: content,
-                    onComment: true,
-                    isDislike: null,
-                }),
-                UserActivity.countDocuments({ userId: req.userId }),
-            ]);
-        if (userActivityCount > 0) {
-            await UserActivity.findOneAndUpdate(
-                { userId: req.userId },
-                {
-                    $push: { commentEvent: commentEvent._id },
-                }
-            );
-        } else {
-            await UserActivity.create({
-                userId: req.userId,
-                commentEvent: [commentEvent._id],
-            });
-        }
+        const [_b, newBlog] = await Promise.all([
+            Comment.findByIdAndUpdate(comment, {
+                $push: { replies: newReply._id },
+                $inc: { replyCount: 1 },
+            }),
+            Blog.findByIdAndUpdate(
+                blog,
+                { $inc: { commentCount: 1 } },
+                { new: true }
+            ),
+        ]);
+        await commentProducer.createCommentActivityProducer({
+            blogId: blog,
+            isComment: true,
+            commentId: newReply._id,
+            onComment: true,
+            content,
+            userId: req.userId,
+        });
+        /*
+            TODO [Aryan | 2024-12-14]
+            - How to find the parent comment in reply activity? Either add that in schema or join data during api call
+        */
         await redis.setEx(
             `blog_data#user:${req.userId}#blog:${newBlog._id}`,
             3600,
             JSON.stringify(newBlog)
         );
-        await commentNotificationProducer({
+        await commentProducer.commentNotificationProducer({
             creatorId: req.userId,
             type: 'reply',
             blogId: blog,
@@ -176,6 +148,11 @@ const editComment = async (req, res) => {
         )
             .select('-likes -replies -dislikes')
             .populate('userId', '_id name profileLogo');
+        await commentProducer.editedCommentActivityProducer({
+            content: content,
+            commentId,
+            userId: req.userId,
+        });
         res.status(201).json({ comment: newComment });
     } catch (err) {
         res.status(500).json({ message: err.message });

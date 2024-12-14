@@ -4,12 +4,8 @@ import Comment from '../comment/model.js';
 import { User, UserInstance } from '../user/model.js';
 import redis from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
-import {
-    blogLDNotificationProducer,
-    updateBlogLDActivityProducer,
-    updateCommentLDActivityProducer,
-} from './producer.js';
-import { createNotificationsProducer } from '../notifications/producer.js';
+import { likeProducer } from './producer.js';
+import { notificationProducer } from '../notifications/producer.js';
 
 const likeBlog = async (req, res) => {
     const blog = req.body.blogId;
@@ -51,7 +47,7 @@ const likeBlog = async (req, res) => {
                     .populate('tags.places', 'name')
                     .populate('tags.activities', 'name'),
             ]);
-            await updateBlogLDActivityProducer({
+            await likeProducer.updateBlogLDActivityProducer({
                 blogId: blog,
                 userId: req.userId,
                 type: 'like',
@@ -90,7 +86,7 @@ const likeBlog = async (req, res) => {
                         },
                     }),
                 ]);
-                await updateBlogLDActivityProducer({
+                await likeProducer.updateBlogLDActivityProducer({
                     blogId: blog,
                     userId: req.userId,
                     type: 'dislike',
@@ -126,14 +122,14 @@ const likeBlog = async (req, res) => {
                 .populate('author', '_id name profileLogo profileImage')
                 .populate('tags.places', 'name')
                 .populate('tags.activities', 'name');
-            await updateBlogLDActivityProducer({
+            await likeProducer.updateBlogLDActivityProducer({
                 blogId: blog,
                 userId: req.userId,
                 type: 'like',
                 create: true,
                 clean: false,
             });
-            await blogLDNotificationProducer({
+            await likeProducer.blogLDNotificationProducer({
                 creatorId: req.userId,
                 notificationType: 'like',
                 blogId: blog,
@@ -192,7 +188,7 @@ const dislikeBlog = async (req, res) => {
                     .populate('tags.places', 'name')
                     .populate('tags.activities', 'name'),
             ]);
-            await updateBlogLDActivityProducer({
+            await likeProducer.updateBlogLDActivityProducer({
                 blogId: blog,
                 userId: req.userId,
                 type: 'dislike',
@@ -215,7 +211,6 @@ const dislikeBlog = async (req, res) => {
                 await User.findByIdAndUpdate(req.userId, {
                     $pull: { likes: blog },
                 });
-                const newLikes = [];
                 const toDelete = [];
                 found.likes.forEach((like) => {
                     if (like.userId.equals(userObject)) toDelete.push(like._id);
@@ -227,7 +222,7 @@ const dislikeBlog = async (req, res) => {
                         $inc: { likeCount: -1 * toDelete.length },
                     }),
                 ]);
-                await updateBlogLDActivityProducer({
+                await likeProducer.updateBlogLDActivityProducer({
                     blogId: blog,
                     userId: req.userId,
                     type: 'like',
@@ -263,14 +258,14 @@ const dislikeBlog = async (req, res) => {
                 .populate('author', '_id name profileLogo profileImage')
                 .populate('tags.places', 'name')
                 .populate('tags.activities', 'name');
-            await updateBlogLDActivityProducer({
+            await likeProducer.updateBlogLDActivityProducer({
                 blogId: blog,
                 userId: req.userId,
                 type: 'dislike',
                 create: true,
                 clean: false,
             });
-            await blogLDNotificationProducer({
+            await likeProducer.blogLDNotificationProducer({
                 creatorId: req.userId,
                 notificationType: 'dislike',
                 blogId: blog,
@@ -311,7 +306,7 @@ const likeComment = async (req, res) => {
                     { new: true }
                 ),
             ]);
-            await updateCommentLDActivityProducer({
+            await likeProducer.updateCommentLDActivityProducer({
                 blogId: blog,
                 commentId: comment,
                 userId: req.userId,
@@ -336,7 +331,7 @@ const likeComment = async (req, res) => {
                 },
                 { new: true }
             );
-            await updateCommentLDActivityProducer({
+            await likeProducer.updateCommentLDActivityProducer({
                 blogId: blog,
                 commentId: comment,
                 userId: req.userId,
@@ -344,7 +339,7 @@ const likeComment = async (req, res) => {
                 create: true,
                 clean: false,
             });
-            await createNotificationsProducer({
+            await notificationProducer.createNotificationsProducer({
                 creatorId: req.userId,
                 userId: newComment.userId,
                 notificationType: 'like',
@@ -384,7 +379,7 @@ const dislikeComment = async (req, res) => {
                     { new: true }
                 ),
             ]);
-            await updateCommentLDActivityProducer({
+            await likeProducer.updateCommentLDActivityProducer({
                 blogId: blog,
                 commentId: comment,
                 userId: req.userId,
@@ -409,7 +404,7 @@ const dislikeComment = async (req, res) => {
                 },
                 { new: true }
             );
-            await updateCommentLDActivityProducer({
+            await likeProducer.updateCommentLDActivityProducer({
                 blogId: blog,
                 commentId: comment,
                 userId: req.userId,
@@ -417,7 +412,7 @@ const dislikeComment = async (req, res) => {
                 create: true,
                 clean: false,
             });
-            await createNotificationsProducer({
+            await notificationProducer.createNotificationsProducer({
                 creatorId: req.userId,
                 userId: newComment.userId,
                 notificationType: 'dislike',

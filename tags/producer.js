@@ -1,26 +1,15 @@
-import { KafkaConnectionError, broker } from '../kafka/index.js';
+import BaseProducer from '../kafka/producer.js';
 
-export const tagsIndexProducer = async (data) => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const producer = kafkaClient.producer();
-        await producer.connect();
-
+class TagsProducer extends BaseProducer {
+    async tagsIndexProducer(data) {
         const payload = {
             places: data?.places || [],
             activities: data?.activities || [],
         };
-
-        await producer.send({
-            topic: 'tags-es-sync',
-            messages: [
-                {
-                    value: JSON.stringify(payload),
-                },
-            ],
-        });
-        await producer.disconnect();
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
+        await this.produceMessage(payload, 'tags-es-sync');
     }
-};
+}
+
+export const tagsProducer = new TagsProducer();
+
+export default TagsProducer;

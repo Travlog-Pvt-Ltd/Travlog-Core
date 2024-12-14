@@ -7,4 +7,6 @@ export const kafkaTopics = [
     'process-comment-notification',
     'create-notification',
     'process-blog-LD-notification',
+    'create-comment-activity',
+    'edited-comment-activity',
 ];

@@ -1,15 +1,15 @@
 import log from 'npmlog';
 import { broker, KafkaConnectionError } from '../kafka/index.js';
-import UserActivityService from '../userActivity/service.js';
+import LikeDislikeActivityService from './service.js';
 import { NotificationSendingService } from '../notifications/service.js';
 import { registerConsumer } from '../common/utils.js';
 
 registerConsumer(async () => {
     try {
-        const service = new UserActivityService();
+        const service = new LikeDislikeActivityService();
         const kafkaClient = broker.getKafkaClient();
         const consumer = kafkaClient.consumer({
-            groupId: 'update-blog-activity-group',
+            groupId: 'blog-like-activity-group',
         });
         await consumer.connect();
         await consumer.subscribe({ topics: ['update-blog-LD-activity'] });
@@ -57,10 +57,10 @@ registerConsumer(async () => {
 
 registerConsumer(async () => {
     try {
-        const service = new UserActivityService();
+        const service = new LikeDislikeActivityService();
         const kafkaClient = broker.getKafkaClient();
         const consumer = kafkaClient.consumer({
-            groupId: 'update-comment-activity-group',
+            groupId: 'comment-like-activity-group',
         });
         await consumer.connect();
         await consumer.subscribe({ topics: ['update-comment-LD-activity'] });

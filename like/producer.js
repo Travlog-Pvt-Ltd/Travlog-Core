@@ -1,61 +1,19 @@
-import { broker, KafkaConnectionError } from '../kafka/index.js';
+import BaseProducer from '../kafka/producer.js';
 
-export const updateBlogLDActivityProducer = async (data) => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const producer = kafkaClient.producer();
-        await producer.connect();
-
-        await producer.send({
-            topic: 'update-blog-LD-activity',
-            messages: [
-                {
-                    value: JSON.stringify(data),
-                },
-            ],
-        });
-        await producer.disconnect();
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
+class LikeProducer extends BaseProducer {
+    async updateBlogLDActivityProducer(data) {
+        await this.produceMessage(data, 'update-blog-LD-activity');
     }
-};
 
-export const updateCommentLDActivityProducer = async (data) => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const producer = kafkaClient.producer();
-        await producer.connect();
-
-        await producer.send({
-            topic: 'update-comment-LD-activity',
-            messages: [
-                {
-                    value: JSON.stringify(data),
-                },
-            ],
-        });
-        await producer.disconnect();
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
+    async updateCommentLDActivityProducer(data) {
+        await this.produceMessage(data, 'update-comment-LD-activity');
     }
-};
 
-export const blogLDNotificationProducer = async (data) => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const producer = kafkaClient.producer();
-        await producer.connect();
-
-        await producer.send({
-            topic: 'process-blog-LD-notification',
-            messages: [
-                {
-                    value: JSON.stringify(data),
-                },
-            ],
-        });
-        await producer.disconnect();
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
+    async blogLDNotificationProducer(data) {
+        await this.produceMessage(data, 'process-blog-LD-notification');
     }
-};
+}
+
+export const likeProducer = new LikeProducer();
+
+export default LikeProducer;
