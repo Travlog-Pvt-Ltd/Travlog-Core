@@ -1,46 +1,38 @@
 import log from 'npmlog';
-import { broker, KafkaConnectionError } from '../kafka/index.js';
 import { getNotificationObjectFromData } from './utils.js';
 import { Notification, UserNotification } from './model.js';
 import { emitNotificationUpdate } from './sockets.js';
-import { registerConsumer } from '../common/utils.js';
+import { registerConsumerList } from '../common/utils.js';
+import BaseConsumer from '../kafka/consumer.js';
 
-registerConsumer(async () => {
-    try {
-        const kafkaClient = broker.getKafkaClient();
-        const consumer = kafkaClient.consumer({
-            groupId: 'create-notification-group',
-        });
-        await consumer.connect();
-        await consumer.subscribe({ topics: ['create-notification'] });
+class CreateNotificationConsumer extends BaseConsumer {
+    constructor() {
+        super('create-notification-group', 'create-notification');
+    }
 
-        await consumer.run({
-            eachMessage: async ({ message }) => {
-                try {
-                    const data = JSON.parse(message.value.toString());
-                    const notificationObj = getNotificationObjectFromData(data);
-                    if (notificationObj) {
-                        await Notification.create(notificationObj);
-                        const newCount =
-                            await UserNotification.findOneAndUpdate(
-                                { userId: notificationObj.userId },
-                                { $inc: { totalCount: 1, unreadCount: 1 } },
-                                { new: true }
-                            );
-                        emitNotificationUpdate(newCount);
-                        log.info(
-                            `Created new notification of type ${notificationObj.type} and sent message to userId ${notificationObj.userId}`
-                        );
-                    }
-                } catch (error) {
-                    log.error(
-                        'Failed to create new notification! ',
-                        error.message
+    async start() {
+        await this.setupConsumer(async (data) => {
+            try {
+                const notificationObj = getNotificationObjectFromData(data);
+                if (notificationObj) {
+                    await Notification.create(notificationObj);
+                    const newCount = await UserNotification.findOneAndUpdate(
+                        { userId: notificationObj.userId },
+                        { $inc: { totalCount: 1, unreadCount: 1 } },
+                        { new: true }
+                    );
+                    emitNotificationUpdate(newCount);
+                    log.info(
+                        `Created new notification of type ${notificationObj.type} and sent message to userId ${notificationObj.userId}`
                     );
                 }
-            },
+            } catch (error) {
+                log.error('Failed to create new notification! ', error.message);
+            }
         });
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
     }
-});
+}
+
+const notificationConsumerList = [CreateNotificationConsumer];
+
+registerConsumerList(notificationConsumerList);

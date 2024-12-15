@@ -69,7 +69,6 @@ class KafkaBroker {
     }
 
     startConsumers() {
-        console.log('Starting consumers');
         consumerRegistry.startConsumers();
     }
 }
