@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { UserActivity, LCEvent } from '../userActivity/model.js';
-import { deleteCommentProducer } from './producer.js';
+import { commentProducer } from './producer.js';
 
 const commentSchema = new mongoose.Schema(
     {
@@ -67,7 +67,7 @@ const commentSchema = new mongoose.Schema(
 
 commentSchema.post('findOneAndUpdate', async function (doc, next) {
     if (doc.deleted && doc.replies?.length) {
-        await deleteCommentProducer(doc);
+        await commentProducer.deleteCommentProducer(doc);
     }
     next();
 });

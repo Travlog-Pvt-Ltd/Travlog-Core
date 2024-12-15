@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { UserActivity, LCEvent } from './model.js';
+import { UserActivity, LCEvent } from '../userActivity/model.js';
 import UserActivityService from '../userActivity/service.js';
 
 class LikeDislikeActivityService extends UserActivityService {

@@ -1,23 +1,33 @@
 import log from 'npmlog';
-import { broker, KafkaConnectionError } from '../kafka/index.js';
 import LikeDislikeActivityService from './service.js';
 import { NotificationSendingService } from '../notifications/service.js';
-import { registerConsumer } from '../common/utils.js';
+import { registerConsumerList } from '../common/utils.js';
+import BaseConsumer from '../kafka/consumer.js';
 
-registerConsumer(async () => {
-    try {
-        const service = new LikeDislikeActivityService();
-        const kafkaClient = broker.getKafkaClient();
-        const consumer = kafkaClient.consumer({
-            groupId: 'blog-like-activity-group',
-        });
-        await consumer.connect();
-        await consumer.subscribe({ topics: ['update-blog-LD-activity'] });
+class BlogLDActivityConsumer extends BaseConsumer {
+    constructor() {
+        super('blog-like-activity-group', 'update-blog-LD-activity');
+    }
 
-        await consumer.run({
-            eachMessage: async ({ message }) => {
-                const data = JSON.parse(message.value.toString());
-                const { blogId, userId, type, create, clean } = data;
+    async start() {
+        await this.setupConsumer(async (data) => {
+            const service = new LikeDislikeActivityService();
+            const { blogId, userId, type, create, clean } = data;
+            try {
+                await service.updateBlogLDActivity(
+                    blogId,
+                    userId,
+                    type,
+                    create,
+                    clean
+                );
+                log.info(
+                    `UserActivity updated for userId: ${userId}, blogId: ${blogId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
+                );
+            } catch (error) {
+                log.error(error.message);
+                log.info('Retrying after 5 seconds...');
+                await new Promise((res) => setTimeout(res, 5000));
                 try {
                     await service.updateBlogLDActivity(
                         blogId,
@@ -29,46 +39,39 @@ registerConsumer(async () => {
                     log.info(
                         `UserActivity updated for userId: ${userId}, blogId: ${blogId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
                     );
-                } catch (error) {
-                    log.error(error.message);
-                    log.info('Retrying after 5 seconds...');
-                    await new Promise((res) => setTimeout(res, 5000));
-                    try {
-                        await service.updateBlogLDActivity(
-                            blogId,
-                            userId,
-                            type,
-                            create,
-                            clean
-                        );
-                        log.info(
-                            `UserActivity updated for userId: ${userId}, blogId: ${blogId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
-                        );
-                    } catch (err) {
-                        log.error('Something went wrong, retry failed ', err);
-                    }
+                } catch (err) {
+                    log.error('Something went wrong, retry failed ', err);
                 }
-            },
+            }
         });
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong', err);
     }
-});
+}
 
-registerConsumer(async () => {
-    try {
-        const service = new LikeDislikeActivityService();
-        const kafkaClient = broker.getKafkaClient();
-        const consumer = kafkaClient.consumer({
-            groupId: 'comment-like-activity-group',
-        });
-        await consumer.connect();
-        await consumer.subscribe({ topics: ['update-comment-LD-activity'] });
+class CommentLDActivityConsumer extends BaseConsumer {
+    constructor() {
+        super('comment-like-activity-group', 'update-comment-LD-activity');
+    }
 
-        await consumer.run({
-            eachMessage: async ({ message }) => {
-                const data = JSON.parse(message.value.toString());
-                const { blogId, commentId, userId, type, create, clean } = data;
+    async start() {
+        await this.setupConsumer(async (data) => {
+            const service = new LikeDislikeActivityService();
+            const { blogId, commentId, userId, type, create, clean } = data;
+            try {
+                await service.updateCommentLDActivity(
+                    blogId,
+                    commentId,
+                    userId,
+                    type,
+                    create,
+                    clean
+                );
+                log.info(
+                    `UserActivity updated for userId: ${userId}, blogId: ${blogId}, commentId: ${commentId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
+                );
+            } catch (error) {
+                log.error(error.message);
+                log.info('Retrying after 5 seconds...');
+                await new Promise((res) => setTimeout(res, 5000));
                 try {
                     await service.updateCommentLDActivity(
                         blogId,
@@ -81,60 +84,41 @@ registerConsumer(async () => {
                     log.info(
                         `UserActivity updated for userId: ${userId}, blogId: ${blogId}, commentId: ${commentId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
                     );
-                } catch (error) {
-                    log.error(error.message);
-                    log.info('Retrying after 5 seconds...');
-                    await new Promise((res) => setTimeout(res, 5000));
-                    try {
-                        await service.updateCommentLDActivity(
-                            blogId,
-                            commentId,
-                            userId,
-                            type,
-                            create,
-                            clean
-                        );
-                        log.info(
-                            `UserActivity updated for userId: ${userId}, blogId: ${blogId}, commentId: ${commentId}, type: ${type} # actions: ${create ? 'Create' : ''} ${clean ? 'Clean' : ''}`
-                        );
-                    } catch (err) {
-                        log.error('Something went wrong, retry failed ', err);
-                    }
+                } catch (err) {
+                    log.error('Something went wrong, retry failed ', err);
                 }
-            },
+            }
         });
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong ', err);
     }
-});
+}
 
-registerConsumer(async () => {
-    try {
-        const service = new NotificationSendingService();
-        const kafkaClient = broker.getKafkaClient();
-        const consumer = kafkaClient.consumer({
-            groupId: 'blog-LD-notification-group',
-        });
-        await consumer.connect();
-        await consumer.subscribe({ topics: ['process-blog-LD-notification'] });
-
-        await consumer.run({
-            eachMessage: async ({ message }) => {
-                const data = JSON.parse(message.value.toString());
-                try {
-                    await service.processLDOnBlog(data);
-                    log.info(
-                        `Processing notification for blog ${data.blogId}, event ${data.event} and creator ${data.creatorId}`
-                    );
-                } catch (error) {
-                    log.error(
-                        `Failed to process notification for blog ${data.blogId}, event ${data.event} and creator ${data.creatorId} `,
-                        error.message
-                    );
-                }
-            },
-        });
-    } catch (err) {
-        throw new KafkaConnectionError('Something went wrong ', err);
+class BlogLDNotificationConsumer extends BaseConsumer {
+    constructor() {
+        super('blog-LD-notification-group', 'process-blog-LD-notification');
     }
-});
+
+    async start() {
+        await this.setupConsumer(async (data) => {
+            const service = new NotificationSendingService();
+            try {
+                await service.processLDOnBlog(data);
+                log.info(
+                    `Processing notification for blog ${data.blogId}, event ${data.event} and creator ${data.creatorId}`
+                );
+            } catch (error) {
+                log.error(
+                    `Failed to process notification for blog ${data.blogId}, event ${data.event} and creator ${data.creatorId} `,
+                    error.message
+                );
+            }
+        });
+    }
+}
+
+const likeConsumerList = [
+    BlogLDActivityConsumer,
+    CommentLDActivityConsumer,
+    BlogLDNotificationConsumer,
+];
+
+registerConsumerList(likeConsumerList);
