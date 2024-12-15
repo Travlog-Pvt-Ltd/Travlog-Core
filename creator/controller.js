@@ -26,6 +26,14 @@ const follow = async (req, res) => {
     const creator = req.body.creatorId;
     const creatorObject = new mongoose.Types.ObjectId(creator);
     try {
+        const user = await User.findById(req.userId).populate({
+            path: 'followings',
+            match: { userId: creatorObject },
+        });
+        if (user.followings.length > 0)
+            return res
+                .status(400)
+                .json({ message: 'Already following the creator' });
         const following = await UserInstance.create({
             userId: creator,
         });
@@ -78,19 +86,20 @@ const follow = async (req, res) => {
 };
 
 const unfollow = async (req, res) => {
-    /*
-        TODO [Aryan | 2024-09-30]
-        - Return if user is not following the creator
-    */
     const creator = req.body.creatorId;
     const creatorObject = new mongoose.Types.ObjectId(creator);
     const userObject = new mongoose.Types.ObjectId(req.userId);
     try {
         const found = await User.findById(req.userId).populate('followings');
         const foundCreator = await User.findById(creator).populate('followers');
+        if (found.followings && found.followings.length === 0) {
+            return res
+                .status(400)
+                .json({ message: 'Not following the creator yet' });
+        }
         let toDelete = [];
         found.followings.forEach((following) => {
-            if (!following.userId.equals(creatorObject))
+            if (following.userId.equals(creatorObject))
                 toDelete.push(following._id);
         });
         await UserInstance.deleteMany({ _id: { $in: toDelete } });
