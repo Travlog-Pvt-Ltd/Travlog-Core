@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import { Blog } from '../blog/model.js';
 import { User, Follower, UserInstance } from '../user/model.js';
-import { UserActivity } from '../userActivity/model.js';
 import redis from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 import { notificationProducer } from '../notifications/producer.js';
+import { creatorProducer } from './producer.js';
 
 const moreFromAuthor = async (req, res) => {
     const author = req.params.authorId;
@@ -34,14 +34,16 @@ const follow = async (req, res) => {
             return res
                 .status(400)
                 .json({ message: 'Already following the creator' });
-        const following = await UserInstance.create({
-            userId: creator,
-        });
-        const follower = await Follower.create({
-            userId: req.userId,
-            notify: false,
-        });
-        const [newUser, _a, activity, newInstance] = await Promise.all([
+        const [following, follower] = await Promise.all([
+            UserInstance.create({
+                userId: creator,
+            }),
+            Follower.create({
+                userId: req.userId,
+                notify: false,
+            }),
+        ]);
+        const [newUser, _] = await Promise.all([
             User.findByIdAndUpdate(
                 req.userId,
                 { $push: { followings: following } },
@@ -54,25 +56,12 @@ const follow = async (req, res) => {
             User.findByIdAndUpdate(creator, {
                 $push: { followers: follower },
             }),
-            UserActivity.findOne({
-                userId: req.userId,
-            }).populate('followEvent'),
-            UserInstance.create({
-                userId: creator,
-            }),
         ]);
-        const toDeleteEvents = [];
-        activity.followEvent.forEach((event) => {
-            if (event.userId.equals(creatorObject))
-                toDeleteEvents.push(event._id);
+        await creatorProducer.createFollowActivityProducer({
+            userId: req.userId,
+            creatorId: creator,
+            type: 'follow',
         });
-        await Promise.all([
-            UserInstance.deleteMany({ _id: { $in: toDeleteEvents } }),
-            UserActivity.findByIdAndUpdate(activity._id, {
-                $pull: { followEvent: { $in: toDeleteEvents } },
-                $push: { followEvent: newInstance },
-            }),
-        ]);
         await notificationProducer.createNotificationsProducer({
             creatorId: req.userId,
             type: 'follow',
@@ -138,24 +127,11 @@ const unfollow = async (req, res) => {
                 { new: true }
             ),
         ]);
-        const [activity, instance] = await Promise.all([
-            UserActivity.findOne({
-                userId: req.userId,
-            }).populate('unfollowEvent'),
-            await UserInstance.create({ userId: creator }),
-        ]);
-        const toDeleteEvents = [];
-        activity.unfollowEvent.forEach((event) => {
-            if (event.userId.equals(creatorObject))
-                toDeleteEvents.push(event._id);
+        creatorProducer.createFollowActivityProducer({
+            userId: req.userId,
+            creatorId: creator,
+            type: 'unfollow',
         });
-        await Promise.all([
-            UserInstance.deleteMany({ _id: { $in: toDelete } }),
-            UserActivity.findByIdAndUpdate(activity._id, {
-                $pull: { unfollowEvent: { $in: toDelete } },
-                $push: { unfollowEvent: instance },
-            }),
-        ]);
         await notificationProducer.createNotificationsProducer({
             creatorId: req.userId,
             type: 'follow',

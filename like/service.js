@@ -5,7 +5,8 @@ import UserActivityService from '../userActivity/service.js';
 class LikeDislikeActivityService extends UserActivityService {
     constructor() {
         super();
-        this.message = 'Invalid type! Accepted values are like and dislike!';
+        this.message =
+            'Invalid activity! Accepted values are like and dislike!';
     }
 
     async cleanLDActivity(activityId, type, toDeleteEvents) {
