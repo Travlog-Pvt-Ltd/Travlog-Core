@@ -1,11 +1,16 @@
+import { BaseSiteAbstractClass } from '../common/utils.js';
 import { broker, KafkaConnectionError } from './index.js';
 
-class BaseConsumer {
+class BaseConsumer extends BaseSiteAbstractClass {
     constructor(topic, groupId) {
+        super();
         this.kafkaClient = broker.getKafkaClient();
         this.topic = topic;
         this.groupId = groupId;
     }
+
+    // Add name of all the abstract functions that the children should implement
+    static abstractMethods = ['start'];
 
     async setupConsumer(messageHandler) {
         try {
