@@ -1,5 +1,3 @@
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { getFirebaseStorage } from '../common/config/Firebase.js';
 import Draft from './model.js';
 import { User } from '../user/model.js';
 import redis from '../redis/index.js';
@@ -7,32 +5,11 @@ import { updateUserInCache } from '../redis/utils.js';
 
 async function createDraft(req, res) {
     const { title, content, tags, thumbnailUrl } = req.body;
-    const thumbnailFile = req.file;
     try {
-        let thumbnail;
-        if (!thumbnailUrl && !thumbnailFile) thumbnail = null;
-        else if (!thumbnailUrl) {
-            const currentDate = new Date();
-            const storage = getFirebaseStorage(
-                process.env.FIREBASE_STORAGE_BUCKET,
-                process.env.FIREBASE_API_KEY,
-                process.env.FIREBASE_AUTH_DOMAIN,
-                process.env.FIREBASE_APP_ID
-            );
-            const fileRef = ref(
-                storage,
-                `thumbnails/${thumbnailFile.originalname}::${currentDate}`
-            );
-            const uploadTask = await uploadBytesResumable(
-                fileRef,
-                thumbnailFile.buffer
-            );
-            thumbnail = await getDownloadURL(uploadTask.ref);
-        } else thumbnail = thumbnailUrl;
         if (req.query.draftId && req.query.draftId != 'null') {
             const updatedDraft = await Draft.findByIdAndUpdate(
                 req.query.draftId,
-                { title, content, tags, thumbnail },
+                { title, content, tags, thumbnail: thumbnailUrl },
                 { new: true }
             );
             await redis.setEx(
@@ -46,7 +23,7 @@ async function createDraft(req, res) {
                 title,
                 content,
                 tags,
-                thumbnail,
+                thumbnail: thumbnailUrl,
             });
             await redis.setEx(
                 `draft_data#draft:${req.query.draftId}#author:${req.userId}`,

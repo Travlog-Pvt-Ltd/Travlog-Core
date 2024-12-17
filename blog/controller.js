@@ -3,8 +3,6 @@ import { UserActivity, LCEvent } from '../userActivity/model.js';
 import { Blog, BlogInstance } from './model.js';
 import { User, UserInstance, OrganicUserInstance } from '../user/model.js';
 import Draft from '../draft/model.js';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { getFirebaseStorage } from '../common/config/Firebase.js';
 import redis from '../redis/index.js';
 import {
     updateUserInCache,
@@ -170,33 +168,13 @@ async function getBlogDetail(req, res) {
 
 async function createBlog(req, res) {
     const { title, content, tags, thumbnailUrl } = req.body;
-    const thumbnailFile = req.file;
     try {
-        let thumbnail;
-        if (!thumbnailUrl) {
-            const currentDate = new Date();
-            const storage = getFirebaseStorage(
-                process.env.FIREBASE_STORAGE_BUCKET,
-                process.env.FIREBASE_API_KEY,
-                process.env.FIREBASE_AUTH_DOMAIN,
-                process.env.FIREBASE_APP_ID
-            );
-            const fileRef = ref(
-                storage,
-                `thumbnails/${thumbnailFile.originalname}::${currentDate}`
-            );
-            const uploadTask = await uploadBytesResumable(
-                fileRef,
-                thumbnailFile.buffer
-            );
-            thumbnail = await getDownloadURL(uploadTask.ref);
-        } else thumbnail = thumbnailUrl;
         const newBlog = new Blog({
             author: req.userId,
             title,
             content,
             tags,
-            thumbnail,
+            thumbnail: thumbnailUrl,
         });
         const savedBlog = await newBlog.save();
         let user;
@@ -341,6 +319,28 @@ const getSearchedBlogs = async (req, res) => {
     }
 };
 
+const editBlog = async (req, res) => {
+    try {
+        const blogId = req.params.blogId;
+        const { title, content, tags, thumbnailUrl } = req.body;
+        const updatedBlog = await Blog.findByIdAndUpdate(
+            blogId,
+            {
+                $set: {
+                    title,
+                    content,
+                    tags,
+                    thumbnail: thumbnailUrl,
+                },
+            },
+            { new: true }
+        );
+        res.status(201).json(updatedBlog);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 export {
     createBlog,
     getAllBlogs,
@@ -348,4 +348,5 @@ export {
     getBlogDetail,
     deleteBlog,
     getSearchedBlogs,
+    editBlog,
 };
