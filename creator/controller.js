@@ -281,4 +281,33 @@ const getCreatorDetails = async (req, res) => {
     }
 };
 
-export { moreFromAuthor, follow, unfollow, getCreatorDetails };
+const subscribe = async (req, res) => {
+    try {
+        await Follower.findByIdAndUpdate(req.followerId, {
+            $set: { notify: true },
+        });
+        res.status(201).json({ message: 'Subscribed' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+const unsubscribe = async (req, res) => {
+    try {
+        await Follower.findByIdAndUpdate(req.followerId, {
+            $set: { notify: false },
+        });
+        res.status(201).json({ message: 'Unsubscribed' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+export {
+    moreFromAuthor,
+    follow,
+    unfollow,
+    getCreatorDetails,
+    subscribe,
+    unsubscribe,
+};

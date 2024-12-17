@@ -74,14 +74,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{dev_url}}/blog/results/6677428e14809e3a305196a2?limit=10&skip=0",
+							"raw": "{{dev_url}}/blog/results/6671eb9b2d50bcfdfa0b13ab?limit=10&skip=0&isPlace=true",
 							"host": [
 								"{{dev_url}}"
 							],
 							"path": [
 								"blog",
 								"results",
-								"6677428e14809e3a305196a2"
+								"6671eb9b2d50bcfdfa0b13ab"
 							],
 							"query": [
 								{
@@ -91,6 +91,10 @@
 								{
 									"key": "skip",
 									"value": "0"
+								},
+								{
+									"key": "isPlace",
+									"value": "true"
 								}
 							]
 						}
@@ -328,7 +332,7 @@
 			"name": "user",
 			"item": [
 				{
-					"name": "Get user details using bearer token",
+					"name": "Get user details",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -348,7 +352,7 @@
 			"name": "draft",
 			"item": [
 				{
-					"name": "Create new draft (requires bearer token)",
+					"name": "Create new draft",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -397,7 +401,7 @@
 					"response": []
 				},
 				{
-					"name": "Get drafts (require bearer token)",
+					"name": "Get drafts",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -611,7 +615,7 @@
 							"mode": "urlencoded",
 							"urlencoded": []
 						},
-						"url": "{{dev_url}}/comment/delete/666d36f6f04080bcd1fbf1ce"
+						"url": "{{dev_url}}/comment/delete/65f61ae3fad31d21c3851569"
 					},
 					"response": []
 				},
@@ -704,7 +708,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{dev_url}}/tags/search?search=sn",
+							"raw": "{{dev_url}}/tags/search?search=elek",
 							"host": [
 								"{{dev_url}}"
 							],
@@ -715,7 +719,7 @@
 							"query": [
 								{
 									"key": "search",
-									"value": "sn"
+									"value": "elek"
 								}
 							]
 						}
@@ -723,7 +727,7 @@
 					"response": []
 				},
 				{
-					"name": "Search Tags Copy",
+					"name": "Search Place Info",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -758,7 +762,7 @@
 					"response": []
 				},
 				{
-					"name": "Follow creator",
+					"name": "Subscribe creator",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -778,7 +782,32 @@
 								}
 							]
 						},
-						"url": "{{dev_url}}/creator/follow"
+						"url": "{{dev_url}}/creator/subscribe"
+					},
+					"response": []
+				},
+				{
+					"name": "Unsubscribe creator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "creatorId",
+									"value": "661248be4835dbd5a7086333",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{dev_url}}/creator/unsubscribe"
 					},
 					"response": []
 				},
@@ -804,6 +833,31 @@
 							]
 						},
 						"url": "{{dev_url}}/creator/unfollow"
+					},
+					"response": []
+				},
+				{
+					"name": "Follow creator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "creatorId",
+									"value": "661248be4835dbd5a7086333",
+									"type": "text"
+								}
+							]
+						},
+						"url": "{{dev_url}}/creator/follow"
 					},
 					"response": []
 				},
@@ -994,7 +1048,7 @@
 	"variable": [
 		{
 			"key": "bearer_token",
-			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTcxOTE0MDg2MSwiZXhwIjoxNzE5MTQ0NDYxfQ.W6tDjVwhKyzhUZSqdEv3DuEdX6oVmk55cNxpVeWqO_c",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1ZTM2NTBkY2YzMDI1NGI2OWE1MDI1YiIsImlhdCI6MTczNDQzMDY3OCwiZXhwIjoxNzM0NTE3MDc4fQ.rqCmVLEb7swyC_sXFw9qAKLXSDYXW1DjJLgn65x2WoE",
 			"type": "string"
 		},
 		{
