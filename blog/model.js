@@ -118,6 +118,13 @@ const blogSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+blogSchema.virtual('shortContent').get(function () {
+    return this.content ? this.content.substring(0, 500) : '';
+});
+
+blogSchema.set('toJSON', { virtuals: true });
+blogSchema.set('toObject', { virtuals: true });
+
 const singleBlogSchema = new mongoose.Schema(
     {
         blogId: {
