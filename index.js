@@ -1,9 +1,7 @@
-import express from 'express';
-import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import log from 'npmlog';
+import app from './app.js';
 import { userRouter } from './user/index.js';
 import { tagRouter } from './tags/index.js';
 import { likeRouter } from './like/index.js';
@@ -19,19 +17,6 @@ import './redis/index.js';
 import './cron.config.js';
 
 dotenv.config();
-const app = express();
-app.use(express.json());
-app.use(bodyParser.json({ limit: '30mb', extended: true }));
-app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
-app.use(
-    cors({
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        optionsSuccessStatus: 204,
-    })
-);
-app.options('*', cors());
 
 mongoose
     .connect(process.env.MONGO_URL)
@@ -51,9 +36,5 @@ app.use('/tags', tagRouter);
 app.use('/like', likeRouter);
 app.use('/comment', commentRouter);
 app.use('/bookmark', bookmarkRouter);
-
-app.listen(process.env.PORT, () => {
-    log.info(`Server listening on port ${process.env.PORT}!`);
-});
 
 broker.startConsumers();

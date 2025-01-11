@@ -64,7 +64,7 @@ const follow = async (req, res) => {
         });
         await notificationProducer.createNotificationsProducer({
             creatorId: req.userId,
-            type: 'follow',
+            notificationType: 'follow',
             userId: creator,
         });
         updateUserInCache(newUser);
@@ -134,7 +134,7 @@ const unfollow = async (req, res) => {
         });
         await notificationProducer.createNotificationsProducer({
             creatorId: req.userId,
-            type: 'follow',
+            notificationType: 'follow',
             userId: creator,
         });
         updateUserInCache(newUser);

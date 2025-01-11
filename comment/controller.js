@@ -58,7 +58,7 @@ const commentOnBlog = async (req, res) => {
         });
         await commentProducer.commentNotificationProducer({
             creatorId: req.userId,
-            type: 'comment',
+            notificationType: 'comment',
             blogId: blog,
             commentId: newComment._id,
         });
@@ -110,7 +110,7 @@ const replyOnComment = async (req, res) => {
         );
         await commentProducer.commentNotificationProducer({
             creatorId: req.userId,
-            type: 'reply',
+            notificationType: 'reply',
             blogId: blog,
             commentId: comment,
             replyId: newReply._id,
