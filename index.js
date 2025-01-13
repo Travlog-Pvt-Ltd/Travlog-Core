@@ -13,6 +13,7 @@ import { draftRouter } from './draft/index.js';
 import { commentRouter } from './comment/index.js';
 import { creatorRouter } from './creator/index.js';
 import { bookmarkRouter } from './bookmark/index.js';
+import { userActivityRouter } from './userActivity/index.js';
 import { broker } from './kafka/index.js';
 import './notifications/index.js';
 import './redis/index.js';
@@ -51,6 +52,7 @@ app.use('/tags', tagRouter);
 app.use('/like', likeRouter);
 app.use('/comment', commentRouter);
 app.use('/bookmark', bookmarkRouter);
+app.use('/user-activity', userActivityRouter);
 
 app.listen(process.env.PORT, () => {
     log.info(`Server listening on port ${process.env.PORT}!`);
