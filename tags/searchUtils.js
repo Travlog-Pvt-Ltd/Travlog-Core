@@ -6,6 +6,7 @@ import {
     searchByQuery,
     updateDataIndex,
 } from '../elasticSearch/index.js';
+import { Activity, Place } from './model.js';
 
 const tagESIndex = indices.searchIndex;
 
@@ -94,6 +95,11 @@ export const createTagIndex = async (data) => {
 
 export const bulkCreateTagIndex = async (dataset) => {
     const docs = [];
+    if (!dataset || dataset.length === 0) {
+        const places = await Place.find();
+        const activities = await Activity.find();
+        dataset = [...places, ...activities];
+    }
     for (let i = 0; i < dataset.length; i++) {
         const doc = createJsonDoc(dataset[i], true);
         docs.push(doc);
