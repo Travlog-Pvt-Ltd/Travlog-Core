@@ -1,6 +1,4 @@
 import mongoose from 'mongoose';
-import { UserActivity, LCEvent } from '../userActivity/model.js';
-import { commentProducer } from './producer.js';
 
 const commentSchema = new mongoose.Schema(
     {
@@ -13,6 +11,7 @@ const commentSchema = new mongoose.Schema(
         parent: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comment',
+            index: true,
         },
         edited: {
             type: Boolean,
@@ -22,11 +21,6 @@ const commentSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
-        toDelete: {
-            type: Boolean,
-            default: false,
-        },
-        markedForDeletionAt: Date,
         blog: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Blog',
@@ -65,53 +59,7 @@ const commentSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-commentSchema.post('findOneAndUpdate', async function (doc, next) {
-    if (doc.deleted && doc.replies?.length) {
-        await commentProducer.deleteCommentProducer(doc);
-    }
-    next();
-});
-
-commentSchema.pre('deleteOne', async function (next) {
-    try {
-        const commentId = this.getQuery()._id;
-        const comment = await Comment.findById(commentId);
-        await Comment.findByIdAndUpdate(comment?.parent, {
-            $pull: { replies: commentId },
-            $inc: { replyCount: -1 },
-        });
-        next();
-    } catch (err) {
-        throw err;
-    }
-});
-
-commentSchema.post('deleteOne', async function (doc, next) {
-    try {
-        const commentId = this.getQuery()._id;
-        const events = await LCEvent.find({ commentId });
-        await LCEvent.deleteMany({ commentId });
-        await UserActivity.updateMany(
-            {
-                $or: [
-                    { likeEvent: { $in: events } },
-                    { dislikeEvent: { $in: events } },
-                    { commentEvent: { $in: events } },
-                ],
-            },
-            {
-                $pull: {
-                    likeEvent: { $in: events },
-                    dislikeEvent: { $in: events },
-                    commentEvent: { $in: events },
-                },
-            }
-        );
-        next();
-    } catch (err) {
-        throw err;
-    }
-});
+commentSchema.index({ parent: 1, _id: 1 });
 
 const Comment = mongoose.model('Comment', commentSchema);
 

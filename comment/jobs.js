@@ -9,44 +9,43 @@ export const cleanDeletedComments = async () => {
         deleteTimestamp.getDate() - timeTillCommentDeletion
     );
     try {
-        log.info('Cleaning deleted comments...');
-        const data = await Comment.find({
-            $or: [
-                {
-                    $and: [
-                        { deleted: true },
-                        { updatedAt: { $lt: deleteTimestamp } },
-                    ],
+        log.info('Cleaning orphaned deleted comments...'); // Deleted comments with not replies
+
+        const data = await Comment.aggregate([
+            {
+                $match: {
+                    deleted: true,
+                    updatedAt: { $lt: deleteTimestamp },
                 },
-                {
-                    $and: [
-                        { toDelete: true },
-                        { markedForDeletionAt: { $lt: deleteTimestamp } },
-                    ],
+            },
+            {
+                $lookup: {
+                    from: 'comments',
+                    localField: '_id',
+                    foreignField: 'parent',
+                    as: 'replies',
                 },
-            ],
-        }).select('_id parent');
+            },
+            {
+                $match: {
+                    'replies.0': { $exists: false },
+                },
+            },
+            {
+                $project: {
+                    _id: 1,
+                    parent: 1,
+                },
+            },
+        ]);
+
         const comments = [];
         data.forEach((el) => {
             comments.push(el._id);
         });
-        await Comment.deleteMany({
-            $or: [
-                {
-                    $and: [
-                        { deleted: true },
-                        { updatedAt: { $lt: deleteTimestamp } },
-                    ],
-                },
-                {
-                    $and: [
-                        { toDelete: true },
-                        { markedForDeletionAt: { $lt: deleteTimestamp } },
-                    ],
-                },
-            ],
-        });
+        await Comment.deleteMany({ _id: { $in: { comments } } });
         log.info('Successfully cleaned deleted comments');
+
         log.info('Updating parent comments...');
         const updatePromises = [];
         for (let i = 0; i < data.length; i++) {
@@ -61,6 +60,7 @@ export const cleanDeletedComments = async () => {
         }
         await Promise.all(updatePromises);
         log.info('Updated parent comments');
+
         log.info('Started cleaning related user activities...');
         const events = await LCEvent.find({ commentId: { $in: comments } });
         await Promise.all([
