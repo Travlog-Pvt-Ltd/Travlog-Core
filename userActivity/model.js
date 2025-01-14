@@ -5,6 +5,7 @@ const userActivitySchema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+            index: true,
         },
         followEvent: [
             {

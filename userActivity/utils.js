@@ -12,7 +12,7 @@ export const cleanContentField = (obj) => {
 };
 
 export const transformAndCleanContentField = (obj) => {
-    obj = JSON.parse(JSON.stringify(obj));
+    obj = JSON.parse(JSON.stringify(obj)); // Obj is a mongoose object with additional fields that are not required
     cleanContentField(obj);
     return obj;
 };

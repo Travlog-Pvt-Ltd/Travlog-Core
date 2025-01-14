@@ -2,7 +2,7 @@ import { BaseSiteAbstractClass } from '../common/utils.js';
 import { broker, KafkaConnectionError } from './index.js';
 
 class BaseConsumer extends BaseSiteAbstractClass {
-    constructor(topic, groupId) {
+    constructor(groupId, topic) {
         super();
         this.kafkaClient = broker.getKafkaClient();
         this.topic = topic;
