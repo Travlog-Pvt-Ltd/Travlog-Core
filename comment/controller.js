@@ -130,10 +130,12 @@ const deleteComment = async (req, res) => {
             comment,
             { content: deletedContent, deleted: true },
             { new: true }
-        );
+        )
+            .select('-likes -replies -dislikes')
+            .populate('userId', '_id name profileLogo');
         res.status(201).json({
-            message: 'Comment marked for deletion!',
-            data: result,
+            message: 'Comment deleted!',
+            comment: result,
         });
     } catch (err) {
         res.status(500).json({ message: err.message });
