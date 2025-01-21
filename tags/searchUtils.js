@@ -96,7 +96,10 @@ export const createTagIndex = async (data) => {
 export const bulkCreateTagIndex = async (dataset) => {
     const docs = [];
     if (!dataset || dataset.length === 0) {
-        const places = await Place.find();
+        const places = await Place.find()
+            .populate('parent', 'name')
+            .populate('district', 'name')
+            .populate('state', 'name');
         const activities = await Activity.find();
         dataset = [...places, ...activities];
     }
