@@ -1,3 +1,13 @@
 {
-    "places": []
+    "places": [
+        {
+            "id": "ChIJk8-OGi5s0jsRlRdnQq6TL4k",
+            "name": "Kanakai Water Falls (Kanakadurga)",
+            "location": {
+                "latitude": 19.4378793,
+                "longitude": 78.37349789999999
+            },
+            "formattedAddress": "C9QF+595, Bazarhatnoor Rd, Balanpur, Telangana 504307, India"
+        }
+    ]
 }

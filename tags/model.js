@@ -44,11 +44,14 @@ activitySchema.post('updateOne', async function (doc, next) {
 
 const placeSchema = new mongoose.Schema(
     {
-        _id: {
+        placeId: {
             type: String,
+            required: true,
+            unique: true,
         },
         name: {
             type: String,
+            required: true,
         },
         isPlace: {
             type: Boolean,
@@ -56,20 +59,24 @@ const placeSchema = new mongoose.Schema(
         },
         country: {
             type: String,
+            required: true,
         },
         pincode: {
             type: String,
         },
+        formattedAddress: {
+            type: String,
+            required: true,
+        },
         location: {
             latitude: {
                 type: Number,
+                required: true,
             },
             longitude: {
                 type: Number,
+                required: true,
             },
-        },
-        formattedAddress: {
-            type: String,
         },
         hasInfo: {
             type: Boolean,

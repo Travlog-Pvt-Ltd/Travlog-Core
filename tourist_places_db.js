@@ -2,6 +2,7 @@ import fs from 'fs';
 import { createReadStream } from 'fs';
 import csv from 'csv-parser';
 import axios from 'axios';
+import { Place } from './tags/model.js';
 
 const API_KEY = process.env.PLACES_API_KEY;
 const DATA_FILE = 'tourist_attractions.json';
@@ -92,4 +93,38 @@ async function buildTouristDatabase() {
     }
 }
 
-buildTouristDatabase();
+const savePlacesFromJson = async () => {
+    try {
+        const data = await fs.promises.readFile(
+            './tourist_attractions.json',
+            'utf8'
+        );
+        const parsedData = JSON.parse(data);
+
+        for (const place of parsedData.places) {
+            const address = place.formattedAddress.trim().split(/\s+/);
+
+            const newPlace = new Place({
+                placeId: place.id,
+                name: place.name,
+                location: place.location,
+                formattedAddress: place.formattedAddress,
+                country: address[address.length - 1],
+                pincode: address[address.length - 2],
+            });
+
+            await newPlace.save();
+            console.log(`Saved place: ${place.name}`);
+        }
+    } catch (error) {
+        console.error('Error reading or saving data:', error);
+    }
+};
+
+// Get all the locations in the file indiancities.csv
+// Run this function to get all data in json file tourist_attractions.json
+// buildTouristDatabase();
+
+// Filter out the data in the json file to remove unwanted places
+// Comment the upper function now and run this function to save data to DB
+savePlacesFromJson();
