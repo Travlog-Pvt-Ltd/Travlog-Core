@@ -11,6 +11,10 @@ import { Activity, Place } from './model.js';
 const tagESIndex = indices.searchIndex;
 
 export const tagDocSchema = {
+    placeId: {
+        type: 'string',
+        path: 'placeId',
+    },
     name: {
         type: 'string',
         path: 'name',
@@ -30,6 +34,14 @@ export const tagDocSchema = {
     pincode: {
         type: 'string',
         path: 'pincode',
+    },
+    formattedAddress: {
+        type: 'string',
+        path: 'formattedAddress',
+    },
+    location: {
+        type: 'string',
+        path: 'location',
     },
     searchCount: {
         type: 'number',
