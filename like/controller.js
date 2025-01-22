@@ -284,7 +284,7 @@ const dislikeBlog = async (req, res) => {
 };
 
 const likeComment = async (req, res) => {
-    const { comment, blog } = req.body;
+    const { commentId: comment, blog } = req.body;
     const userObject = new mongoose.Types.ObjectId(req.userId);
     try {
         const found = await Comment.findById(comment).populate('likes');
@@ -354,7 +354,7 @@ const likeComment = async (req, res) => {
 };
 
 const dislikeComment = async (req, res) => {
-    const { comment, blog } = req.body;
+    const { commentId: comment, blog } = req.body;
     const userObject = new mongoose.Types.ObjectId(req.userId);
     try {
         const found = await Comment.findById(comment).populate('dislikes');

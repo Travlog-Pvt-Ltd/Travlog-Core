@@ -36,12 +36,13 @@ const commentOnBlog = async (req, res) => {
     const blog = req.body.blog;
     const content = req.body.content;
     try {
-        const newComment = await Comment.create({
+        const createdComment = await Comment.create({
             userId: req.userId,
             content: content,
             isReply: false,
             blog: blog,
-        })
+        });
+        const newComment = await Comment.findById(createdComment._id)
             .select('-likes -replies -dislikes')
             .populate('userId', '_id name profileLogo');
         await Blog.findByIdAndUpdate(blog, {
@@ -69,15 +70,16 @@ const commentOnBlog = async (req, res) => {
 };
 
 const replyOnComment = async (req, res) => {
-    const { blog, comment, content } = req.body;
+    const { blog, commentId: comment, content } = req.body;
     try {
-        const newReply = await Comment.create({
+        const createdReply = await Comment.create({
             userId: req.userId,
             content: content,
             isReply: true,
             blog: blog,
             parent: comment,
-        })
+        });
+        const newReply = await Comment.findById(createdReply._id)
             .select('-likes -replies -dislikes')
             .populate('userId', '_id name profileLogo');
         const [_b, newBlog] = await Promise.all([
@@ -128,10 +130,12 @@ const deleteComment = async (req, res) => {
             comment,
             { content: deletedContent, deleted: true },
             { new: true }
-        );
+        )
+            .select('-likes -replies -dislikes')
+            .populate('userId', '_id name profileLogo');
         res.status(201).json({
-            message: 'Comment marked for deletion!',
-            data: result,
+            message: 'Comment deleted!',
+            comment: result,
         });
     } catch (err) {
         res.status(500).json({ message: err.message });
