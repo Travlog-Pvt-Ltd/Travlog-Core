@@ -51,18 +51,6 @@ const placeSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
-        parent: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Place',
-        },
-        district: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Place',
-        },
-        state: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Place',
-        },
         country: {
             type: String,
         },
@@ -84,6 +72,14 @@ const placeSchema = new mongoose.Schema(
         blogCount: {
             type: Number,
             default: 0,
+        },
+        location: {
+            latitude: {
+                type: Number,
+            },
+            longitude: {
+                type: Number,
+            },
         },
     },
     { timestamps: true }
