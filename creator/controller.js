@@ -10,7 +10,7 @@ const moreFromAuthor = async (req, res) => {
     const author = req.params.authorId;
     try {
         const moreBlogs = await Blog.find({ author: author })
-            .sort({ likes: -1 })
+            .sort({ likeCount: -1 })
             .limit(3)
             .select(
                 '_id title content author likeCount viewCount commentCount shareCount'
