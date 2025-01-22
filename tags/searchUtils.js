@@ -23,18 +23,6 @@ export const tagDocSchema = {
         type: 'string',
         path: 'types',
     },
-    parent: {
-        type: 'string',
-        path: 'parent.name',
-    },
-    district: {
-        type: 'string',
-        path: 'district.name',
-    },
-    state: {
-        type: 'string',
-        path: 'state.name',
-    },
     country: {
         type: 'string',
         path: 'country',
