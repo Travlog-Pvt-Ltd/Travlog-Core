@@ -1,4 +1,3 @@
-import xlsx from 'xlsx';
 import { Place } from './model.js';
 import { customSearchTags } from './searchUtils.js';
 import { parseEsTagData } from './utils.js';
@@ -22,42 +21,6 @@ const getPlaceInfo = async (req, res) => {
         if (!place) return res.status(404).json({ message: 'Info not found!' });
         place.populate('info');
         res.status(200).json({ place: place });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
-const createCities = async (req, res) => {
-    try {
-        // const workbook = xlsx.readFile('worldcities.xlsx')
-        // const sheetName = workbook.SheetNames[0]
-        // const sheet = workbook.Sheets[sheetName]
-        // const data = xlsx.utils.sheet_to_json(sheet)
-        // let cities = []
-        // data.forEach(item => {
-        //     const admin = item.admin_name ? item.admin_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "") : null
-        //     if (!admin || admin == item.city) {
-        //         cities.push({ name: item.city, parent: item.country })
-        //     }
-        //     else {
-        //         cities.push({ name: item.city, parent: admin })
-        //     }
-        // })
-        // let added = 0, errors = 0
-        // const promises = cities.map(async (item) => {
-        //     try {
-        //         const parentCity = await Place.findOne({ name: item.parent })
-        //         if (parentCity?._id) {
-        //             await Place.create({ name: item.name, parent: parentCity._id })
-        //             added += 1
-        //         }
-        //         else errors += 1
-        //     } catch (err) {
-        //         errors += 1
-        //     }
-        // })
-        // await Promise.all(promises)
-        // res.status(201).json({ added, errors })
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -210,4 +173,4 @@ const createActivities = async (req, res) => {
     res.status(201).json(data);
 };
 
-export { searchTags, getPlaceInfo, createCities, createActivities };
+export { searchTags, getPlaceInfo, createActivities };
