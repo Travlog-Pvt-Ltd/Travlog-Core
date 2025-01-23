@@ -102,7 +102,9 @@ const savePlacesFromJson = async () => {
         const parsedData = JSON.parse(data);
 
         for (const place of parsedData.places) {
-            const address = place.formattedAddress.trim().split(/\s+/);
+            // TODO[Rishikant]: Find a way to work out without using trimming
+            // to extract country name and pincodes to avoid ambiguity
+            const address = place.formattedAddress.trim().split(/[ ,]+/);
 
             const newPlace = new Place({
                 placeId: place.id,
