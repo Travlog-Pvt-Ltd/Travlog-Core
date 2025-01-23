@@ -10,10 +10,7 @@ class IndexTagsConsumer extends BaseConsumer {
 
     async start() {
         await this.setupConsumer(async (data) => {
-            const places = await Place.find({ _id: { $in: data.places } })
-                .populate('parent', 'name')
-                .populate('district', 'name')
-                .populate('state', 'name');
+            const places = await Place.find({ _id: { $in: data.places } });
             const activities = await Activity.find({
                 _id: { $in: data.activities },
             });

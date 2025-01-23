@@ -10,7 +10,7 @@
 			"name": "blogs",
 			"item": [
 				{
-					"name": "Create blogs (requires bearer token)",
+					"name": "Create blog",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -44,6 +44,30 @@
 								}
 							]
 						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit blog",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"My first blog\",\r\n    \"content\": \"Some other content\",\r\n    \"thumbnailUrl\": \"https://firebasestorage.googleapis.com/v0/b/travlog-418006.appspot.com/o/thumbnails%2Fnidam.jpg---Mon%20Apr%2008%202024%2007%3A07%3A00%20GMT%2B0000%20(Coordinated%20Universal%20Time)?alt=media&token=daf81115-071e-4aca-bb39-823f8c00a22e\",\r\n    \"tags\": {\r\n        \"places\": [\r\n            {\r\n                \"isPlace\": true,\r\n                \"_id\": \"6671eb9b2d50bcfdfa0b1754\",\r\n                \"name\": \"Tokyo\",\r\n                \"hasInfo\": false,\r\n                \"createdAt\": \"2024-06-18T20:18:41.512Z\",\r\n                \"updatedAt\": \"2024-06-18T20:18:41.512Z\",\r\n                \"__v\": 0\r\n            }\r\n        ],\r\n        \"activities\": [\r\n            {\r\n                \"_id\": \"6677428e14809e3a305196a2\",\r\n                \"name\": \"Snowmobiling\",\r\n                \"types\": [\r\n                    \"Adventure\",\r\n                    \"Mountains\",\r\n                    \"Hill Station\"\r\n                ],\r\n                \"__v\": 0,\r\n                \"createdAt\": \"2024-06-22T21:30:54.931Z\",\r\n                \"updatedAt\": \"2024-06-22T21:30:54.931Z\"\r\n            },\r\n            {\r\n                \"_id\": \"6677428e14809e3a30519685\",\r\n                \"name\": \"Hiking\",\r\n                \"types\": [\r\n                    \"Adventure\",\r\n                    \"Mountains\",\r\n                    \"Hill Station\"\r\n                ],\r\n                \"__v\": 0,\r\n                \"createdAt\": \"2024-06-22T21:30:54.928Z\",\r\n                \"updatedAt\": \"2024-06-22T21:30:54.928Z\"\r\n            }\r\n        ]\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{dev_url}}/blog/6613979ce96c366dd8543579"
 					},
 					"response": []
 				},
@@ -102,7 +126,7 @@
 					"response": []
 				},
 				{
-					"name": "Get user blogs (with bearer token)",
+					"name": "Get user blogs",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -667,21 +691,6 @@
 			"name": "tags",
 			"item": [
 				{
-					"name": "Generate Cities",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": {
-								"token": "{{bearer_token}}"
-							}
-						},
-						"method": "GET",
-						"header": [],
-						"url": "{{dev_url}}/tags/cities/generateCities"
-					},
-					"response": []
-				},
-				{
 					"name": "Generate Activities",
 					"request": {
 						"auth": {
@@ -1011,6 +1020,26 @@
 							]
 						},
 						"url": "{{dev_url}}/like/comment/dislike"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user activity",
+			"item": [
+				{
+					"name": "Get User Activity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{dev_url}}/user-activity/"
 					},
 					"response": []
 				}
