@@ -12,6 +12,10 @@ import { Activity, Place } from './model.js';
 const tagESIndex = indices.searchIndex;
 
 export const tagDocSchema = {
+    placeId: {
+        type: 'string',
+        path: 'placeId',
+    },
     name: {
         type: 'string',
         path: 'name',
@@ -24,18 +28,6 @@ export const tagDocSchema = {
         type: 'string',
         path: 'types',
     },
-    parent: {
-        type: 'string',
-        path: 'parent.name',
-    },
-    district: {
-        type: 'string',
-        path: 'district.name',
-    },
-    state: {
-        type: 'string',
-        path: 'state.name',
-    },
     country: {
         type: 'string',
         path: 'country',
@@ -43,6 +35,14 @@ export const tagDocSchema = {
     pincode: {
         type: 'string',
         path: 'pincode',
+    },
+    formattedAddress: {
+        type: 'string',
+        path: 'formattedAddress',
+    },
+    location: {
+        type: 'string',
+        path: 'location',
     },
     searchCount: {
         type: 'number',
@@ -97,10 +97,7 @@ export const createTagIndex = async (data) => {
 export const bulkCreateTagIndex = async (dataset) => {
     const docs = [];
     if (!dataset || dataset.length === 0) {
-        const places = await Place.find()
-            .populate('parent', 'name')
-            .populate('district', 'name')
-            .populate('state', 'name');
+        const places = await Place.find();
         const activities = await Activity.find();
         dataset = [...places, ...activities];
     }
@@ -152,28 +149,10 @@ export const searchTagsQuery = (queryText) => {
                         ],
                     },
                 },
-                {
-                    bool: {
-                        should: [
-                            {
-                                match_phrase_prefix: {
-                                    parent: {
-                                        query: queryText,
-                                        max_expansions: 20,
-                                    },
-                                },
-                            },
-                            {
-                                match: {
-                                    parent: {
-                                        query: queryText,
-                                        fuzziness: 'AUTO',
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
+                /*
+                    TODO [Aryan | 2025-01-24]
+                    - Add query to search on formatted address
+                */
                 {
                     bool: {
                         should: [
@@ -188,50 +167,6 @@ export const searchTagsQuery = (queryText) => {
                             {
                                 match: {
                                     types: {
-                                        query: queryText,
-                                        fuzziness: 'AUTO',
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    bool: {
-                        should: [
-                            {
-                                match_phrase_prefix: {
-                                    district: {
-                                        query: queryText,
-                                        max_expansions: 20,
-                                    },
-                                },
-                            },
-                            {
-                                match: {
-                                    district: {
-                                        query: queryText,
-                                        fuzziness: 'AUTO',
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    bool: {
-                        should: [
-                            {
-                                match_phrase_prefix: {
-                                    state: {
-                                        query: queryText,
-                                        max_expansions: 20,
-                                    },
-                                },
-                            },
-                            {
-                                match: {
-                                    state: {
                                         query: queryText,
                                         fuzziness: 'AUTO',
                                     },
