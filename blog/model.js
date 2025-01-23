@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { handleBlogUpdateSignal } from './utils.js';
 
 const blogSchema = new mongoose.Schema(
     {
@@ -125,6 +126,18 @@ blogSchema.virtual('shortContent').get(function () {
 
 blogSchema.set('toJSON', { virtuals: true });
 blogSchema.set('toObject', { virtuals: true });
+
+blogSchema.post('save', async function (doc, next) {
+    await handleBlogUpdateSignal(doc, next);
+});
+
+blogSchema.post('updateOne', async function (doc, next) {
+    await handleBlogUpdateSignal(this, next);
+});
+
+blogSchema.post('findOneAndUpdate', async function (doc, next) {
+    await handleBlogUpdateSignal(doc, next);
+});
 
 const singleBlogSchema = new mongoose.Schema(
     {
