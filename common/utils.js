@@ -38,6 +38,7 @@ class TrieNode {
     constructor() {
         this.children = {};
         this.isEnd = false;
+        this._id = '';
     }
 }
 
@@ -46,23 +47,24 @@ export class Trie {
         this.root = new TrieNode();
     }
 
-    insert(word) {
+    insert(tag) {
         let node = this.root;
-        for (const char of word.toLowerCase()) {
+        for (const char of tag[0].toLowerCase()) {
             if (!node.children[char]) {
                 node.children[char] = new TrieNode();
             }
             node = node.children[char];
         }
         node.isEnd = true;
+        node._id = tag[1];
     }
 
-    bulkInsert(words) {
-        if (!Array.isArray(words) || words.length === 0) {
+    bulkInsert(tags) {
+        if (!Array.isArray(tags) || tags.length === 0) {
             throw new Error('Words should be a non-empty array.');
         }
-        for (const word of words) {
-            this.insert(word);
+        for (const tag of tags) {
+            this.insert(tag);
         }
     }
 
@@ -77,10 +79,10 @@ export class Trie {
 
     search(word) {
         const node = this.traverse(word);
-        return node ? node.isEnd : false;
+        return node && node.isEnd ? node : null;
     }
 
     startsWith(prefix) {
-        return this.traverse(prefix) !== null;
+        return this.traverse(prefix);
     }
 }

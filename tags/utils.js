@@ -15,17 +15,30 @@ export const parseEsTagData = (data) => {
 export const getAllTagsName = async () => {
     try {
         const result = await searchAllTags(['name']);
-        return result.map((doc) => doc._source.name);
+        return result.map((doc) => [doc._source.name, doc._id]);
     } catch (error) {
         throw error;
     }
 };
 
+const generateNameVariations = (tag) => {
+    const variations = [];
+    variations.push(tag);
+    const match = tag[0].match(/^(.*?)\s*\((.*?)\)$/);
+    if (match) {
+        variations.push([match[1].trim(), tag[1]]);
+        variations.push([match[2].trim(), tag[1]]);
+    }
+    return variations;
+};
+
 export const createAndStoreTagTrie = async () => {
     try {
-        const names = await getAllTagsName();
+        const tags = await getAllTagsName();
         const tagsTrie = new Trie();
-        tagsTrie.bulkInsert(names);
+        // Handle names where another name is added in parantheses
+        const variations = tags.flatMap((tag) => generateNameVariations(tag));
+        tagsTrie.bulkInsert(variations);
         const serializedTrie = JSON.stringify(tagsTrie);
         await redis.setEx('tagsTrie', 84600, serializedTrie);
         return serializedTrie;
