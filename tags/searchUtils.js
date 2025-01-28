@@ -3,6 +3,7 @@ import {
     bulkCreateDataIndex,
     createDataIndex,
     deleteDataIndex,
+    scrollByQuery,
     searchByQuery,
     updateDataIndex,
 } from '../elasticSearch/index.js';
@@ -201,6 +202,16 @@ export const customSearchTags = async (queryText) => {
     try {
         const query = searchTagsQuery(queryText);
         return await searchByQuery(tagESIndex, query, 10);
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const searchAllTags = async (fields = []) => {
+    try {
+        const query = { match_all: {} };
+        const result = await scrollByQuery(tagESIndex, query, fields);
+        return result;
     } catch (error) {
         throw error;
     }

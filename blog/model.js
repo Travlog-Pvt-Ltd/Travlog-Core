@@ -16,22 +16,32 @@ const blogSchema = new mongoose.Schema(
             index: true,
         },
         tags: {
-            places: [
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Place',
-                },
-            ],
-            activities: [
-                {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Activity',
-                },
-            ],
+            places: {
+                type: [mongoose.Schema.Types.ObjectId],
+                ref: 'Place',
+                default: [],
+                /*
+                    TODO [Aryan | 2025-01-28]
+                    - Add unique constraint in both tags and system_tags
+                */
+            },
+            activities: {
+                type: [mongoose.Schema.Types.ObjectId],
+                ref: 'Activity',
+                default: [],
+            },
         },
         system_tags: {
-            type: [String],
-            default: [],
+            places: {
+                type: [mongoose.Schema.Types.ObjectId],
+                ref: 'Place',
+                default: [],
+            },
+            activities: {
+                type: [mongoose.Schema.Types.ObjectId],
+                ref: 'Activity',
+                default: [],
+            },
         },
         likes: [
             {
