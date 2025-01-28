@@ -148,10 +148,28 @@ export const searchTagsQuery = (queryText) => {
                         ],
                     },
                 },
-                /*
-                    TODO [Aryan | 2025-01-24]
-                    - Add query to search on formatted address
-                */
+                {
+                    bool: {
+                        should: [
+                            {
+                                match_phrase_prefix: {
+                                    formattedAddress: {
+                                        query: queryText,
+                                        max_expansions: 20,
+                                    },
+                                },
+                            },
+                            {
+                                match: {
+                                    formattedAddress: {
+                                        query: queryText,
+                                        fuzziness: 'AUTO',
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
                 {
                     bool: {
                         should: [
