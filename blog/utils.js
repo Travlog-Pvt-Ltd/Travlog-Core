@@ -1,19 +1,28 @@
 import log from 'npmlog';
 import { parseDocument } from 'htmlparser2';
 import natural from 'natural';
-import { blogProducer } from './producer.js';
 import { stopWordsToInclude } from './constants.js';
 import { getTagsTrie } from '../tags/utils.js';
 import { Blog } from './model.js';
 
-export const handleBlogUpdateSignal = async (docOrQuery, next) => {
-    try {
-        const blogId = docOrQuery._id || docOrQuery.getQuery()?._id;
-        await blogProducer.extractTagsProducer({ _id: blogId });
-        next();
-    } catch (error) {
-        next(error);
-    }
+export const getTagDifferences = (oldBlog, newBlog) => {
+    const oldPlaces = new Set(oldBlog.tags.places.map(String));
+    const newPlaces = new Set(newBlog.tags.places.map(String));
+    const oldActivities = new Set(oldBlog.tags.activities.map(String));
+    const newActivities = new Set(newBlog.tags.activities.map(String));
+
+    const findDifferences = (oldSet, newSet) => {
+        const added = [...newSet].filter((item) => !oldSet.has(item));
+        const removed = [...oldSet].filter((item) => !newSet.has(item));
+        return { added, removed };
+    };
+
+    const placesDifference = findDifferences(oldPlaces, newPlaces);
+    const activitiesDifference = findDifferences(oldActivities, newActivities);
+    return {
+        places: placesDifference,
+        activities: activitiesDifference,
+    };
 };
 
 const parseMarkupText = (node) => {
@@ -78,26 +87,51 @@ export const extractSystemTags = async (cleanedText) => {
 };
 
 export const processBlogTags = async (blog) => {
-    if (!blog._id) return;
-    log.info(`Started processing blog with id: ${blog._id}`);
-    const text = blog.title + ' ' + processBlogMarkupText(blog.content);
-    const cleanedText = cleanBlogContent(text);
-    const extractedTags = await extractSystemTags(cleanedText);
-    // Get the objects from db and add in blog
-    const places = [];
-    const activities = [];
-    extractedTags.forEach((tag) => {
-        if (tag.isPlace === 1) places.push(tag._id);
-        else activities.push(tag._id);
-    });
-    await Blog.updateOne(
-        { _id: blog._id },
-        {
-            $set: {
-                'system_tags.places': places,
-                'system_tags.activities': activities,
-            },
-        }
-    );
-    log.info(`Extracted tags for blog with id ${blog._id}`);
+    try {
+        if (!blog._id) return;
+        log.info(`Started processing blog with id: ${blog._id}`);
+        const text = blog.title + ' ' + processBlogMarkupText(blog.content);
+        const cleanedText = cleanBlogContent(text);
+        const extractedTags = await extractSystemTags(cleanedText);
+        // Get the objects from db and add in blog
+        const places = [];
+        const activities = [];
+        extractedTags.forEach((tag) => {
+            if (tag.isPlace === 1) {
+                if (
+                    !(
+                        blog.tags.places
+                            .map((id) => id.toString())
+                            .includes(tag._id) ||
+                        blog.system_tags.places
+                            .map((id) => id.toString())
+                            .includes(tag._id)
+                    )
+                )
+                    places.push(tag._id);
+            } else if (
+                !(
+                    blog.tags.activities
+                        .map((id) => id.toString())
+                        .includes(tag._id) ||
+                    blog.system_tags.activities
+                        .map((id) => id.toString())
+                        .includes(tag._id)
+                )
+            )
+                activities.push(tag._id);
+        });
+        await Blog.updateOne(
+            { _id: blog._id },
+            {
+                $push: {
+                    'system_tags.places': places,
+                    'system_tags.activities': activities,
+                },
+            }
+        );
+        log.info(`Extracted tags for blog with id ${blog._id}`);
+    } catch (error) {
+        log.error('Something went wrong', error.message);
+    }
 };

@@ -11,6 +11,12 @@ import {
 import { authorFieldsForBlog, blogFieldsToSelect } from './constants.js';
 import { Place, Activity } from '../tags/model.js';
 import { tagsProducer } from '../tags/producer.js';
+import { blogProducer } from './producer.js';
+import {
+    cleanBlogContent,
+    getTagDifferences,
+    processBlogMarkupText,
+} from './utils.js';
 
 async function getAllBlogs(req, res) {
     const limit = req.query.limit || 20;
@@ -205,6 +211,10 @@ async function createBlog(req, res) {
         }
         await Promise.all([
             updateUserInCache(user),
+            /*
+                TODO [Aryan | 2025-01-28]
+                - Move tags update to async
+            */
             Place.updateMany(
                 { _id: { $in: tags.places } },
                 { $inc: { blogCount: 1 } }
@@ -215,6 +225,7 @@ async function createBlog(req, res) {
             ),
             deleteKeysByPatternWithScan(`user_blogs:${req.userId}`),
         ]);
+        await blogProducer.extractTagsProducer({ _id: savedBlog._id });
         await tagsProducer.tagsIndexProducer({
             places: tags.places,
             activities: tags.activities,
@@ -323,6 +334,7 @@ const editBlog = async (req, res) => {
     try {
         const blogId = req.params.blogId;
         const { title, content, tags, thumbnailUrl } = req.body;
+        const oldBlog = await Blog.findById(blogId);
         const updatedBlog = await Blog.findByIdAndUpdate(
             blogId,
             {
@@ -335,6 +347,68 @@ const editBlog = async (req, res) => {
             },
             { new: true }
         );
+
+        /*
+            TODO [Aryan | 2025-01-28]
+            - Move both tasks(tag extraction and indexing) below to async
+        */
+
+        // Process blog text for tags only if title or content was changed
+        let oldText =
+            oldBlog.title + ' ' + processBlogMarkupText(oldBlog.content);
+        let newText =
+            updatedBlog.title +
+            ' ' +
+            processBlogMarkupText(updatedBlog.content);
+        oldText = cleanBlogContent(oldText);
+        newText = cleanBlogContent(newText);
+
+        const oldSet = new Set(oldText);
+        const newSet = new Set(newText);
+        const areEqual =
+            oldSet.size === newSet.size &&
+            [...oldSet].every((item) => newSet.has(item));
+
+        if (!areEqual) await blogProducer.extractTagsProducer({ _id: blogId });
+
+        // Handle blog count for the tags that were removed/added and reindex them.
+        const { places, activities } = getTagDifferences(oldBlog, updatedBlog);
+        await Place.updateMany(
+            { _id: { $in: places.added } },
+            {
+                $inc: { blogCount: 1 },
+            }
+        );
+        await Place.updateMany(
+            { _id: { $in: places.removed } },
+            {
+                $inc: { blogCount: -1 },
+            }
+        );
+        await Activity.updateMany(
+            { _id: { $in: activities.added } },
+            {
+                $inc: { blogCount: 1 },
+            }
+        );
+        await Activity.updateMany(
+            { _id: { $in: activities.removed } },
+            {
+                $inc: { blogCount: -1 },
+            }
+        );
+        const placesToReindex = [
+            ...new Set([...places.added, ...places.removed]),
+        ];
+        const activitiesToReindex = [
+            ...new Set([...activities.added, ...activities.removed]),
+        ];
+        if (placesToReindex.length > 0 || activitiesToReindex.length > 0) {
+            await tagsProducer.tagsIndexProducer({
+                places: placesToReindex,
+                activities: activitiesToReindex,
+            });
+        }
         res.status(201).json(updatedBlog);
     } catch (err) {
         res.status(500).json({ message: err.message });

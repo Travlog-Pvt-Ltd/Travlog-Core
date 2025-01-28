@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { handleBlogUpdateSignal } from './utils.js';
 
 const blogSchema = new mongoose.Schema(
     {
@@ -21,6 +20,10 @@ const blogSchema = new mongoose.Schema(
                 type: [mongoose.Schema.Types.ObjectId],
                 ref: 'Place',
                 default: [],
+                /*
+                    TODO [Aryan | 2025-01-28]
+                    - Add unique constraint in both tags and system_tags
+                */
             },
             activities: {
                 type: [mongoose.Schema.Types.ObjectId],
@@ -132,18 +135,6 @@ blogSchema.virtual('shortContent').get(function () {
 
 blogSchema.set('toJSON', { virtuals: true });
 blogSchema.set('toObject', { virtuals: true });
-
-blogSchema.post('save', async function (doc, next) {
-    await handleBlogUpdateSignal(doc, next);
-});
-
-blogSchema.post('updateOne', async function (doc, next) {
-    await handleBlogUpdateSignal(this, next);
-});
-
-blogSchema.post('findOneAndUpdate', async function (doc, next) {
-    await handleBlogUpdateSignal(doc, next);
-});
 
 const singleBlogSchema = new mongoose.Schema(
     {

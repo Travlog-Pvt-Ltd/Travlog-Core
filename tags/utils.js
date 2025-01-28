@@ -36,7 +36,7 @@ const generateNameVariations = (tag) => {
     return variations;
 };
 
-export const createAndStoreTagTrie = async () => {
+export const createAndStoreTagsTrie = async () => {
     try {
         const tags = await getAllTagsName();
         const tagsTrie = new Trie();
@@ -56,7 +56,7 @@ export const getTagsTrie = async () => {
         let serializedTrie = await redis.get('tagsTrie');
         if (!serializedTrie) {
             log.info('Tags trie not found in cache. Creating and storing it.');
-            serializedTrie = await createAndStoreTagTrie();
+            serializedTrie = await createAndStoreTagsTrie();
         }
         const parsedTrie = JSON.parse(serializedTrie);
         const restoredTrie = new Trie();

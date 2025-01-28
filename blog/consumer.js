@@ -11,11 +11,7 @@ class ExtractTagsConsumer extends BaseConsumer {
     async start() {
         await this.setupConsumer(async (data) => {
             const blog = await Blog.findById(data._id)
-                .select('title content tags')
-                .populate([
-                    { path: 'tags.places', select: 'name' },
-                    { path: 'tags.activities', select: 'name' },
-                ])
+                .select('title content tags system_tags')
                 .lean();
             await processBlogTags(blog);
         });

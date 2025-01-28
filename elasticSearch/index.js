@@ -50,7 +50,7 @@ export const bulkCreateDataIndex = async (docs, index) => {
         });
         log.info(`Started indexing ${docs.length} entries...`);
         const result = await getESClient().bulk({ refresh: true, operations });
-        log.info(`Finished indexing ${docs.length} entries...`);
+        log.info(`Finished indexing ${docs.length} entries`);
         return result;
     } catch (error) {
         throw error;
