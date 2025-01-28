@@ -4,6 +4,7 @@ import natural from 'natural';
 import { blogProducer } from './producer.js';
 import { stopWordsToInclude } from './constants.js';
 import { getTagsTrie } from '../tags/utils.js';
+import { Blog } from './model.js';
 
 export const handleBlogUpdateSignal = async (docOrQuery, next) => {
     try {
@@ -56,19 +57,19 @@ export const cleanBlogContent = (text) => {
 export const extractSystemTags = async (cleanedText) => {
     const tagsTrie = await getTagsTrie();
     // check the words in trie using sliding window approach to find multiword tags.
-    const extractedTags = [];
+    let extractedTags = [];
     for (let i = 0; i < cleanedText.length; i++) {
         let phrase = '';
         let j = i;
         // Continue expanding the phrase as long as it starts with a valid prefix
         while (j < cleanedText.length) {
             phrase = phrase ? `${phrase} ${cleanedText[j]}` : cleanedText[j];
-            if (!tagsTrie.startsWith(phrase)) {
+            if (tagsTrie.startsWith(phrase, 0).length == 0) {
                 break;
             }
-            const node = tagsTrie.search(phrase);
-            if (node) {
-                extractedTags.push(node._id);
+            const nodes = tagsTrie.search(phrase, 0);
+            if (nodes.length > 0) {
+                extractedTags = [...extractedTags, ...nodes];
             }
             j++;
         }
@@ -83,5 +84,20 @@ export const processBlogTags = async (blog) => {
     const cleanedText = cleanBlogContent(text);
     const extractedTags = await extractSystemTags(cleanedText);
     // Get the objects from db and add in blog
+    const places = [];
+    const activities = [];
+    extractedTags.forEach((tag) => {
+        if (tag.isPlace === 1) places.push(tag._id);
+        else activities.push(tag._id);
+    });
+    await Blog.updateOne(
+        { _id: blog._id },
+        {
+            $set: {
+                'system_tags.places': places,
+                'system_tags.activities': activities,
+            },
+        }
+    );
     log.info(`Extracted tags for blog with id ${blog._id}`);
 };

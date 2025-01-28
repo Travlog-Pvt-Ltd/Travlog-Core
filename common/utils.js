@@ -39,6 +39,7 @@ class TrieNode {
         this.children = {};
         this.isEnd = false;
         this._id = '';
+        this.isPlace = 0;
     }
 }
 
@@ -57,6 +58,7 @@ export class Trie {
         }
         node.isEnd = true;
         node._id = tag[1];
+        node.isPlace = tag[2];
     }
 
     bulkInsert(tags) {
@@ -68,21 +70,46 @@ export class Trie {
         }
     }
 
-    traverse(word) {
-        let node = this.root;
-        for (const char of word.toLowerCase()) {
-            if (!node.children[char]) return null;
-            node = node.children[char];
+    traverse(word, maxMismatches) {
+        if (maxMismatches === null) {
+            const length = word.length;
+            maxMismatches = length > 8 ? 2 : length > 4 ? 1 : 0;
         }
-        return node;
+        const results = [];
+
+        const dfs = (node, index, mismatches, currentWord) => {
+            if (mismatches > maxMismatches) return;
+
+            if (index === word.length) {
+                results.push({
+                    isEnd: node.isEnd,
+                    _id: node._id,
+                    isPlace: node.isPlace,
+                });
+                return;
+            }
+
+            const char = word[index];
+            for (const key in node.children) {
+                dfs(
+                    node.children[key],
+                    index + 1,
+                    mismatches + (key !== char ? 1 : 0),
+                    currentWord + key
+                );
+            }
+        };
+
+        dfs(this.root, 0, 0, '');
+        return results;
     }
 
-    search(word) {
-        const node = this.traverse(word);
-        return node && node.isEnd ? node : null;
+    search(word, maxMismatches = null) {
+        const nodes = this.traverse(word, maxMismatches);
+        return nodes.filter((node) => node.isEnd);
     }
 
-    startsWith(prefix) {
-        return this.traverse(prefix);
+    startsWith(prefix, maxMismatches = null) {
+        return this.traverse(prefix, maxMismatches);
     }
 }

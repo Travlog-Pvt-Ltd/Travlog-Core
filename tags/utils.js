@@ -14,8 +14,12 @@ export const parseEsTagData = (data) => {
 
 export const getAllTagsName = async () => {
     try {
-        const result = await searchAllTags(['name']);
-        return result.map((doc) => [doc._source.name, doc._id]);
+        const result = await searchAllTags(['name', 'isPlace']);
+        return result.map((doc) => [
+            doc._source.name,
+            doc._id,
+            doc._source.isPlace,
+        ]);
     } catch (error) {
         throw error;
     }
@@ -26,8 +30,8 @@ const generateNameVariations = (tag) => {
     variations.push(tag);
     const match = tag[0].match(/^(.*?)\s*\((.*?)\)$/);
     if (match) {
-        variations.push([match[1].trim(), tag[1]]);
-        variations.push([match[2].trim(), tag[1]]);
+        variations.push([match[1].trim(), tag[1], tag[2]]);
+        variations.push([match[2].trim(), tag[1], tag[2]]);
     }
     return variations;
 };
