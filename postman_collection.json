@@ -706,6 +706,45 @@
 					"response": []
 				},
 				{
+					"name": "Generate Places JSON",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitudes\": [],\r\n    \"longitudes\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{dev_url}}/tags/places/fetch"
+					},
+					"response": []
+				},
+				{
+					"name": "Add places to db",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{bearer_token}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"url": "{{dev_url}}/tags/places/add"
+					},
+					"response": []
+				},
+				{
 					"name": "Search Tags",
 					"request": {
 						"auth": {
