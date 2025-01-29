@@ -1,6 +1,10 @@
 import { Place } from './model.js';
 import { customSearchTags } from './searchUtils.js';
-import { parseEsTagData } from './utils.js';
+import {
+    fetchPlacesFromGoogle,
+    parseEsTagData,
+    savePlacesFromJson,
+} from './utils.js';
 
 const searchTags = async (req, res) => {
     try {
@@ -21,6 +25,25 @@ const getPlaceInfo = async (req, res) => {
         if (!place) return res.status(404).json({ message: 'Info not found!' });
         place.populate('info');
         res.status(200).json({ place: place });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+const fetchTouristPlaces = async (req, res) => {
+    try {
+        const { latitudes, longitudes } = req.body;
+        const result = await fetchPlacesFromGoogle(latitudes, longitudes);
+        res.status(201).json({ data: result });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
+const addPlacesToDb = async (req, res) => {
+    try {
+        const result = await savePlacesFromJson();
+        res.status(201).json({ data: result });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -173,4 +196,10 @@ const createActivities = async (req, res) => {
     res.status(201).json(data);
 };
 
-export { searchTags, getPlaceInfo, createActivities };
+export {
+    searchTags,
+    getPlaceInfo,
+    fetchTouristPlaces,
+    addPlacesToDb,
+    createActivities,
+};

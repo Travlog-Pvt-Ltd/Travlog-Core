@@ -1,0 +1,3 @@
+{
+    "ignore": ["**/places_data_review.json"]
+}
