@@ -1,4 +1,4 @@
-import getESClient from '../elasticSearch/config.js';
+import getESClient from './config.js';
 import log from 'npmlog';
 
 const scrollTime = '1m';
