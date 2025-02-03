@@ -2,6 +2,7 @@ import Redis from 'redis';
 import log from 'npmlog';
 
 const redis = Redis.createClient({
+    username: 'default',
     password: process.env.REDIS_PASSWORD,
     socket: {
         host: process.env.REDIS_HOST,
