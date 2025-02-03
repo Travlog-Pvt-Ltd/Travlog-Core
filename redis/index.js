@@ -27,6 +27,4 @@ const getRedisClient = async () => {
     return redisClient;
 };
 
-await getRedisClient();
-
 export default getRedisClient;
