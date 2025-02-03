@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Blog, BlogInstance } from '../blog/model.js';
 import { User, UserInstance } from '../user/model.js';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { deleteKeysByPatternWithScan } from '../redis/utils.js';
 import { bookmarkField } from './constants.js';
 import { authorFieldsForBlog, blogFieldsToSelect } from '../blog/constants.js';
@@ -38,6 +38,7 @@ const addBookmark = async (req, res) => {
 
 const getBookmarks = async (req, res) => {
     const { limit = 10, skip = 0 } = req.query;
+    const redis = await getRedisClient();
     try {
         const cachedBookmarks = await redis.get(
             `bookmarks#user:${req.userId}?limit:${limit}&skip:${skip}`

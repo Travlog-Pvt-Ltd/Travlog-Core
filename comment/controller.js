@@ -1,6 +1,6 @@
 import { Blog } from '../blog/model.js';
 import Comment from './model.js';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { commentFields, replyFields, deletedContent } from './constants.js';
 import { commentProducer } from './producer.js';
 
@@ -71,6 +71,7 @@ const commentOnBlog = async (req, res) => {
 
 const replyOnComment = async (req, res) => {
     const { blog, commentId: comment, content } = req.body;
+    const redis = await getRedisClient();
     try {
         const createdReply = await Comment.create({
             userId: req.userId,

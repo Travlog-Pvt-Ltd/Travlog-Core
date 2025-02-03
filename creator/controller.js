@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { Blog } from '../blog/model.js';
 import { User, Follower, UserInstance } from '../user/model.js';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 import { notificationProducer } from '../notifications/producer.js';
 import { creatorProducer } from './producer.js';
@@ -146,6 +146,7 @@ const unfollow = async (req, res) => {
 
 const getCreatorDetails = async (req, res) => {
     const id = req.query.id;
+    const redis = await getRedisClient();
     try {
         if (!id) {
             const cachedData = await redis.get(

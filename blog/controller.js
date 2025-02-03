@@ -3,7 +3,7 @@ import { UserActivity, LCEvent } from '../userActivity/model.js';
 import { Blog, BlogInstance } from './model.js';
 import { User, UserInstance, OrganicUserInstance } from '../user/model.js';
 import Draft from '../draft/model.js';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import {
     updateUserInCache,
     deleteKeysByPatternWithScan,
@@ -39,6 +39,7 @@ async function getAllBlogs(req, res) {
 async function getUserBlogs(req, res) {
     const limit = req.query.limit || 20;
     const skip = req.query.skip || 0;
+    const redis = await getRedisClient();
     try {
         const cachedBlogs = await redis.get(
             `user_blogs:${req.userId}?limit:${limit}&skip:${skip}`

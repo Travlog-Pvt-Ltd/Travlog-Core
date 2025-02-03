@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { Blog } from '../blog/model.js';
 import Comment from '../comment/model.js';
 import { User, UserInstance } from '../user/model.js';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 import { likeProducer } from './producer.js';
 import { notificationProducer } from '../notifications/producer.js';
@@ -10,6 +10,7 @@ import { notificationProducer } from '../notifications/producer.js';
 const likeBlog = async (req, res) => {
     const blog = req.body.blogId;
     const userObject = new mongoose.Types.ObjectId(req.userId);
+    const redis = await getRedisClient();
     try {
         const found = await Blog.findById(blog).populate('likes dislikes');
         let check = false;
@@ -150,6 +151,7 @@ const likeBlog = async (req, res) => {
 const dislikeBlog = async (req, res) => {
     const blog = req.body.blogId;
     const userObject = new mongoose.Types.ObjectId(req.userId);
+    const redis = await getRedisClient();
     try {
         const found = await Blog.findById(blog).populate('likes dislikes');
         let check = false;

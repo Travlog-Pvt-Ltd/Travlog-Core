@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '../user/model.js';
 import nodemailer from 'nodemailer';
 import { OTPModel } from './model.js';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 
 async function register(req, res) {
@@ -303,6 +303,7 @@ const logout = async (req, res) => {
         await User.findByIdAndUpdate(req.body.userId, {
             $set: { token: null },
         });
+        const redis = await getRedisClient();
         redis.del(`user_details#user:${req.body.userId}`);
         res.status(201).json({ message: 'Success' });
     } catch (err) {

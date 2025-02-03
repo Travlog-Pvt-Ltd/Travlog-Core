@@ -1,10 +1,11 @@
 import Draft from './model.js';
 import { User } from '../user/model.js';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 
 async function createDraft(req, res) {
     const { title, content, tags, thumbnailUrl } = req.body;
+    const redis = await getRedisClient();
     try {
         if (req.query.draftId && req.query.draftId != 'null') {
             const updatedDraft = await Draft.findByIdAndUpdate(
@@ -63,6 +64,7 @@ async function getDrafts(req, res) {
 }
 
 async function getDraftDetail(req, res) {
+    const redis = getRedisClient();
     try {
         const cachedDraft = await redis.get(
             `draft_data#draft:${req.params.draftId}#author:${req.userId}`

@@ -1,9 +1,10 @@
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { updateUserInCache } from '../redis/utils.js';
 import { User } from './model.js';
 
 async function getUserDetails(req, res) {
     try {
+        const redis = await getRedisClient();
         const cachedUser = await redis.get(`user_details#user:${req.userId}`);
         if (cachedUser) return res.status(200).json(JSON.parse(cachedUser));
         const user = await User.findById(req.userId)

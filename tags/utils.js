@@ -1,7 +1,7 @@
 import fs from 'fs';
 import axios from 'axios';
 import log from 'npmlog';
-import redis from '../redis/index.js';
+import getRedisClient from '../redis/index.js';
 import { Trie } from '../common/utils.js';
 import { searchAllTags } from './searchUtils.js';
 import { Place } from './model.js';
@@ -160,6 +160,7 @@ const generateNameVariations = (tag) => {
 
 export const createAndStoreTagsTrie = async () => {
     try {
+        const redis = await getRedisClient();
         const tags = await getAllTagsName();
         const tagsTrie = new Trie();
         // Handle names where another name is added in parantheses
@@ -175,6 +176,7 @@ export const createAndStoreTagsTrie = async () => {
 
 export const getTagsTrie = async () => {
     try {
+        const redis = await getRedisClient();
         let serializedTrie = await redis.get('tagsTrie');
         if (!serializedTrie) {
             log.info('Tags trie not found in cache. Creating and storing it.');

@@ -1,6 +1,7 @@
-import redis from './index.js';
+import getRedisClient from './index.js';
 
 export const updateUserInCache = async (user) => {
+    const redis = await getRedisClient();
     await redis.setEx(
         `user_details#user:${user._id}`,
         3600,
@@ -10,6 +11,7 @@ export const updateUserInCache = async (user) => {
 
 export const deleteKeysByPatternWithScan = async (pattern) => {
     try {
+        const redis = await getRedisClient();
         let cursor = '0';
         let keys = [];
         do {
