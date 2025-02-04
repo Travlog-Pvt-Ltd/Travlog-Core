@@ -1,4 +1,5 @@
 import './sentry.js';
+import { errorHandler } from './common/middleware.js';
 import * as Sentry from '@sentry/node';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -56,10 +57,11 @@ app.use('/comment', commentRouter);
 app.use('/bookmark', bookmarkRouter);
 app.use('/user-activity', userActivityRouter);
 
+broker.startConsumers();
+
 Sentry.setupExpressErrorHandler(app);
+app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {
     log.info(`Server listening on port ${process.env.PORT}!`);
 });
-
-broker.startConsumers();
