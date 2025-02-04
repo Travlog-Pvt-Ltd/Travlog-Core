@@ -1,4 +1,4 @@
-import './instrument.js';
+import './sentry.js';
 import * as Sentry from '@sentry/node';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -8,7 +8,6 @@ import dotenv from 'dotenv';
 import log from 'npmlog';
 import './common/logger.js';
 import './notifications/index.js';
-import './redis/index.js';
 import './cron.config.js';
 import { broker } from './kafka/index.js';
 import { userRouter } from './user/index.js';
