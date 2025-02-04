@@ -26,10 +26,6 @@ const draftSchema = new mongoose.Schema(
                 },
             ],
         },
-        system_tags: {
-            type: [String],
-            default: [],
-        },
         attachments: {
             type: [String],
             default: [],

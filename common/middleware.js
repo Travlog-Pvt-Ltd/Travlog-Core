@@ -7,7 +7,6 @@ export const asyncControllerHandler = (fn) => (req, res, next) => {
 export const errorHandler = (err, req, res, next) => {
     Sentry.captureException(err);
     res.status(500).json({
-        success: false,
         message: err.message || 'Something went wrong. We are looking into it.',
     });
 };
