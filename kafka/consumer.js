@@ -27,7 +27,10 @@ class BaseConsumer extends BaseSiteAbstractClass {
                 },
             });
         } catch (error) {
-            throw new KafkaConnectionError('Something went wrong', error);
+            throw new KafkaConnectionError(
+                'Something went wrong: ',
+                error.message
+            );
         }
     }
 }

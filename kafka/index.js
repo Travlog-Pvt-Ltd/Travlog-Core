@@ -36,8 +36,8 @@ class KafkaBroker {
                 await admin.connect();
             } catch (error) {
                 throw new KafkaConnectionError(
-                    'Failed to connect to kafka client admin',
-                    error
+                    'Failed to connect to kafka client admin: ',
+                    error.message
                 );
             }
 
@@ -64,7 +64,10 @@ class KafkaBroker {
             }
             await admin.disconnect();
         } catch (err) {
-            throw new KafkaConnectionError('Something went wrong: ', err);
+            throw new KafkaConnectionError(
+                'Something went wrong: ',
+                err.message
+            );
         }
     }
 

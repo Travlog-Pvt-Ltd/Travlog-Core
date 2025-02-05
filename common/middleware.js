@@ -5,7 +5,7 @@ export const asyncControllerHandler = (fn) => (req, res, next) => {
 };
 
 export const errorHandler = (err, req, res, next) => {
-    Sentry.captureException(err);
+    if (process.env.MODE === 'prod') Sentry.captureException(err);
     res.status(500).json({
         message: err.message || 'Something went wrong. We are looking into it.',
     });

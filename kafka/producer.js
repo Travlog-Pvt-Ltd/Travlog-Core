@@ -22,7 +22,10 @@ class BaseProducer {
             });
             await this.producer.disconnect();
         } catch (err) {
-            throw new KafkaConnectionError('Something went wrong', err);
+            throw new KafkaConnectionError(
+                'Something went wrong: ',
+                err.message
+            );
         }
     }
 }
