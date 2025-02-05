@@ -7,6 +7,7 @@ import {
     getBlogDetail,
     getUserBlogs,
     getSearchedBlogs,
+    getSimilarBlogs,
     editBlog,
 } from './controller.js';
 import { upload } from '../common/config/Multer.js';
@@ -24,6 +25,7 @@ blogRouter.post(
 blogRouter.get('/all', getAllBlogs);
 blogRouter.get('/', auth, getUserBlogs);
 blogRouter.get('/:blogId', getBlogDetail);
+blogRouter.get('/similar/:blogId', getSimilarBlogs);
 blogRouter.get('/results/:tagId', auth, getSearchedBlogs);
 blogRouter.delete('/:blogId', auth, deleteBlog);
 blogRouter.patch(
