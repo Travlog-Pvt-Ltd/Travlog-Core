@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        shortIntro: {
+            type: String,
+            default: '',
+            maxlength: 40,
+        },
         token: {
             type: String,
             default: null,

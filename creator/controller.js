@@ -13,9 +13,11 @@ const moreFromAuthor = asyncControllerHandler(async (req, res) => {
         .sort({ likeCount: -1 })
         .limit(3)
         .select(
-            '_id title content author likeCount viewCount commentCount shareCount'
+            '_id title content thumbnail author likeCount viewCount commentCount shareCount createdAt updatedAt tags'
         )
-        .populate('author', '_id name profileLogo followers');
+        .populate('author', '_id name profileLogo followers')
+        .populate('tags.places', '_id name')
+        .populate('tags.activities', '_id name');
     res.status(200).json(moreBlogs);
 });
 
