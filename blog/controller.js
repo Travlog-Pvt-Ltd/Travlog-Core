@@ -263,7 +263,7 @@ const deleteBlog = asyncControllerHandler(async (req, res) => {
 
 const getSearchedBlogs = asyncControllerHandler(async (req, res) => {
     const tagId = req.params.tagId;
-    const isPlace = req.query.isPlace || false;
+    const isPlace = req.query.isPlace == 'true';
     const limit = req.query.limit || 10;
     const skip = req.query.skip || 0;
     if (isPlace) {
@@ -301,6 +301,40 @@ const getSearchedBlogs = asyncControllerHandler(async (req, res) => {
             .populate('tags.activities', 'name');
         res.status(200).json(result);
     }
+});
+
+const getSimilarBlogs = asyncControllerHandler(async (req, res) => {
+    const blogId = req.params.blogId;
+    const limit = req.query.limit || 10;
+    const skip = req.query.skip || 0;
+
+    const currentBlog = await Blog.findById(blogId).select('tags');
+
+    if (!currentBlog) {
+        return res.status(404).json({ message: 'Blog not found' });
+    }
+
+    const placeTagIds =
+        currentBlog.tags.places.map((id) => id.toString()) || [];
+    const activityTagIds =
+        currentBlog.tags.activities.map((id) => id.toString()) || [];
+
+    const similarBlogs = await Blog.find({
+        _id: { $ne: blogId }, // Exclude the current blog
+        $or: [
+            { 'tags.places': { $in: placeTagIds } },
+            { 'tags.activities': { $in: activityTagIds } },
+        ],
+    })
+        .sort({ likeCount: -1 })
+        .limit(limit)
+        .skip(skip)
+        .select(blogFieldsToSelect)
+        .populate('author', authorFieldsForBlog)
+        .populate('tags.places', 'name')
+        .populate('tags.activities', 'name');
+
+    res.status(200).json(similarBlogs);
 });
 
 const editBlog = asyncControllerHandler(async (req, res) => {
@@ -386,5 +420,6 @@ export {
     getBlogDetail,
     deleteBlog,
     getSearchedBlogs,
+    getSimilarBlogs,
     editBlog,
 };
