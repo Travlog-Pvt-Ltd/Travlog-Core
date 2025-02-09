@@ -9,9 +9,11 @@ import { asyncControllerHandler } from '../common/middleware.js';
 
 const moreFromAuthor = asyncControllerHandler(async (req, res) => {
     const author = req.params.authorId;
-    const moreBlogs = await Blog.find({ author: author })
+    const limit = req.query.limit || 3;
+    const blogId = req.query.blogId || null;
+    const moreBlogs = await Blog.find({ author: author, _id: { $ne: blogId } })
         .sort({ likeCount: -1 })
-        .limit(3)
+        .limit(limit)
         .select(
             '_id title content thumbnail author likeCount viewCount commentCount shareCount createdAt updatedAt tags'
         )
