@@ -167,6 +167,15 @@
 						"url": "{{dev_url}}/blog/6677cc830eac78132423a6a9"
 					},
 					"response": []
+				},
+				{
+					"name": "Get Similar Blogs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{dev_url}}/blog/similar/6677cc830eac78132423a6a9"
+					},
+					"response": []
 				}
 			]
 		},

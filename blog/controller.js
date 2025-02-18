@@ -308,22 +308,35 @@ const getSimilarBlogs = asyncControllerHandler(async (req, res) => {
     const limit = req.query.limit || 10;
     const skip = req.query.skip || 0;
 
-    const currentBlog = await Blog.findById(blogId).select('tags');
+    const currentBlog = await Blog.findById(blogId).select('tags system_tags');
 
     if (!currentBlog) {
         return res.status(404).json({ message: 'Blog not found' });
     }
 
-    const placeTagIds =
-        currentBlog.tags.places.map((id) => id.toString()) || [];
-    const activityTagIds =
-        currentBlog.tags.activities.map((id) => id.toString()) || [];
+    const placeTags = [
+        ...new Set([
+            ...(currentBlog.tags.places || []),
+            ...(currentBlog.system_tags.places || []),
+        ]),
+    ];
+    const activityTags = [
+        ...new Set([
+            ...(currentBlog.tags.activities || []),
+            ...(currentBlog.system_tags.activities || []),
+        ]),
+    ];
+
+    const placeTagIds = placeTags.map((id) => id.toString()) || [];
+    const activityTagIds = activityTags.map((id) => id.toString()) || [];
 
     const similarBlogs = await Blog.find({
         _id: { $ne: blogId }, // Exclude the current blog
         $or: [
             { 'tags.places': { $in: placeTagIds } },
+            { 'system_tags.places': { $in: placeTagIds } },
             { 'tags.activities': { $in: activityTagIds } },
+            { 'system_tags.activities': { $in: activityTagIds } },
         ],
     })
         .sort({ likeCount: -1 })
