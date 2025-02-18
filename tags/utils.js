@@ -120,7 +120,12 @@ export const savePlacesFromJson = async () => {
             places.push(newPlace);
         }
         if (places.length === 0) places;
-        const insertedPlaces = await Place.insertMany(places);
+        const insertedPlaces = await Place.insertMany(places, {
+            ordered: false,
+        }).catch((err) => {
+            console.error(err.message);
+            return err.insertedDocs || [];
+        });
         await tagsProducer.tagsIndexProducer({
             places: insertedPlaces.map((place) => place._id),
         });

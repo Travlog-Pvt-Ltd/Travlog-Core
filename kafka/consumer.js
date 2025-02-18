@@ -7,20 +7,26 @@ class BaseConsumer extends BaseSiteAbstractClass {
         this.kafkaClient = broker.getKafkaClient();
         this.topic = topic;
         this.groupId = groupId;
+        this.consumer = this.kafkaClient.consumer({ groupId });
     }
 
     // Add name of all the abstract functions that the children should implement
     static abstractMethods = ['start'];
 
+    async disconnect() {
+        await this.consumer.disconnect();
+    }
+
     async setupConsumer(messageHandler) {
         try {
-            const consumer = this.kafkaClient.consumer({
-                groupId: this.groupId,
-            });
-            await consumer.connect();
-            await consumer.subscribe({ topics: [this.topic] });
+            await this.consumer.connect();
+            await this.consumer.subscribe({ topics: [this.topic] });
 
-            await consumer.run({
+            await this.consumer.run({
+                /*
+                    TODO [Aryan | 2025-02-18]
+                    - Use eachBatch for batch processing for faster processing and reduced overhead
+                */
                 eachMessage: async ({ message }) => {
                     const data = JSON.parse(message.value.toString());
                     await messageHandler(data);
