@@ -9,6 +9,8 @@ import { tagsProducer } from './producer.js';
 
 const placesDataFile = 'places_data_review.json';
 const GOOGLE_PLACES_MAX_RESULT_COUNT = 20;
+const GOOGLE_PLACES_MAX_RADIUS = 50000;
+const GOOGLE_PLACES_RADIUS_OFFSET = 10000;
 
 export const parseEsTagData = (data) => {
     const result = data.map((el) => {
@@ -84,24 +86,28 @@ const fetchPlaces = async (location, radius = 10000) => {
 
 export const fetchPlacesFromGoogle = async (latitudes, longitudes) => {
     let fileData = initializeFile();
-    const radius = 10000;
+    let radius = GOOGLE_PLACES_MAX_RADIUS;
 
-    for (let i = 0; i < latitudes.length; i++) {
-        const currentLocation = [latitudes[i], longitudes[i]];
-        const data = await fetchPlaces(currentLocation, radius);
+    while (radius > 0) {
+        for (let i = 0; i < latitudes.length; i++) {
+            const currentLocation = [latitudes[i], longitudes[i]];
+            const data = await fetchPlaces(currentLocation, radius);
 
-        if (data && data.places) {
-            data.places.forEach((place) => {
-                const newPlace = {
-                    id: place.id,
-                    name: place.displayName.text,
-                    location: place.location,
-                    formattedAddress: place.formattedAddress,
-                };
-                fileData.places.push(newPlace);
-            });
+            if (data && data.places) {
+                data.places.forEach((place) => {
+                    const newPlace = {
+                        id: place.id,
+                        name: place.displayName.text,
+                        location: place.location,
+                        formattedAddress: place.formattedAddress,
+                    };
+                    fileData.places.push(newPlace);
+                });
+            }
         }
+        radius -= GOOGLE_PLACES_RADIUS_OFFSET;
     }
+
     saveToFile(fileData);
     return fileData.places;
 };
