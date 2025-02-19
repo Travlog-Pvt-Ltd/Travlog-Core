@@ -8,6 +8,7 @@ import { Place } from './model.js';
 import { tagsProducer } from './producer.js';
 
 const placesDataFile = 'places_data_review.json';
+const GOOGLE_PLACES_MAX_RESULT_COUNT = 20;
 
 export const parseEsTagData = (data) => {
     const result = data.map((el) => {
@@ -29,13 +30,21 @@ const initializeFile = () => {
 };
 
 const saveToFile = (data) => {
+    const uniquePlaces = {};
+    const resultPlaces = data.places.filter((place) => {
+        if (!uniquePlaces[place.id]) {
+            uniquePlaces[place.id] = 1;
+            return place;
+        }
+    });
+    data.places = resultPlaces;
     fs.writeFileSync(placesDataFile, JSON.stringify(data, null, 4));
 };
 
 const fetchPlaces = async (location, radius = 10000) => {
     let data = JSON.stringify({
         includedTypes: ['tourist_attraction'],
-        maxResultCount: 20,
+        maxResultCount: GOOGLE_PLACES_MAX_RESULT_COUNT,
         locationRestriction: {
             circle: {
                 center: {
@@ -92,8 +101,8 @@ export const fetchPlacesFromGoogle = async (latitudes, longitudes) => {
                 fileData.places.push(newPlace);
             });
         }
-        saveToFile(fileData);
     }
+    saveToFile(fileData);
     return fileData.places;
 };
 
@@ -114,9 +123,9 @@ export const savePlacesFromJson = async () => {
                 location: place.location,
                 formattedAddress: place.formattedAddress,
                 country: address[address.length - 1],
-                pincode: address[address.length - 2],
             };
-
+            newPlace.pincode =
+                newPlace.country === 'India' ? address[address.length - 2] : '';
             places.push(newPlace);
         }
         if (places.length === 0) places;
