@@ -12,6 +12,7 @@ import {
 } from './controller.js';
 import { upload } from '../common/config/Multer.js';
 import { getThumbnailUrl } from './middleware.js';
+import { extractUserIdFromToken } from '../common/middleware.js';
 
 const blogRouter = express.Router();
 
@@ -22,10 +23,10 @@ blogRouter.post(
     getThumbnailUrl,
     createBlog
 );
-blogRouter.get('/all', getAllBlogs);
+blogRouter.get('/all', extractUserIdFromToken, getAllBlogs);
 blogRouter.get('/', auth, getUserBlogs);
-blogRouter.get('/:blogId', getBlogDetail);
-blogRouter.get('/similar/:blogId', getSimilarBlogs);
+blogRouter.get('/:blogId', extractUserIdFromToken, getBlogDetail);
+blogRouter.get('/similar/:blogId', extractUserIdFromToken, getSimilarBlogs);
 blogRouter.get('/results/:tagId', auth, getSearchedBlogs);
 blogRouter.delete('/:blogId', auth, deleteBlog);
 blogRouter.patch(
